@@ -17,8 +17,6 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('role');
-            $table->string('admin_number', 7)->nullable();
-            $table->boolean('resume_status');
             $table->timestamps();
         });
 
