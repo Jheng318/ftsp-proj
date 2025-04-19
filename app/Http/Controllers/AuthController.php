@@ -24,7 +24,7 @@ class AuthController extends Controller
             return redirect()->route('staff.dashboard');
         elseif($user->student())
             return redirect()->route('student.main');
-        else return redirect()->route('welcome');
+        else return back()->withErrors(['unknown' => 'User Unknown. Please try again']);
     }
     public function logout(Request $request){
 

@@ -6,6 +6,7 @@ function Login() {
     const { data, setData, post, processing, errors, reset } = useForm({
         email: "",
         password: "",
+        unknown: ""
     });
 
     function submit(e) {
@@ -40,6 +41,9 @@ function Login() {
                     <br />
                     {errors.password && (
                         <p className="errors">{errors.password}</p>
+                    )}
+                    {errors.unknown && (
+                        <p className="errors">{errors.unknown}</p>
                     )}
                     <Button type="submit" disabled={processing} mt="2rem">
                         Login
