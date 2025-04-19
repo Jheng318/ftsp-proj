@@ -1,0 +1,38 @@
+.gray {
+    color: var(--gray);
+}
+#login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+#login h1 {
+    color: var(--gray);
+    padding: 2rem 0 1rem;
+}
+#login form {
+    background-color: var(--black);
+    width: 40%;
+    height: 45%;
+    border-radius: 2rem;
+}
+#login form .con {
+    width: 90%;
+    margin: 0 auto;
+}
+#login form .con input {
+    margin-top: 0.5rem;
+    width: inherit;
+    border-radius: 5px;
+    outline: none;
+    border: none;
+    background-color: var(--gray);
+    padding-left: 0.5rem;
+    box-sizing: border-box;
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+}
+#login .errors {
+    color: rgb(225, 94, 94);
+}

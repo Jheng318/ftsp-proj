@@ -1,3 +1,62 @@
-/* @tailwind base;
-@tailwind components;
-@tailwind utilities; */
+/* @import "tailwindcss";
+@source "../views"; */
+@font-face {
+    font-family: Brandon Grotesque;
+    src: url("fonts/Brandon_Grotesque_Medium.otf");
+}
+@font-face {
+    font-family: Brandon Grotesque Bold;
+    src: url("fonts/Brandon_Grotesque_Bold.otf");
+}
+
+*,
+*::before,
+*::after {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+:root {
+    --blue-primary: #276bf2;
+    --blue-secondary: #447ef2;
+    --blue-tertiary: #6393f2;
+    --gray: #f2f2f2;
+    --black: #1e2026;
+}
+html {
+    font-family: "Brandon Grotesque";
+    font-size: 16px;
+}
+
+body {
+    background-color: var(--gray);
+    height: 100vh;
+    overflow: hidden;
+}
+.flex {
+    display: flex;
+}
+
+.justify-center {
+    justify-content: center;
+}
+.align-center {
+    align-items: center;
+}
+.text-gray {
+    color: var(--gray);
+}
+
+.text-sm {
+    font-size: 0.8rem;
+}
+.primaryBtn {
+    color: var(--gray);
+    background-color: var(--blue-primary);
+    border: unset;
+    padding: 0.5rem 1.5rem;
+    border-radius: 10px;
+}
+.mb-1 {
+    margin-bottom: 1rem;
+}

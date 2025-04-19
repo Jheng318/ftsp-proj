@@ -53,4 +53,10 @@ class User extends Authenticatable
     public function prisim(){
         return $this->hasMany(Prisim::class);
     }
+    public function isStaff(){
+        return $this->role === 'Staff';
+    }
+    public function isStudent(){
+        return $this->role === 'Student';
+    }
 }

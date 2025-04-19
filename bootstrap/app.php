@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Middleware\checkStudent;
+use App\Http\Middleware\checkUser;
 use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -16,6 +18,10 @@ return Application::configure(basePath: dirname(__DIR__))
         //
         $middleware->web(append: [
             HandleInertiaRequests::class,
+        ]);
+        $middleware->alias([
+            'staff' => checkUser::class,
+            'student' => checkStudent::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
