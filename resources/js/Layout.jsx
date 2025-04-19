@@ -23,9 +23,7 @@ export default function Layout({ children }) {
                 {auth.isStaff && (
                     <Link href="/ftsp-proj/dashboard">Dashboard</Link>
                 )}
-                {auth.isStudent && (
-                    <Link href="/ftsp-proj/main">Dashboard</Link>
-                )}
+                {auth.isStudent && <Link href="/ftsp-proj/main">Main</Link>}
             </nav>
             <main>{children}</main>
         </>

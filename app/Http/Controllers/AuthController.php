@@ -23,7 +23,7 @@ class AuthController extends Controller
         if($user->isStaff())
             return redirect()->route('staff.dashboard');
         elseif($user->student())
-            return redirect()->route('student.dashboard');
+            return redirect()->route('student.main');
         else return redirect()->route('welcome');
     }
     public function logout(Request $request){
