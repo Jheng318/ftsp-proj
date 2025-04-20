@@ -53,6 +53,4 @@ class AIController extends Controller
         dd($response);
         //echo $response; // Outputs just the text
     }
-    public function analyze(){
-    }
 }
