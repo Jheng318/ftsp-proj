@@ -14,16 +14,22 @@ export default function Layout({ children }) {
                 <Link href="/ftsp-proj/" prefetch>
                     Home
                 </Link>
-                <Link href="/ftsp-proj/login" prefetch>
-                    Login
-                </Link>
-                {auth.isAuthenticated && (
-                    <Link href="/ftsp-proj/logout">Logout</Link>
+                {!auth.isAuthenticated && (
+                    <Link href="/ftsp-proj/login" prefetch>
+                        Login
+                    </Link>
                 )}
                 {auth.isStaff && (
                     <Link href="/ftsp-proj/dashboard">Dashboard</Link>
                 )}
                 {auth.isStudent && <Link href="/ftsp-proj/main">Main</Link>}
+                {auth.isAuthenticated && (
+                    <>
+                        <Link href="/ftsp-proj/intern">Internship</Link>
+                        <Link href="/ftsp-proj/prisim">PRISIM</Link>
+                        <Link href="/ftsp-proj/logout">Logout</Link>
+                    </>
+                )}
             </nav>
             <main>{children}</main>
         </>

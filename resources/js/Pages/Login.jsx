@@ -1,12 +1,19 @@
-import { useForm } from "@inertiajs/react";
+import { useForm, usePage } from "@inertiajs/react";
 import "../../css/login.css";
 import Button from "../components/Button";
 
 function Login() {
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { errors } = usePage().props;
+    const {
+        data,
+        setData,
+        post,
+        processing,
+        errors: formErrors,
+        reset,
+    } = useForm({
         email: "",
         password: "",
-        unknown: ""
     });
 
     function submit(e) {
@@ -29,8 +36,10 @@ function Login() {
                         onChange={(e) => setData("email", e.target.value)}
                     />
                     <br />
-                    {errors.email && <p className="errors">{errors.email}</p>}
-                    <label className="text-gray text-sm ">Password</label>
+                    {formErrors.email && (
+                        <p className="errors">{formErrors.email}</p>
+                    )}
+                    <label className="text-gray text-sm">Password</label>
                     <br />
                     <input
                         type="password"
@@ -39,12 +48,13 @@ function Login() {
                         onChange={(e) => setData("password", e.target.value)}
                     />
                     <br />
-                    {errors.password && (
-                        <p className="errors">{errors.password}</p>
+                    {formErrors.password && (
+                        <p className="errors">{formErrors.password}</p>
                     )}
-                    {errors.unknown && (
-                        <p className="errors">{errors.unknown}</p>
+                    {formErrors.unknown && (
+                        <p className="errors">{formErrors.unknown}</p>
                     )}
+                    {errors.errors && <p className="errors">{errors.errors}</p>}
                     <Button type="submit" disabled={processing} mt="2rem">
                         Login
                     </Button>

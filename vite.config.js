@@ -12,5 +12,10 @@ export default defineConfig({
         //tailwindcss(),
         react(),
     ],
+    resolve: {
+        alias: {
+            "@": "/resources",
+        },
+    },
     base: "/ftsp_proj/",
 });

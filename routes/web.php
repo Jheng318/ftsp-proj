@@ -7,12 +7,14 @@ use App\Http\Controllers\StudentController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
-Route::inertia('/', 'welcome')->name('welcome');
+
+Route::inertia('/', 'Login')->name('show.login');
 Route::inertia('/login', 'Login')->name('show.login');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
 // Shared Student and staff's routes when they are logged in
 Route::middleware(['auth'])->group(function(){
+    Route::inertia('/welcome', 'Welcome')->name('welcome');
     Route::get('/logout', [AuthController::class, 'logout']);
 
     // Ai routes
