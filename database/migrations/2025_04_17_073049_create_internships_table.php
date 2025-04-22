@@ -24,6 +24,8 @@ return new class extends Migration
             $table->decimal('gpa_requirenment', 3, 2)->nullable();
             $table->integer('salary');
             $table->integer('no_of_students');
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
             $table->timestamps();
         });
     }

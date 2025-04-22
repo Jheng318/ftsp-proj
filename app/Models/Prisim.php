@@ -23,4 +23,7 @@ class Prisim extends Model
     public function allocation(){
         return $this->belongsTo(Allocation::class);
     }
+    public function student_prisim(){
+        return $this->hasMany(StudentPrisim::class);
+    }
 }

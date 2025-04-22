@@ -7,4 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 class StudentInternship extends Model
 {
     //
+    protected $fillable = [
+        'student_id',
+        'internship_id'
+    ];
+    public function student(){
+        return $this->belongsTo(Student::class);
+    }
+    public function prisim(){
+        return $this->belongsTo(Prisim::class);
+    }
+    public function internship(){
+        return $this->belongsTo(Internship::class);
+    }
 }

@@ -28,4 +28,7 @@ class Internship extends Model
     public function allocation(){
         return $this->belongsTo(Allocation::class);
     }
+    public function student_internship(){
+        return $this->hasMany(StudentInternship::class);
+    }
 }

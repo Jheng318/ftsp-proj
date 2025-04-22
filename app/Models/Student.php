@@ -28,4 +28,10 @@ class Student extends Model
     public function interest_prisim(){
         return $this->hasOne(StudentInterestPrisim::class);
     }
+    public function student_internship(){
+        return $this->hasOne(StudentInternship::class);
+    }
+    public function student_prisim(){
+        return $this->hasOne(StudentPrisim::class);
+    }
 }
