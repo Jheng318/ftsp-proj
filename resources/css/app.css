@@ -60,3 +60,20 @@ body {
 .mb-1 {
     margin-bottom: 1rem;
 }
+
+.bg-blue-primary {
+    background-color: var(--blue-primary);
+}
+.bg-blue-secondary {
+    background-color: var(--blue-secondary);
+}
+.bg-blue-teriary {
+    background-color: var(--blue-tertiary);
+}
+.bg-gray {
+    background-color: var(--gray);
+}
+
+.text-gray {
+    color: var(--gray);
+}

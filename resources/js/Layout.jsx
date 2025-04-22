@@ -1,5 +1,9 @@
 import { Link, usePage } from "@inertiajs/react";
-import "@/css/layout.css";
+import logo from "@/images/logo.png";
+import Container from "react-bootstrap/Container";
+import Nav from "react-bootstrap/Nav";
+import Navbar from "react-bootstrap/Navbar";
+import NavDropdown from "react-bootstrap/NavDropdown";
 export default function Layout({ children }) {
     // these hooks help to pass props like shared props to the layouts
     // the auth props have 4 props that we can use like auth.user to get the current loggedin user
@@ -10,27 +14,54 @@ export default function Layout({ children }) {
     const { auth } = usePage().props;
     return (
         <>
-            <nav>
-                <Link href="/ftsp-proj/" prefetch>
-                    Home
-                </Link>
-                {!auth.isAuthenticated && (
-                    <Link href="/ftsp-proj/login" prefetch>
-                        Login
-                    </Link>
-                )}
-                {auth.isStaff && (
-                    <Link href="/ftsp-proj/dashboard">Dashboard</Link>
-                )}
-                {auth.isStudent && <Link href="/ftsp-proj/main">Main</Link>}
-                {auth.isAuthenticated && (
-                    <>
-                        <Link href="/ftsp-proj/intern">Internship</Link>
-                        <Link href="/ftsp-proj/prisim">PRISIM</Link>
-                        <Link href="/ftsp-proj/logout">Logout</Link>
-                    </>
-                )}
-            </nav>
+            <Navbar expand="lg" className="bg-blue-primary">
+                <Container className="text-gray">
+                    <Navbar.Brand href="/ftsp-proj/">
+                        <img src={logo} alt="skill map logo" className="logo" />
+                    </Navbar.Brand>
+                    {auth.isAuthenticated && (
+                        <div className="d-flex w-50 justify-content-evenly">
+                            <NavDropdown title="Internship">
+                                <NavDropdown.Item href="/ftsp-proj/intern">
+                                    Internship
+                                </NavDropdown.Item>
+                                <NavDropdown.Item href="/ftsp-proj/intern-interest">
+                                    Interest Form
+                                </NavDropdown.Item>
+                            </NavDropdown>
+                            <NavDropdown title="PRISIM">
+                                <NavDropdown.Item href="/ftsp-proj/intern">
+                                    PRISIM
+                                </NavDropdown.Item>
+                                <NavDropdown.Item href="/ftsp-proj/PRISIM-interest">
+                                    Interest Form
+                                </NavDropdown.Item>
+                            </NavDropdown>
+                            <NavDropdown title="Allocation">
+                                <NavDropdown.Item href="/ftsp-proj/unasigned-allocation">
+                                    Unassigned Allocation
+                                </NavDropdown.Item>
+                                <NavDropdown.Item href="/ftsp-proj/assigned-allocation">
+                                    Assigned Allocation
+                                </NavDropdown.Item>
+                            </NavDropdown>
+                            {auth.isStaff && (
+                                <Nav.Link href="/ftsp-proj/student-info">
+                                    Student Info
+                                </Nav.Link>
+                            )}
+                        </div>
+                    )}
+
+                    {auth.isAuthenticated ? (
+                        <Nav.Link href="/ftsp-proj/logout" className="logout">
+                            Logout
+                        </Nav.Link>
+                    ) : (
+                        <Nav.Link href="/ftsp-proj/">Login</Nav.Link>
+                    )}
+                </Container>
+            </Navbar>
             <main>{children}</main>
         </>
     );

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AIController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CommonController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\StudentController;
 use Illuminate\Support\Facades\Route;
@@ -16,6 +17,7 @@ Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::middleware(['auth'])->group(function(){
     Route::inertia('/welcome', 'Welcome')->name('welcome');
     Route::get('/logout', [AuthController::class, 'logout']);
+    Route::get('/intern', [CommonController::class, 'intern'])->name('intern.index');
 
     // Ai routes
     Route::get('/genText', [AIController::class, 'index']);

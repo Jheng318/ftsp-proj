@@ -17,7 +17,9 @@ class Internship extends Model
         'user_id',
         'gpa_requirement',
         'salary',
-        'no_of_students'
+        'no_of_students',
+        'start_date',
+        'end_date',
 
     ];
     public function user(){

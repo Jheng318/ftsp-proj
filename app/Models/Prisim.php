@@ -13,7 +13,9 @@ class Prisim extends Model
         'description',
         'user_id',
         'gpa_requirenment',
-        'no_of_students'
+        'no_of_students',
+        'start_date',
+        'end_date',
     ];
     public function user(){
         return $this->belongsTo(User::class);
