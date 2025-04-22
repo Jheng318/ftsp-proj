@@ -17,6 +17,7 @@ Route::middleware(['auth'])->group(function(){
 
     // Ai routes
     Route::get('/genText', [AIController::class, 'index']);
+    Route::get('/getDistance', [AIController::class, 'getDistance']);
 });
 
 // Staffs routes
