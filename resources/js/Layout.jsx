@@ -1,5 +1,5 @@
 import { Link, usePage } from "@inertiajs/react";
-import "../css/layout.css";
+import "@/css/layout.css";
 export default function Layout({ children }) {
     // these hooks help to pass props like shared props to the layouts
     // the auth props have 4 props that we can use like auth.user to get the current loggedin user
