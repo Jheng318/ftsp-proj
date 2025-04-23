@@ -31,6 +31,9 @@ Route::middleware(['auth', 'staff'])->group(function(){
     Route::get('/unassigned-allocation', [StaffController::class, 'unassignedAllo'])->name('staff.unassignedAllo');
     Route::get('/assigned-allocation', [StaffController::class, 'assignedAllo'])->name('staff.assignedAllo');
     Route::get('/student-info' ,[StaffController::class , 'studentInfo'])->name('staff.studentInfo');
+    Route::delete('/delete-internship/{id}', [StaffController::class , 'deleteIntern'])->name('staff.delete.intern');
+    Route::get('/edit-internship/{id}', [StaffController::class, 'showEditIntern'])->name('staff.show.edit.intern');
+    Route::put('/edit-internship/{id}', [StaffController::class, 'editIntern'])->name('staff.edit.intern');
 });
 
 //Student routes

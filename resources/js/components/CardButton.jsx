@@ -1,4 +1,4 @@
-function CardButton({ children, onClick = null, btnColor }) {
+function CardButton({ children, onClick = null, btnColor, id = null }) {
     const btnStyle = {
         backgroundColor: btnColor,
         border: "unset",
@@ -6,7 +6,7 @@ function CardButton({ children, onClick = null, btnColor }) {
         borderRadius: "10px",
     };
     return (
-        <button onClick={onClick} style={btnStyle}>
+        <button onClick={onClick} style={btnStyle} data-id={id}>
             {children}
         </button>
     );

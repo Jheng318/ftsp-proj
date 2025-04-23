@@ -1,7 +1,23 @@
 #internship .grid-con {
     display: grid;
-    border: 2px solid red;
     grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
     margin-top: 2rem;
+
+    & > .grid-item {
+        background-color: #ffffff;
+        border-radius: 2rem;
+        & > .header {
+            margin: 2rem 0;
+            & > h3 {
+                color: var(--blue-primary);
+            }
+        }
+        & > p {
+            padding: 0 16px;
+        }
+        & > .buttonsDiv {
+            margin-bottom: 2rem;
+        }
+    }
 }

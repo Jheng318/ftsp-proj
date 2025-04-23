@@ -31,7 +31,7 @@ html {
 body {
     background-color: var(--gray);
     height: 100vh;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 .flex {
     display: flex;
@@ -90,4 +90,7 @@ body {
     border: unset;
     padding: 0.5rem 1rem;
     border-radius: 10px;
+}
+.px-16px {
+    padding: 0 16px;
 }
