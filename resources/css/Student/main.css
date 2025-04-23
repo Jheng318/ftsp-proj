@@ -14,3 +14,31 @@
   margin: 0 1rem;
   color: white;
 }
+
+#title {
+  margin: 1rem;
+  margin-top: 2rem;
+}
+
+#title img {
+  width: 30px;
+}
+
+#all-internships {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-column-gap: 1rem;
+  margin: 1rem;
+}
+
+.dot {
+  margin: 0 0.2rem;
+}
+
+#contact_salary div {
+  margin-right: 1rem;
+}
+
+#contact_salary img {
+  margin-right: 0.5rem;
+}

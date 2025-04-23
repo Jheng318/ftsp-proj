@@ -30,7 +30,6 @@ function Internship({ internships }) {
             toast.error(errors.error);
         }
     }, [errors]);
-
     return (
         <section id="internship" className="my-5">
             <ToastContainer
