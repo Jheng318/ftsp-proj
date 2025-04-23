@@ -1,0 +1,7 @@
+#internship .grid-con {
+    display: grid;
+    border: 2px solid red;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 2rem;
+}

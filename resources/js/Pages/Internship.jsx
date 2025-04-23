@@ -3,6 +3,7 @@ import filter from "@/images/filter-icon.svg";
 import edit from "@/images/edit-icon.svg";
 import deleteIcon from "@/images/delete-icon.svg";
 import CardButton from "../components/CardButton";
+import "@/css/Staff/Internship.css";
 
 function Internship({ internships }) {
     return (
@@ -29,12 +30,12 @@ function Internship({ internships }) {
                     <input type="checkbox" id="filterBtn" className="d-none" />
                 </div>
             </div>
-            <div className="d-grid">
+            <div className="container-fluid grid-con">
                 {internships.map((internship) => {
                     const { id, name, description, user } = internship;
                     const staffName = user.name;
                     return (
-                        <div key={id} className="g-3 border-2 border">
+                        <div key={id} className="grid-item border-2 border">
                             <div className="d-flex justify-content-between">
                                 <h3>{name}</h3>
                                 <h3>{id}</h3>
