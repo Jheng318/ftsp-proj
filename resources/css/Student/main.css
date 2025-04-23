@@ -1,16 +1,16 @@
 
 #hero {
   margin: 1rem 0;
-  background-position: center;
   background-size: cover;
-  height: 300px;
   width: 100%;
   position: relative;
+  background-position: center;
+  height: 400px;
 }
 
-#hero h1 {
+#hero .backgroundText {
   position: absolute;
-  bottom: 0%;
+  bottom: 20px;
   margin: 0 1rem;
   color: white;
 }
