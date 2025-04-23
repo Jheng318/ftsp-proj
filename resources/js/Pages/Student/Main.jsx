@@ -3,12 +3,11 @@ import background from "@/images/background.jpg";
 function Main() {
     return (
         <>
-            <section id="hero" style={{backgroundImage: `url(${background})`}}>
-                <h1>
-                    Internship/PRISIM Project <br />
-                    Interest Mapping <br />
-                    User InternFinder now!
-                </h1>
+            <section id="hero" style={{backgroundImage: ` linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${background})`}}>
+                <div className="backgroundText">
+                    <h1 className="h1">Internship/PRISIM Project <br /> Interest Mapping</h1>
+                    <h3>Use InternFinder Now!</h3>
+                </div>
             </section>
         </>
     );
