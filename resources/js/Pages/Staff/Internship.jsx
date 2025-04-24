@@ -11,6 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 function Internship({ internships }) {
     const { errors } = usePage().props;
+    console.log(internships);
 
     const BASE_PATH = "/ftsp-proj";
     function handleEdit(e) {
@@ -23,8 +24,10 @@ function Internship({ internships }) {
         // to go trigger the delete intern route in the StaffController in the backend
         router.delete(`${BASE_PATH}/delete-internship/${id}`);
     }
+    function handleAdd() {
+        router.get(`${BASE_PATH}/add-internship`);
+    }
     // show the toast depending on whether there is a error message
-
     useEffect(() => {
         if (errors.error) {
             toast.error(errors.error);
@@ -32,11 +35,13 @@ function Internship({ internships }) {
     }, [errors]);
     return (
         <section id="internship" className="my-5">
-            <ToastContainer
-                closeOnClick
-                autoClose={3000}
-                position="top-center"
-            />
+            {errors.error && (
+                <ToastContainer
+                    closeOnClick
+                    autoClose={3000}
+                    position="top-center"
+                />
+            )}
 
             <div className="d-flex justify-content-between w-90">
                 <div className="d-flex align-items-center justify-content-around">
@@ -53,7 +58,12 @@ function Internship({ internships }) {
                     </div>
                 </div>
                 <div className="d-flex align-items-center">
-                    <button className="smallBtn fw-bold fs-5 me-3">+</button>
+                    <button
+                        className="smallBtn fw-bold fs-5 me-3"
+                        onClick={handleAdd}
+                    >
+                        +
+                    </button>
                     <label htmlFor="filterBtn">
                         <img src={filter} alt="filter" />
                     </label>

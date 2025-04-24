@@ -59,81 +59,24 @@ class DatabaseSeeder extends Seeder
             'user_id' => $mary->id,
             'resume_name' => null,
         ]);
-        Internship::create([
-            'name' => 'Frontend Software Engineer',
-            'company_name' => 'TikTok',
-            'description' => 'The TikTok LIVE Platform Frontend team will focus on frontend development. We will also focus on understanding our users, identifying opportunity areas, prioritizing the problems we must solve, and rapidly creating innovative user experience solutions. We are looking for experienced engineers in the front-end field to build excellent products.
-                                We are looking for talented individuals to join us for an internship in 2025. Internships at TikTok aim to offer students industry exposure and hands-on experience. Watch your ambitions become reality as your inspiration brings infinite opportunities at TikTok.
-                                Applications will be reviewed on a rolling basis - we encourage you to apply early.
-                                Successful candidates must be able to commit to at least 3 months long internship period.',
-            'languages' => 'HTML, CSS, Javascript',
-            'frameworks' => 'React, Node.js, Express.js',
-            'location' => '1 Raffles Quay, #26-10, South Tower, Singapore 048583',
-            'user_id' => $staff->id,
-            'gpa_requirenment' => 3.50,
-            'salary' => 1200,
-            'no_of_students' => 2,
-        ]);
-        Internship::create([
-            'name' => 'Frontend Software Engineer',
-            'company_name' => 'TikTok',
-            'description' => 'The TikTok LIVE Platform Frontend team will focus on frontend development. We will also focus on understanding our users, identifying opportunity areas, prioritizing the problems we must solve, and rapidly creating innovative user experience solutions. We are looking for experienced engineers in the front-end field to build excellent products.
-                                We are looking for talented individuals to join us for an internship in 2025. Internships at TikTok aim to offer students industry exposure and hands-on experience. Watch your ambitions become reality as your inspiration brings infinite opportunities at TikTok.
-                                Applications will be reviewed on a rolling basis - we encourage you to apply early.
-                                Successful candidates must be able to commit to at least 3 months long internship period.',
-            'languages' => 'HTML, CSS, Javascript',
-            'frameworks' => 'React, Node.js, Express.js',
-            'location' => '1 Raffles Quay, #26-10, South Tower, Singapore 048583',
-            'user_id' => $staff->id,
-            'gpa_requirenment' => 3.50,
-            'salary' => 1200,
-            'no_of_students' => 2,
-        ]);
-        Internship::create([
-            'name' => 'Frontend Software Engineer',
-            'company_name' => 'TikTok',
-            'description' => 'The TikTok LIVE Platform Frontend team will focus on frontend development. We will also focus on understanding our users, identifying opportunity areas, prioritizing the problems we must solve, and rapidly creating innovative user experience solutions. We are looking for experienced engineers in the front-end field to build excellent products.
-                                We are looking for talented individuals to join us for an internship in 2025. Internships at TikTok aim to offer students industry exposure and hands-on experience. Watch your ambitions become reality as your inspiration brings infinite opportunities at TikTok.
-                                Applications will be reviewed on a rolling basis - we encourage you to apply early.
-                                Successful candidates must be able to commit to at least 3 months long internship period.',
-            'languages' => 'HTML, CSS, Javascript',
-            'frameworks' => 'React, Node.js, Express.js',
-            'location' => '1 Raffles Quay, #26-10, South Tower, Singapore 048583',
-            'user_id' => $staff->id,
-            'gpa_requirenment' => 3.50,
-            'salary' => 1200,
-            'no_of_students' => 2,
-        ]);
-        Internship::create([
-            'name' => 'Frontend Software Engineer',
-            'company_name' => 'TikTok',
-            'description' => 'The TikTok LIVE Platform Frontend team will focus on frontend development. We will also focus on understanding our users, identifying opportunity areas, prioritizing the problems we must solve, and rapidly creating innovative user experience solutions. We are looking for experienced engineers in the front-end field to build excellent products.
-                                We are looking for talented individuals to join us for an internship in 2025. Internships at TikTok aim to offer students industry exposure and hands-on experience. Watch your ambitions become reality as your inspiration brings infinite opportunities at TikTok.
-                                Applications will be reviewed on a rolling basis - we encourage you to apply early.
-                                Successful candidates must be able to commit to at least 3 months long internship period.',
-            'languages' => 'HTML, CSS, Javascript',
-            'frameworks' => 'React, Node.js, Express.js',
-            'location' => '1 Raffles Quay, #26-10, South Tower, Singapore 048583',
-            'user_id' => $staff->id,
-            'gpa_requirenment' => 3.50,
-            'salary' => 1200,
-            'no_of_students' => 2,
-        ]);
-        Internship::create([
-            'name' => 'Frontend Software Engineer',
-            'company_name' => 'TikTok',
-            'description' => 'The TikTok LIVE Platform Frontend team will focus on frontend development. We will also focus on understanding our users, identifying opportunity areas, prioritizing the problems we must solve, and rapidly creating innovative user experience solutions. We are looking for experienced engineers in the front-end field to build excellent products.
-                                We are looking for talented individuals to join us for an internship in 2025. Internships at TikTok aim to offer students industry exposure and hands-on experience. Watch your ambitions become reality as your inspiration brings infinite opportunities at TikTok.
-                                Applications will be reviewed on a rolling basis - we encourage you to apply early.
-                                Successful candidates must be able to commit to at least 3 months long internship period.',
-            'languages' => 'HTML, CSS, Javascript',
-            'frameworks' => 'React, Node.js, Express.js',
-            'location' => '1 Raffles Quay, #26-10, South Tower, Singapore 048583',
-            'user_id' => $staff->id,
-            'gpa_requirenment' => 3.50,
-            'salary' => 1200,
-            'no_of_students' => 2,
-        ]);
+        for($i = 0; $i < 6; $i++){
+            Internship::create([
+                'name' => 'Frontend Software Engineer',
+                'company_name' => 'TikTok',
+                'description' => 'The TikTok LIVE Platform Frontend team will focus on frontend development. We will also focus on understanding our users, identifying opportunity areas, prioritizing the problems we must solve, and rapidly creating innovative user experience solutions. We are looking for experienced engineers in the front-end field to build excellent products.
+                                    We are looking for talented individuals to join us for an internship in 2025. Internships at TikTok aim to offer students industry exposure and hands-on experience. Watch your ambitions become reality as your inspiration brings infinite opportunities at TikTok.
+                                    Applications will be reviewed on a rolling basis - we encourage you to apply early.
+                                    Successful candidates must be able to commit to at least 3 months long internship period.',
+                'languages' => 'HTML, CSS, Javascript',
+                'frameworks' => 'React, Node.js, Express.js',
+                'location' => '1 Raffles Quay, #26-10, South Tower, Singapore 048583',
+                'user_id' => $staff->id,
+                'gpa_requirenment' => 3.50,
+                'salary' => 1200,
+                'no_of_students' => 2,
+            ]);
+        }
+
         Prisim::create([
             'name' => 'Todo app',
             'type' => 'web development',

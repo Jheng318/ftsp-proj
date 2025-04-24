@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Internship;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class StaffController extends Controller
 {
@@ -12,6 +13,7 @@ class StaffController extends Controller
         return inertia('Staff/Dashboard');
     }
     public function intern(){
+        // to get all the internship and get it's respective user.id and user.name 
         $internships = Internship::with(['user' => function($query){
             $query->select('name', 'id');
         }])->get();
@@ -40,5 +42,29 @@ class StaffController extends Controller
         if(!$internPost) return back()->withErrors(['error' => "Unable to find Post"]);
         return inertia('Staff/EditInternship', compact('internPost'));
     }
-    public function editIntern($id){}
+    public function editIntern(Request $request){
+        try{
+            $validated = $request->validate([
+                'jobTitle' => 'required|string',
+                'companyName' => 'required|string',
+                'jobDesc' => 'required|string',
+                'location' => 'required|string',
+                'gpaRequirement' => 'required|numeric',
+                'salary' => 'required|numeric', 
+                'start_date' => 'required|string',
+                'end_date' => 'required|string',
+                'codingLang' => 'required|array',
+                'othersCoding' => 'nullable|string',
+                'framework' => 'required|array',
+                'otherFramework' => 'nullable|string'
+            ]);
+            if (!$validated) return response()->json('invalid type');
+            return redirect()->route('staff.dashboard');
+        }
+        catch(ValidationException $e){
+            dd($e->validator->errors());
+            return back()->withErrors(['error' => 'Invalid form entry']);
+        }
+
+    }
 }

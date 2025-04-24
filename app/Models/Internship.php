@@ -22,6 +22,9 @@ class Internship extends Model
         'end_date',
 
     ];
+    protected $casts = [
+        'gpa_requirement' => 'decimal:2'
+    ];
     public function user(){
         return $this->belongsTo(User::class);
     }

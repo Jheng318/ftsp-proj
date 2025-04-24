@@ -1,5 +1,5 @@
 import { useForm, usePage } from "@inertiajs/react";
-import "../../css/login.css";
+import "@/css/login.css";
 import Button from "../components/Button";
 
 function Login() {

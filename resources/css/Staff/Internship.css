@@ -1,23 +1,29 @@
-#internship .grid-con {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-    margin-top: 2rem;
+#internship {
+    & > div div h3 {
+        color: var(--blue-primary);
+    }
+    & > .grid-con {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin-top: 2rem;
+        width: 92%;
 
-    & > .grid-item {
-        background-color: #ffffff;
-        border-radius: 2rem;
-        & > .header {
-            margin: 2rem 0;
-            & > h3 {
-                color: var(--blue-primary);
+        & > .grid-item {
+            background-color: #ffffff;
+            border-radius: 2rem;
+            & > .header {
+                margin: 2rem 0;
+                & > h3 {
+                    color: var(--blue-primary);
+                }
             }
-        }
-        & > p {
-            padding: 0 16px;
-        }
-        & > .buttonsDiv {
-            margin-bottom: 2rem;
+            & > p {
+                padding: 0 16px;
+            }
+            & > .buttonsDiv {
+                margin-bottom: 2rem;
+            }
         }
     }
 }
