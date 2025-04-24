@@ -4,6 +4,7 @@ import background from "@/images/background.jpg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Card from 'react-bootstrap/Card';
+import Button from '../../components/Button'
 import CardButton from "../../components/CardButton";
 import sortIcon from "@/images/sort.png";
 import personIcon from "@/images/person.png";
@@ -61,6 +62,12 @@ function Main({ internships, prism_projects }) {
                     );
                 })}
             </section>
+            <div className="d-flex justify-content-center m-4">
+                <Button>
+                    View More
+                </Button>
+            </div>
+
 
             <div className="d-flex justify-content-between align-items-center" id="title">
                 <h2>Posted PRISM Projects</h2>
@@ -73,15 +80,15 @@ function Main({ internships, prism_projects }) {
 
             <section id="all-prism">
                 {prism_projects.map((project) => {
-                    const { id, title, created_at, description, company_name, salary, user_name } = project;
+                    const { id, title, created_at, description, type, user_name } = project;
                     const editedDesc = description.split('.');
 
                     return (
-                        <a href={`/ftsp-proj/intern-student/${id}`} key={id} style={{ textDecoration: 'none' }}>
+                        <a href={`/ftsp-proj/prism-student/${id}`} key={id} style={{ textDecoration: 'none' }}>
                             <Card style={{ width: '100%', cursor: 'pointer' }} >
                                 <Card.Body>
                                     <Card.Title>{title}</Card.Title>
-                                    <Card.Subtitle className="mb-2 text-muted d-flex align-items-center"><span>Posted {created_at}</span><span className="dot">&#x2022;</span>{company_name}</Card.Subtitle>
+                                    <Card.Subtitle className="mb-2 text-muted d-flex align-items-center"><span>Posted {created_at}</span><span className="dot">&#x2022;</span>{type}</Card.Subtitle>
                                     <Card.Text>
                                         {editedDesc[0]}.
                                     </Card.Text>
@@ -89,10 +96,6 @@ function Main({ internships, prism_projects }) {
                                         <div>
                                             <img src={personIcon} alt="personIcon" />
                                             {user_name}
-                                        </div>
-                                        <div>
-                                            <img src={salaryIcon} alt="salaryIcon" />
-                                            ${salary}
                                         </div>
 
                                     </section>
@@ -102,6 +105,11 @@ function Main({ internships, prism_projects }) {
                     );
                 })}
             </section>
+            <div className="d-flex justify-content-center m-4">
+                <Button>
+                    View More
+                </Button>
+            </div>
         </section>
     );
 }

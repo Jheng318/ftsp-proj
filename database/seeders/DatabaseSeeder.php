@@ -138,6 +138,8 @@ class DatabaseSeeder extends Seeder
             'user_id' => $staff->id,
             'gpa_constraints' => '2.40, 2.80, 3.00, 3.20',
             'no_of_students' => 4,
+            'start_date' => '2024-06-12',
+            'end_date' => '2024-09-20'
         ]);
         Prisim::create([
             'name' => 'Todo App',
@@ -146,6 +148,8 @@ class DatabaseSeeder extends Seeder
             'user_id' => $staff->id,
             'gpa_constraints' => '2.25, 3.30',
             'no_of_students' => 2,
+            'start_date' => '2024-07-03',
+            'end_date' => '2024-11-15'
         ]);
         Prisim::create([
             'name' => 'Mobile Chat Application',
@@ -154,6 +158,8 @@ class DatabaseSeeder extends Seeder
             'user_id' => $staff->id,
             'gpa_constraints' => '2.50, 3.00, 3.50',
             'no_of_students' => 3,
+            'start_date' => '2025-03-02',
+            'end_date' => '2025-06-01'
         ]);
     }
 }
