@@ -33,7 +33,7 @@ Route::middleware(['auth', 'staff'])->group(function(){
     Route::get('/student-info' ,[StaffController::class , 'studentInfo'])->name('staff.studentInfo');
     Route::delete('/delete-internship/{id}', [StaffController::class , 'deleteIntern'])->name('staff.delete.intern');
     Route::get('/edit-internship/{id}', [StaffController::class, 'showEditIntern'])->name('staff.show.edit.intern');
-    Route::put('/edit-internship', [StaffController::class, 'editIntern'])->name('staff.edit.intern');
+    Route::put('/edit-internship/{id}', [StaffController::class, 'editIntern'])->name('staff.edit.intern');
     Route::inertia('/add-internship', 'Staff/AddInternship')->name('staff.show.add.intern');
     Route::post('/add-internship', [StaffController::class, 'addIntern'])->name('staff.add.intern');
 });

@@ -42,7 +42,7 @@ class StaffController extends Controller
         if(!$internPost) return back()->withErrors(['error' => "Unable to find Post"]);
         return inertia('Staff/EditInternship', compact('internPost'));
     }
-    public function editIntern(Request $request){
+    public function editIntern(Request $request, $id){
         try{
             $validated = $request->validate([
                 'jobTitle' => 'required|string',
@@ -59,7 +59,23 @@ class StaffController extends Controller
                 'otherFramework' => 'nullable|string'
             ]);
             if (!$validated) return response()->json('invalid type');
-            return redirect()->route('staff.dashboard');
+
+            $ogInternPost = Internship::find($id);
+            if(!$ogInternPost) return redirect()->route('staff.intern.index')->withErrors(['error' => 'Unable to find post to update']);
+
+            $ogInternPost->update([
+                'name' => $validated['jobTitle'],
+                'company_name' => $validated['companyName'],
+                'description' => $validated['jobDesc'],
+                'location' => $validated['location'],
+                'gpa_requirenment' => $validated['gpaRequirement'],
+                'salary' => $validated['salary'],
+                'start_date' => $validated['start_date'],
+                'end_date' => $validated['end_date'],
+                'languages' => implode(', ', $validated['codingLang']),
+                'frameworks' => implode(', ', $validated['framework'])
+            ]);
+            return redirect()->route('staff.intern.index');
         }
         catch(ValidationException $e){
             dd($e->validator->errors());

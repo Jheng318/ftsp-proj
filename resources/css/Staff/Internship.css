@@ -2,6 +2,7 @@
     & > div div h3 {
         color: var(--blue-primary);
     }
+
     & > .grid-con {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -12,6 +13,9 @@
         & > .grid-item {
             background-color: #ffffff;
             border-radius: 2rem;
+            &:hover {
+                cursor: pointer;
+            }
             & > .header {
                 margin: 2rem 0;
                 & > h3 {
@@ -25,5 +29,39 @@
                 margin-bottom: 2rem;
             }
         }
+    }
+}
+/* #internship div #filterBtn:checked ~ #span {
+    display: block;
+} */
+#internship div #right {
+    position: relative;
+    & > #filterBtn:checked ~ .filterOption {
+        display: block;
+    }
+    & > label:hover {
+        cursor: pointer;
+    }
+    .filterOption {
+        display: none;
+        position: absolute;
+        padding: 1rem;
+        border-radius: 10px;
+        height: auto;
+        background-color: var(--blue-primary);
+        top: 4rem;
+        left: 2rem;
+    }
+    .filterOption::before {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-left: 1rem solid transparent;
+        border-right: 1rem solid transparent;
+        border-bottom: 1rem solid var(--blue-primary);
+        top: -1rem;
+        left: 50%;
+        transform: translateX(-50%);
     }
 }

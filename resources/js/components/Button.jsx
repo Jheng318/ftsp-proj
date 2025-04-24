@@ -5,13 +5,14 @@ function Button({
     onClick = null,
     onSubmit = null,
     mt = null,
+    className = null,
 }) {
     const style = {
         marginTop: mt,
     };
     return (
         <button
-            className="primaryBtn"
+            className={"primaryBtn " + className}
             onClick={onClick}
             disabled={disabled}
             onSubmit={onSubmit}

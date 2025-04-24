@@ -2,11 +2,10 @@ import { useForm, usePage } from "@inertiajs/react";
 import Button from "@/js/components/Button";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useEffect } from "react";
 
 function EditInternship({ internPost }) {
     const { errors } = usePage().props;
-
-    console.log(internPost);
 
     const {
         data,
@@ -54,6 +53,7 @@ function EditInternship({ internPost }) {
     };
     function handleSubmit(e) {
         e.preventDefault();
+        // have to manually reset as the default form fields is the previous internship listing
         setData({
             jobTitle: "",
             companyName: "",
@@ -68,11 +68,24 @@ function EditInternship({ internPost }) {
             othersCoding: "",
             othersFramework: "",
         });
-        put(`/ftsp-proj/edit-internship`);
+        put(`/ftsp-proj/edit-internship/${internPost.id}`);
     }
+    // show the toast depending on whether there is a error message
+    useEffect(() => {
+        if (errors.error) {
+            toast.error(errors.error);
+        }
+    }, [errors]);
     return (
         <section id="edit">
-            <h3>Edit Internship</h3>
+            {errors.error && (
+                <ToastContainer
+                    closeOnClick
+                    autoClose={3000}
+                    position="top-center"
+                />
+            )}
+            <h3 className="ps-4 my-5">Edit Internship</h3>
             <form className="container-fluid gap-6" onSubmit={handleSubmit}>
                 <div className="row container-fluid">
                     <div className="col">
@@ -81,6 +94,7 @@ function EditInternship({ internPost }) {
                         <input
                             type="text"
                             value={data.jobTitle}
+                            className="w-90 mb-4"
                             onChange={(e) =>
                                 setData("jobTitle", e.target.value)
                             }
@@ -91,6 +105,7 @@ function EditInternship({ internPost }) {
                         <input
                             type="text"
                             value={data.companyName}
+                            className="w-90 mb-4"
                             onChange={(e) =>
                                 setData("companyName", e.target.value)
                             }
@@ -101,6 +116,7 @@ function EditInternship({ internPost }) {
                         <input
                             type="text"
                             value={data.jobDesc}
+                            className="w-90 mb-4"
                             onChange={(e) => setData("jobDesc", e.target.value)}
                         />
                         <br />
@@ -109,6 +125,7 @@ function EditInternship({ internPost }) {
                         <input
                             type="text"
                             value={data.location}
+                            className="w-90 mb-4"
                             onChange={(e) =>
                                 setData("location", e.target.value)
                             }
@@ -119,6 +136,7 @@ function EditInternship({ internPost }) {
                         <input
                             type="number"
                             value={data.gpaRequirement}
+                            className="w-90 mb-4"
                             onChange={(e) =>
                                 setData("gpaRequirement", e.target.value)
                             }
@@ -129,6 +147,7 @@ function EditInternship({ internPost }) {
                         <input
                             type="number"
                             value={data.salary}
+                            className="w-90 mb-4"
                             onChange={(e) => setData("salary", e.target.value)}
                         />
                         <br />
@@ -168,7 +187,7 @@ function EditInternship({ internPost }) {
                         </label>
                         <div className="row gap-5">
                             <div className="col ">
-                                <div className="row">
+                                <div className="row my-3">
                                     <input
                                         id="html"
                                         type="checkbox"
@@ -183,7 +202,7 @@ function EditInternship({ internPost }) {
                                         HTML
                                     </label>
                                 </div>
-                                <div className="row">
+                                <div className="row my-3">
                                     <input
                                         id="css"
                                         type="checkbox"
@@ -198,7 +217,7 @@ function EditInternship({ internPost }) {
                                         CSS
                                     </label>
                                 </div>
-                                <div className="row">
+                                <div className="row ">
                                     <input
                                         id="js"
                                         className="col"
@@ -215,7 +234,7 @@ function EditInternship({ internPost }) {
                                 </div>
                             </div>
                             <div className="col ">
-                                <div className="row">
+                                <div className="row my-3">
                                     <input
                                         id="php"
                                         type="checkbox"
@@ -230,7 +249,7 @@ function EditInternship({ internPost }) {
                                         PHP
                                     </label>
                                 </div>
-                                <div className="row">
+                                <div className="row my-3">
                                     <input
                                         id="c#"
                                         type="checkbox"
@@ -265,7 +284,7 @@ function EditInternship({ internPost }) {
 
                         <div className="row gap-5">
                             <div className="col ">
-                                <div className="row">
+                                <div className="row my-3">
                                     <input
                                         id="angular"
                                         type="checkbox"
@@ -280,7 +299,7 @@ function EditInternship({ internPost }) {
                                         Angular
                                     </label>
                                 </div>
-                                <div className="row">
+                                <div className="row my-3">
                                     <input
                                         id="vue"
                                         type="checkbox"
@@ -310,7 +329,7 @@ function EditInternship({ internPost }) {
                                 </div>
                             </div>
                             <div className="col ">
-                                <div className="row">
+                                <div className="row my-3">
                                     <input
                                         id="asp"
                                         type="checkbox"
@@ -323,7 +342,7 @@ function EditInternship({ internPost }) {
                                         ASP.NET
                                     </label>
                                 </div>
-                                <div className="row">
+                                <div className="row ">
                                     <input
                                         id="laravel"
                                         type="checkbox"
@@ -356,11 +375,15 @@ function EditInternship({ internPost }) {
                                 />
                             </div>
                         </div>
+                        <Button
+                            disabled={processing}
+                            type="submit"
+                            className="ms-2 mt-3"
+                        >
+                            Edit Listing
+                        </Button>
                     </div>
                 </div>
-                <Button disabled={processing} type="submit">
-                    Add Listing
-                </Button>
             </form>
         </section>
     );
