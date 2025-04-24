@@ -1,10 +1,7 @@
-import { router, usePage } from "@inertiajs/react";
 import "@/css/Student/main.css";
 import background from "@/images/background.jpg";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import image from "@/images/studentimage-1.jpg";
 import Card from 'react-bootstrap/Card';
-import Button from '../../components/Button'
 import CardButton from "../../components/CardButton";
 import sortIcon from "@/images/sort.png";
 import personIcon from "@/images/person.png";
@@ -15,14 +12,14 @@ import salaryIcon from "@/images/salary.png";
 function Main({ internships, prism_projects }) {
 
     return (
-        <section>
+        <>
             <section id="hero" style={{ backgroundImage: ` linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${background})` }}>
                 <div className="backgroundText">
                     <h1 className="h1">Internship/PRISIM Project <br /> Interest Mapping</h1>
                     <h3>Use SkillMap Now!</h3>
                 </div>
             </section>
-            <div className="d-flex justify-content-between align-items-center" id="title">
+            <div className="d-flex justify-content-between align-items-center title">
                 <h2>Posted Internships</h2>
                 <CardButton
                     btnColor="#6393F2"
@@ -62,14 +59,12 @@ function Main({ internships, prism_projects }) {
                     );
                 })}
             </section>
-            <div className="d-flex justify-content-center m-4">
-                <Button>
-                    View More
-                </Button>
+            
+            <div className="d-flex justify-content-center view-btn">
+                <a href="/ftsp-proj/intern-student">View More</a>
             </div>
 
-
-            <div className="d-flex justify-content-between align-items-center" id="title">
+            <div className="d-flex justify-content-between align-items-center title">
                 <h2>Posted PRISM Projects</h2>
                 <CardButton
                     btnColor="#6393F2"
@@ -105,12 +100,19 @@ function Main({ internships, prism_projects }) {
                     );
                 })}
             </section>
-            <div className="d-flex justify-content-center m-4">
-                <Button>
-                    View More
-                </Button>
+
+            <div className="d-flex justify-content-center view-btn">
+                <a href="/prism-proj/intern-student">View More</a>
             </div>
-        </section>
+
+            <div className="title">
+                <h2>Indicate your Interest</h2>
+            </div>
+
+            <section id="interests">
+                test
+            </section>
+        </>
     );
 }
 export default Main;

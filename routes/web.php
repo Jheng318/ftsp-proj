@@ -43,7 +43,7 @@ Route::middleware(['auth', 'student'])->group(function(){
     Route::get('/main',[StudentController::class , 'index'] )->name('student.main');
     Route::get('/intern-student', [StudentController::class, 'intern'])->name('student.intern.index');
     Route::get('/intern-student/{id}', [StudentController::class, 'internDetail'])->name('student.intern.internDetail');
-    Route::get('/prisim-student', [StudentController::class, 'prisim'])->name('student.prisim.index');
-    Route::get('/prisim-student/{id}', [StudentController::class, 'prisimDetail'])->name('student.prisim.prismDetail');
+    Route::get('/prism-student', [StudentController::class, 'prism'])->name('student.prisim.index');
+    Route::get('/prism-student/{id}', [StudentController::class, 'prismDetail'])->name('student.prisim.prismDetail');
     Route::get('/allocation-student', [StudentController::class, 'allocation'])->name('student.allocation');
 });
