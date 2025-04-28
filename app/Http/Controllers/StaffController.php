@@ -33,7 +33,7 @@ class StaffController extends Controller
         return response()->json("assigned allocation page");
     }
     public function studentInfo(){
-        $students = Student::all();
+        $students = Student::paginate(10);
 
         return inertia('Staff/StudentInfo', compact('students'));
     }

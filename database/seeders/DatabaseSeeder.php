@@ -40,6 +40,48 @@ class DatabaseSeeder extends Seeder
             'contact' => '8394 1029',
             'role' => 'Staff',
         ]);
+        $studentData = [
+            ['name' => 'Sarah Tan', 'email' => '238901A@mymail.nyp.edu.sg', 'admin_no' => '238901A'],
+            ['name' => 'James Lee', 'email' => '238902B@mymail.nyp.edu.sg', 'admin_no' => '238902B'],
+            ['name' => 'Emma Wong', 'email' => '238903C@mymail.nyp.edu.sg', 'admin_no' => '238903C'],
+            ['name' => 'Michael Chen', 'email' => '238904D@mymail.nyp.edu.sg', 'admin_no' => '238904D'],
+            ['name' => 'Rachel Lim', 'email' => '238905E@mymail.nyp.edu.sg', 'admin_no' => '238905E'],
+            ['name' => 'David Ng', 'email' => '238906F@mymail.nyp.edu.sg', 'admin_no' => '238906F'],
+            ['name' => 'Sophie Zhang', 'email' => '238907G@mymail.nyp.edu.sg', 'admin_no' => '238907G'],
+            ['name' => 'Daniel Teo', 'email' => '238908H@mymail.nyp.edu.sg', 'admin_no' => '238908H'],
+            ['name' => 'Amanda Goh', 'email' => '238909I@mymail.nyp.edu.sg', 'admin_no' => '238909I'],
+            ['name' => 'Ryan Koh', 'email' => '238910J@mymail.nyp.edu.sg', 'admin_no' => '238910J'],
+            ['name' => 'Emily Liu', 'email' => '238911K@mymail.nyp.edu.sg', 'admin_no' => '238911K'],
+            ['name' => 'Brandon Sim', 'email' => '238912L@mymail.nyp.edu.sg', 'admin_no' => '238912L'],
+            ['name' => 'Jessica Yeo', 'email' => '238913M@mymail.nyp.edu.sg', 'admin_no' => '238913M'],
+            ['name' => 'Kevin Ong', 'email' => '238914N@mymail.nyp.edu.sg', 'admin_no' => '238914N'],
+            ['name' => 'Michelle Chua', 'email' => '238915O@mymail.nyp.edu.sg', 'admin_no' => '238915O'],
+            ['name' => 'Thomas Low', 'email' => '238916P@mymail.nyp.edu.sg', 'admin_no' => '238916P'],
+            ['name' => 'Grace Chan', 'email' => '238917Q@mymail.nyp.edu.sg', 'admin_no' => '238917Q'],
+            ['name' => 'Alex Wu', 'email' => '238918R@mymail.nyp.edu.sg', 'admin_no' => '238918R'],
+            ['name' => 'Victoria Peh', 'email' => '238919S@mymail.nyp.edu.sg', 'admin_no' => '238919S'],
+            ['name' => 'Marcus Tan', 'email' => '238920T@mymail.nyp.edu.sg', 'admin_no' => '238920T'],
+        ];
+
+        foreach ($studentData as $data) {
+            $user = User::create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => Hash::make('Password123'),
+                'contact' => $faker->numerify('#### ####'),
+                'role' => 'Student',
+            ]);
+
+            Student::create([
+                'name' => $data['name'],
+                'admin_no' => $data['admin_no'],
+                'location' => $faker->city(),
+                'gpa' => $faker->randomFloat(1, 2.0, 4.0),
+                'resume_status' => false,
+                'user_id' => $user->id,
+                'resume_name' => null,
+            ]);
+        }
         Student::create([
             'name' => $john->name,
             'admin_no' => '238822Y',

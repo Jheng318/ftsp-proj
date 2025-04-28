@@ -34,6 +34,9 @@ body {
     overflow-x: hidden;
     position: relative;
 }
+a {
+    text-decoration: none;
+}
 .flex {
     display: flex;
 }
@@ -100,6 +103,28 @@ body {
     margin: 5.5rem 0;
 }
 
+.fill-blue {
+    filter: brightness(0) saturate(100%) invert(68%) sepia(39%) saturate(6053%)
+        hue-rotate(197deg) brightness(97%) contrast(95%);
+}
+table,
+th,
+td {
+    border: 2px solid var(--black);
+    border-collapse: collapse;
+    padding: 0.7rem;
+}
+table thead {
+    background-color: var(--blue-primary);
+    color: var(--gray);
+}
+table tbody {
+    background-color: white;
+}
+table tbody button {
+    all: unset;
+}
+
 #modal {
     position: fixed;
     top: 50%;
@@ -125,4 +150,9 @@ body {
 }
 .pointer {
     cursor: pointer;
+}
+.dark-links {
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: var(--black);
 }
