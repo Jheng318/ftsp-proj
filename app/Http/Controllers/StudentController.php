@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Internship;
 use App\Models\Prisim;
+use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
@@ -74,5 +75,11 @@ class StudentController extends Controller
     public function allocation()
     {
         return response()->json("allocation page");
+    }
+
+    public function getStudent($id)
+    {
+        $student = Student::find($id);
+        return response()->json($student);
     }
 }

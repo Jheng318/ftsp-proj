@@ -1,10 +1,49 @@
 import pencil from "@/images/edit-icon.svg";
-import { Link } from "@inertiajs/react";
+import { Link, router, useForm, usePage } from "@inertiajs/react";
+import { useState } from "react";
+import Modal from "../../components/Modal";
 
 function StudentInfo({ students }) {
-    function handleEdit(e) {
-        console.log(e.currentTarget.dataset.id);
+    const [isOpen, setIsOpen] = useState(false);
+    const [hoveredStudent, setHoveredStudent] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleEdit = (e) => {
+        const { id } = e.currentTarget.dataset;
+        // First fetch student data before opening modal
+        if (hoveredStudent === null) return;
+        fetch(`/ftsp-proj/api/students/${id}`, {
+            method: "GET",
+            redirect: "follow",
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                setHoveredStudent(data);
+                setIsOpen(true); // Only open modal after data is fetched
+            })
+            .catch((err) => console.error(err));
+    };
+
+    const handleMouseEnter = (id) => {
+        setIsLoading(true);
+        fetch(`/ftsp-proj/api/students/${id}`, {
+            method: "GET",
+            redirect: "follow",
+        })
+            .then((res) => res.json())
+            .then((data) => setHoveredStudent(data))
+            .catch((err) => console.error(err))
+            .finally(() => setIsLoading(false)); // Fix: Wrap in arrow function
+    };
+
+    const handleMouseLeave = () => {
+        setHoveredStudent(null);
+    };
+
+    function handleSubmit(e) {
+        e.preventDefault();
     }
+
     return (
         <section className="w-90">
             <h3 className="text-primary my-5 fw-semibold">
@@ -39,6 +78,11 @@ function StudentInfo({ students }) {
                                 <button
                                     onClick={handleEdit}
                                     data-id={student.id}
+                                    onMouseEnter={() =>
+                                        handleMouseEnter(student.id)
+                                    }
+                                    onMouseLeave={handleMouseLeave}
+                                    style={{ position: "relative" }}
                                 >
                                     <img
                                         src={pencil}
@@ -84,6 +128,38 @@ function StudentInfo({ students }) {
                     </tr>
                 </tbody>
             </table>
+            {isOpen && (
+                <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+                    {!isLoading && (
+                        <form onSubmit={handleSubmit}>
+                            <label htmlFor="">Name</label>
+                            <br />
+                            <input type="text" value={hoveredStudent?.name} />
+                            <br />
+                            <label htmlFor="">Admin No</label>
+                            <br />
+                            <input
+                                type="text"
+                                value={hoveredStudent?.admin_no}
+                            />
+                            <br />
+                            <label htmlFor="">GPA</label>
+                            <br />
+                            <input type="text" value={hoveredStudent?.gpa} />
+                            <br />
+                            <label htmlFor="">Location</label>
+                            <br />
+
+                            <input
+                                type="text"
+                                value={hoveredStudent?.location}
+                            />
+                            <br />
+                            <input type="submit" value="edit" />
+                        </form>
+                    )}
+                </Modal>
+            )}
         </section>
     );
 }

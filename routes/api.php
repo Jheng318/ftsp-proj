@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\StudentController;
 use App\Models\Internship;
 use Illuminate\Support\Facades\Route;
 
@@ -9,3 +10,5 @@ Route::get('/intern', function(){
     }])->get();
     return response()->json($all);
 });
+
+Route::get('/students/{id}', [StudentController::class, 'getStudent']);
