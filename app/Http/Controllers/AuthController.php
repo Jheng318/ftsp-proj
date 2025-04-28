@@ -21,7 +21,7 @@ class AuthController extends Controller
         $user = Auth::user();
 
         if($user->isStaff())
-            return redirect()->route('staff.dashboard');
+            return redirect()->route('staff.intern.index');
         elseif($user->student())
             return redirect()->route('student.main');
         else return back()->withErrors(['errors' => 'User Unknown. Please try again']);

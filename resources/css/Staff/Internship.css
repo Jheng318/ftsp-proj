@@ -65,3 +65,10 @@
         transform: translateX(-50%);
     }
 }
+.cutoff-text {
+    --max-lines: 6;
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: var(--max-lines);
+}

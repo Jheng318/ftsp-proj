@@ -1,5 +1,5 @@
 import { router, usePage } from "@inertiajs/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import searchIcon from "@/images/search.svg";
 import filter from "@/images/filter-icon.svg";
@@ -8,15 +8,23 @@ import deleteIcon from "@/images/delete-icon.svg";
 import CardButton from "../../components/CardButton";
 import "@/css/Staff/Internship.css";
 import "react-toastify/dist/ReactToastify.css";
+import Modal from "../../components/Modal";
+import { formatDate } from "@/js/reusable.js";
 
 function Internship({ internships }) {
     const { errors } = usePage().props;
     const [search, setSearch] = useState("");
+    const [openModal, setOpenModal] = useState(false);
+    const [selectedIntern, setSelectedIntern] = useState(null);
     const [filteredIntern, setFilteredIntern] = useState(internships ?? []);
+    const [filterOp, setFilterOp] = useState({
+        role: "",
+        lang: "",
+        frame: "",
+    });
 
     const BASE_PATH = "/ftsp-proj";
 
-    // these getUniqueLanguages and framework is done by gpt :(
     const getUniqueLanguages = () => {
         const allLanguages = internships
             .map((i) => i.languages.split(","))
@@ -28,6 +36,7 @@ function Internship({ internships }) {
             .map((lang) => lang.charAt(0).toUpperCase() + lang.slice(1))
             .sort();
     };
+
     const getUniqueFramework = () => {
         const allFramework = internships
             .map((i) => i.frameworks.split(","))
@@ -38,18 +47,17 @@ function Internship({ internships }) {
             .map((frame) => frame.charAt(0).toUpperCase() + frame.slice(1))
             .sort();
     };
+
     function handleEdit(e) {
         const id = e.currentTarget.dataset.id;
         router.get(`${BASE_PATH}/edit-internship/${id}`);
     }
+
     function handleDelete(e) {
         const id = e.currentTarget.dataset.id;
         router.delete(`${BASE_PATH}/delete-internship/${id}`);
     }
-    function handleAdd() {
-        router.get(`${BASE_PATH}/add-internship`);
-    }
-    // to changed the internshhip listing base on the search result
+
     function handleSearch() {
         const filtered = internships.filter(
             (internship) =>
@@ -60,17 +68,68 @@ function Internship({ internships }) {
         );
         setFilteredIntern(filtered);
     }
-    // to show the error when there is error passed from the StaffController
+    function handleFilter() {
+        const filtered = internships.filter((internship) => {
+            const matchesRole =
+                !filterOp.role || internship.name === filterOp.role;
+
+            const matchesLang =
+                !filterOp.lang ||
+                internship.languages
+                    .toLowerCase()
+                    .split(",")
+                    .map((l) => l.trim())
+                    .includes(filterOp.lang.toLowerCase());
+
+            const matchesFrame =
+                !filterOp.frame ||
+                internship.frameworks
+                    .toLowerCase()
+                    .split(",")
+                    .map((f) => f.trim())
+                    .includes(filterOp.frame.toLowerCase());
+
+            return matchesRole && matchesLang && matchesFrame;
+        });
+        setFilteredIntern(filtered);
+    }
+    const openModalFn = useCallback(
+        (id) => {
+            const arr = internships.filter((i) => i.id === id);
+            setOpenModal(true);
+            setSelectedIntern(arr);
+        },
+        [internships]
+    );
+
+    const closeModal = useCallback(() => {
+        setOpenModal(false);
+        setSelectedIntern(null);
+    }, []);
+    // to check whether there is an error and if there is, show it in the form of a toast
     useEffect(() => {
         if (errors.error) {
             toast.error(errors.error);
         }
     }, [errors]);
-    // to render the cards with the search result or all of them based on the state of the search result
+
+    // filter by search result
     useEffect(() => {
         if (search !== "") handleSearch();
         else setFilteredIntern(internships);
     }, [search]);
+
+    // filter by the selected role, framework or language
+    useEffect(() => {
+        if (
+            filterOp.role !== "" ||
+            filterOp.frame !== "" ||
+            filterOp.lang !== ""
+        )
+            handleFilter();
+        else setFilteredIntern(internships);
+    }, [filterOp]);
+
     return (
         <section id="internship" className="my-5">
             <ToastContainer
@@ -98,7 +157,9 @@ function Internship({ internships }) {
                 <div className="d-flex align-items-center" id="right">
                     <button
                         className="smallBtn fw-bold fs-5 me-3"
-                        onClick={handleAdd}
+                        onClick={() => {
+                            router.get(`${BASE_PATH}/add-internship`);
+                        }}
                     >
                         +
                     </button>
@@ -111,8 +172,15 @@ function Internship({ internships }) {
                             name="jobRole"
                             id="jobRole"
                             className="w-100"
-                            defaultValue="Job"
+                            value={filterOp.role}
+                            onChange={(e) =>
+                                setFilterOp({
+                                    ...filterOp,
+                                    role: e.target.value,
+                                })
+                            }
                         >
+                            <option value="">Select Role</option>
                             {internships.map((i) => (
                                 <option key={i.id} value={i.name}>
                                     {i.name}
@@ -123,8 +191,15 @@ function Internship({ internships }) {
                             name="languages"
                             id="languages"
                             className="w-100"
-                            defaultValue="language"
+                            value={filterOp.lang}
+                            onChange={(e) =>
+                                setFilterOp({
+                                    ...filterOp,
+                                    lang: e.target.value,
+                                })
+                            }
                         >
+                            <option value="">Select Language</option>
                             {getUniqueLanguages().map((language) => (
                                 <option key={language} value={language}>
                                     {language}
@@ -135,8 +210,15 @@ function Internship({ internships }) {
                             name="frameworks"
                             id="frameworks"
                             className="w-100"
-                            defaultValue="framework"
+                            value={filterOp.frame}
+                            onChange={(e) =>
+                                setFilterOp({
+                                    ...filterOp,
+                                    frame: e.target.value,
+                                })
+                            }
                         >
+                            <option value="">Select Framework</option>
                             {getUniqueFramework().map((frame) => (
                                 <option key={frame} value={frame}>
                                     {frame}
@@ -146,17 +228,24 @@ function Internship({ internships }) {
                     </span>
                 </div>
             </div>
+
             <div className="container-fluid grid-con">
                 {filteredIntern.map((internship) => {
                     const { id, name, description, user } = internship;
                     const staffName = user.name;
                     return (
-                        <div key={id} className="grid-item">
+                        <div
+                            key={id}
+                            className="grid-item"
+                            onClick={() => openModalFn(id)}
+                        >
                             <div className="d-flex justify-content-between container-fluid header">
                                 <h3>{name}</h3>
                                 <h3>{id}</h3>
                             </div>
-                            <p>Description: {description}</p>
+                            <p className="cutoff-text">
+                                Description: {description}
+                            </p>
                             <p>Teacher in Charge: {staffName}</p>
                             <div className="d-flex justify-content-between px-16px container-fluid buttonsDiv">
                                 <CardButton
@@ -178,6 +267,42 @@ function Internship({ internships }) {
                     );
                 })}
             </div>
+
+            {openModal && selectedIntern && (
+                <Modal isOpen={openModal} onClose={closeModal}>
+                    <div className="w-90 my-4">
+                        <div className=" my-3 flex align-items-center justify-content-between ">
+                            <h3>{selectedIntern?.[0]?.name}</h3>
+                            <button onClick={closeModal} className="pointer">
+                                &times;
+                            </button>
+                        </div>
+                        <p className="descrip">
+                            Description: {selectedIntern?.[0]?.description}
+                        </p>
+                        <p>Company Name: {selectedIntern?.[0]?.company_name}</p>
+                        <p>Salary: ${selectedIntern?.[0]?.salary}</p>
+                        <p>Location: {selectedIntern?.[0]?.location}</p>
+                        <p>
+                            Programming Languages:{" "}
+                            {selectedIntern?.[0]?.languages}
+                        </p>
+                        <p>Framework: {selectedIntern?.[0]?.frameworks}</p>
+                        <p>
+                            Internship Period:{" "}
+                            {formatDate(selectedIntern?.[0]?.start_date)} to{" "}
+                            {formatDate(selectedIntern?.[0]?.end_date)}{" "}
+                        </p>
+                        <p>
+                            Number of Students:{" "}
+                            {selectedIntern?.[0]?.no_of_students}
+                        </p>
+                        <p>
+                            Teacher in Charge: {selectedIntern?.[0]?.user?.name}
+                        </p>
+                    </div>
+                </Modal>
+            )}
         </section>
     );
 }

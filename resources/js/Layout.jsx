@@ -26,8 +26,8 @@ export default function Layout({ children }) {
                                 <Nav.Link href="/ftsp-proj/intern-staff">
                                     Internship
                                 </Nav.Link>
-                                <Nav.Link href="/ftsp-proj/prisim-staff">
-                                    PRISIM
+                                <Nav.Link href="/ftsp-proj/prism-staff">
+                                    PRISM
                                 </Nav.Link>
                                 <NavDropdown title="Allocation">
                                     <NavDropdown.Item href="/ftsp-proj/unassigned-allocation">
@@ -46,8 +46,8 @@ export default function Layout({ children }) {
                                 <Nav.Link href="/ftsp-proj/intern-student">
                                     Internship
                                 </Nav.Link>
-                                <Nav.Link href="/ftsp-proj/prisim-student">
-                                    PRISIM
+                                <Nav.Link href="/ftsp-proj/prism-student">
+                                    PRISM
                                 </Nav.Link>
                                 <Nav.Link href="/ftsp-proj/allocation-student">
                                     Allocation

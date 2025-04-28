@@ -27,7 +27,7 @@ Route::middleware(['auth'])->group(function(){
 Route::middleware(['auth', 'staff'])->group(function(){
     Route::get('/dashboard',[StaffController::class , 'index'] )->name('staff.dashboard');
     Route::get('/intern-staff', [StaffController::class, 'intern'])->name('staff.intern.index');
-    Route::get('/prisim-staff', [StaffController::class, 'prisim'])->name('staff.prisim.index');
+    Route::get('/prism-staff', [StaffController::class, 'prisim'])->name('staff.prisim.index');
     Route::get('/unassigned-allocation', [StaffController::class, 'unassignedAllo'])->name('staff.unassignedAllo');
     Route::get('/assigned-allocation', [StaffController::class, 'assignedAllo'])->name('staff.assignedAllo');
     Route::get('/student-info' ,[StaffController::class , 'studentInfo'])->name('staff.studentInfo');
@@ -43,7 +43,7 @@ Route::middleware(['auth', 'student'])->group(function(){
     Route::get('/main',[StudentController::class , 'index'] )->name('student.main');
     Route::get('/intern-student', [StudentController::class, 'intern'])->name('student.intern.index');
     Route::get('/intern-student/{id}', [StudentController::class, 'internDetail'])->name('student.intern.internDetail');
-    Route::get('/prism-student', [StudentController::class, 'prism'])->name('student.prisim.index');
+    Route::get('/prism-student', [StudentController::class, 'prism'])->name('student.prism.index');
     Route::get('/prism-student/{id}', [StudentController::class, 'prismDetail'])->name('student.prisim.prismDetail');
     Route::get('/allocation-student', [StudentController::class, 'allocation'])->name('student.allocation');
 });

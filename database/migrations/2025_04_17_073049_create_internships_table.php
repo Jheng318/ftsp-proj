@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('location');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->decimal('gpa_requirenment', 3, 2)->nullable();
+            $table->decimal('gpa_requirement', 3, 2)->nullable();
             $table->integer('salary');
             $table->integer('no_of_students');
             $table->date('start_date')->nullable();

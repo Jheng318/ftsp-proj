@@ -3,12 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Internship;
+use App\Models\Student;
+use App\UsefulTraits;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
 
 class StaffController extends Controller
 {
     //
+    use UsefulTraits;
     public function index(){
         return inertia('Staff/Dashboard');
     }
@@ -29,7 +33,9 @@ class StaffController extends Controller
         return response()->json("assigned allocation page");
     }
     public function studentInfo(){
-        return response()->json('student information');
+        $students = Student::all();
+
+        return inertia('Staff/StudentInfo', compact('students'));
     }
     public function deleteIntern($id){
         $internPost = Internship::find($id);
@@ -78,9 +84,30 @@ class StaffController extends Controller
             return redirect()->route('staff.intern.index');
         }
         catch(ValidationException $e){
-            dd($e->validator->errors());
-            return back()->withErrors(['error' => 'Invalid form entry']);
+            return redirect()->back()->withErrors(['error' => 'Invalid form entry']);
         }
-
     }
-}
+    public function addIntern(Request $request){
+        try{
+            $createIntern =  Internship::create([
+                    'name' => $request->jobTitle,
+                    'company_name' => $request->companyName,
+                    'description' => $request->jobDesc,
+                    'location' => $request->location,
+                    'start_date' => $request->start_date,
+                    'end_date' => $request->end_date,
+                    'frameworks' => $this->splitOthersAddtoArr($request->othersFramework, $request->framework),
+                    'languages' => $this->splitOthersAddtoArr($request->othersCoding, $request->codingLang),
+                    'user_id' => $request->user_id,
+                    'gpa_requirement' => floatval($request->gpaRequirement),
+                    'salary' => intval($request->salary),
+                    'no_of_students'  => intval($request->no_of_students)
+                ]);
+                return redirect()->route('staff.intern.index'); 
+        }
+        catch(ValidationException $e){
+            return redirect()->back()->withErrors(['error' => $e]);
+        }
+    }
+    
+}   

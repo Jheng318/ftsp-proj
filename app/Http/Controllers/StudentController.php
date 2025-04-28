@@ -59,7 +59,7 @@ class StudentController extends Controller
 
         return inertia('Student/InternshipDetails', compact('internships', 'displayInternship'));
     }
-    public function prisim()
+    public function prism()
     {
         return response()->json("prisim page");
     }
