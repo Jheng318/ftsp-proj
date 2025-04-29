@@ -34,6 +34,21 @@
 
 #interests {
   margin: 1rem;
+  margin-bottom: 5rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-column-gap: 1rem;
+  align-items: center;
+}
+
+#interests img {
+  width: 70%;
+  display: flex;
+  justify-self: center;
+}
+
+.description {
+  font-size: 1.5rem;
 }
 
 .dot {
@@ -56,18 +71,27 @@
   height: 100%;
 }
 
-.view-btn a {
+.view-btn a , .detail-btn a{
   text-decoration: none;
   color: white;
 }
 
-.view-btn {
+.detail-btn, .view-btn {
   background-color: #6393F2;
   border-radius: 10px;
   cursor: pointer;
-  vertical-align: middle;
-  max-width: 100px;
+  width: 100px;
   padding: 8px;
   text-align: center;
   margin: 2rem auto;
+  display: block;
+}
+
+.detail-btn {
+  margin: 2rem 0;
+  width: auto;
+}
+
+.right {
+  margin-right: 2rem;
 }

@@ -1,12 +1,14 @@
 import "@/css/Student/main.css";
 import background from "@/images/background.jpg";
+import image from "@/images/studentimage-1.jpg"
 import Card from "react-bootstrap/Card";
 import CardButton from "../../components/CardButton";
 import sortIcon from "@/images/sort.png";
 import personIcon from "@/images/person.png";
 import salaryIcon from "@/images/salary.png";
+import { usePage } from "@inertiajs/react";
 
-function Main({ internships, prism_projects }) {
+function Main({ internships, prism_projects, allocation}) {
     return (
         <>
             <section
@@ -22,6 +24,29 @@ function Main({ internships, prism_projects }) {
                     <h3>Use SkillMap Now!</h3>
                 </div>
             </section>
+
+            <div className="title">
+                <h2>Indicate your Interest</h2>
+            </div>
+
+            <section id="interests">
+                <div className="description">
+                    <p>In order for successful allocation, you will need to submit a form depending on which allocation and indicate your skills and strengths.</p>
+                    <p>If you have submitted either of the interest forms, you can also edit your interests by clicking the respective links below.</p>
+                    <div className="d-flex">
+                        <div className="detail-btn right">
+                            <a href="/prism-proj/intern-student">Internship</a>
+                        </div>
+                        <div className="detail-btn">
+                            <a href="/prism-proj/intern-student">PRISM</a>
+                        </div>
+                    </div>
+                </div>
+
+                <img src={image} alt="image1" />
+            </section>
+
+
             <div className="d-flex justify-content-between align-items-center title">
                 <h2>Posted Internships</h2>
                 <CardButton btnColor="#6393F2">
@@ -84,7 +109,7 @@ function Main({ internships, prism_projects }) {
                 })}
             </section>
 
-            <div className="d-flex justify-content-center view-btn">
+            <div className="view-btn">
                 <a href="/ftsp-proj/intern-student">View More</a>
             </div>
 
@@ -142,15 +167,17 @@ function Main({ internships, prism_projects }) {
                 })}
             </section>
 
-            <div className="d-flex justify-content-center view-btn">
+            <div className="view-btn">
                 <a href="/prism-proj/intern-student">View More</a>
             </div>
 
             <div className="title">
-                <h2>Indicate your Interest</h2>
+                <h2>Allocation Status</h2>
             </div>
 
-            <section id="interests">test</section>
+            <section id="interests">
+                {allocation.allocation_status == false && <div>Test</div>}
+            </section>
         </>
     );
 }

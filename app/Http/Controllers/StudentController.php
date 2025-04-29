@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Internship;
 use App\Models\Prisim;
 use App\Models\Student;
+use App\Models\StudentInternship;
+use App\Models\StudentPrisim;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class StudentController extends Controller
 {
@@ -47,7 +50,25 @@ class StudentController extends Controller
             }
         );
 
-        return inertia('Student/Main', compact('internships', 'prism_projects'));
+        $prism_check = true;
+        $internship_check = true;
+        $student_id = Auth::user()->student->id;
+
+        if (!StudentInternship::where('student_id', $student_id)->exists()) {
+            $internship_check = false;
+        }
+
+        if (!StudentPrisim::where('student_id', $student_id)->exists()) {
+            $prism_check = false;
+        }
+        
+        if (!$prism_check && !$internship_check) {
+            $allocation = [
+                "allocation_status" => false
+            ];
+        }
+
+        return inertia('Student/Main', compact('internships', 'prism_projects', 'allocation'));
     }
     public function intern()
     {

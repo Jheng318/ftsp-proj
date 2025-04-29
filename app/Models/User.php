@@ -45,7 +45,7 @@ class User extends Authenticatable
         ];
     }
     public function student(){
-        return $this->hasOne(User::class);
+        return $this->hasOne(Student::class);
     }
     public function internship(){
         return $this->hasMany(Internship::class);
