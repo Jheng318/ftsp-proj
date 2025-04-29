@@ -43,6 +43,9 @@ class HandleInertiaRequests extends Middleware
             'isStaff' => fn () => Auth::check() && Auth::user()->isStaff(),
             'isStudent' => fn () => Auth::check() && Auth::user()->isStudent(),
         ],
+        'flash' => [
+            'message' => fn() => $request->session()->get('message'),
+        ]
     ]);
     }
 }

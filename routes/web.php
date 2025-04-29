@@ -26,16 +26,25 @@ Route::middleware(['auth'])->group(function(){
 // Staffs routes
 Route::middleware(['auth', 'staff'])->group(function(){
     Route::get('/dashboard',[StaffController::class , 'index'] )->name('staff.dashboard');
+    // internship
     Route::get('/intern-staff', [StaffController::class, 'intern'])->name('staff.intern.index');
-    Route::get('/prism-staff', [StaffController::class, 'prisim'])->name('staff.prisim.index');
-    Route::get('/unassigned-allocation', [StaffController::class, 'unassignedAllo'])->name('staff.unassignedAllo');
-    Route::get('/assigned-allocation', [StaffController::class, 'assignedAllo'])->name('staff.assignedAllo');
-    Route::get('/student-info' ,[StaffController::class , 'studentInfo'])->name('staff.studentInfo');
     Route::delete('/delete-internship/{id}', [StaffController::class , 'deleteIntern'])->name('staff.delete.intern');
     Route::get('/edit-internship/{id}', [StaffController::class, 'showEditIntern'])->name('staff.show.edit.intern');
     Route::put('/edit-internship/{id}', [StaffController::class, 'editIntern'])->name('staff.edit.intern');
     Route::inertia('/add-internship', 'Staff/AddInternship')->name('staff.show.add.intern');
     Route::post('/add-internship', [StaffController::class, 'addIntern'])->name('staff.add.intern');
+
+    // prisim
+    Route::get('/prism-staff', [StaffController::class, 'prisim'])->name('staff.prisim.index');
+
+    // allocation
+    Route::get('/unallocated', [StaffController::class, 'unassignedAllo'])->name('staff.unassignedAllo');
+    Route::get('/allocated', [StaffController::class, 'assignedAllo'])->name('staff.assignedAllo');
+
+    // student information
+    Route::get('/student-info' ,[StaffController::class , 'studentInfo'])->name('staff.studentInfo');
+    Route::put('/editStudent', [StaffController::class, 'editStudent'])->name('staff.editStudent');
+
 });
 
 //Student routes

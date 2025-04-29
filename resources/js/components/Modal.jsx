@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-function Modal({ isOpen, children, onClose }) {
+function Modal({ isOpen, children, onClose, className = null }) {
     const dialogRef = useRef(null);
 
     useEffect(() => {
@@ -35,7 +35,12 @@ function Modal({ isOpen, children, onClose }) {
     };
 
     return (
-        <dialog ref={dialogRef} onClick={handleBackdropClick} id="modal">
+        <dialog
+            ref={dialogRef}
+            onClick={handleBackdropClick}
+            id="modal"
+            className={className}
+        >
             {children}
         </dialog>
     );

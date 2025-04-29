@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use App\Models\Internship;
 use App\Models\Prisim;
 use App\Models\Student;
+use App\Models\StudentInterestInternship;
+use App\Models\StudentInternship;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Faker\Factory as Faker;
@@ -203,5 +205,8 @@ class DatabaseSeeder extends Seeder
             'start_date' => '2025-03-02',
             'end_date' => '2025-06-01'
         ]);
+    
+         StudentInterestInternship::factory()->count(3)->create();
+         StudentInternship::factory()->count(5)->create();
     }
 }

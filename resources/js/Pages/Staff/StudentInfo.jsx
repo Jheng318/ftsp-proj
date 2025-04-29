@@ -1,51 +1,106 @@
 import pencil from "@/images/edit-icon.svg";
-import { Link, router, useForm, usePage } from "@inertiajs/react";
-import { useState } from "react";
+import { Link, useForm, usePage } from "@inertiajs/react";
+import { useEffect, useState, useCallback } from "react";
 import Modal from "../../components/Modal";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function StudentInfo({ students }) {
     const [isOpen, setIsOpen] = useState(false);
     const [hoveredStudent, setHoveredStudent] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const { flash, errors } = usePage().props;
 
-    const handleEdit = (e) => {
+    const {
+        data,
+        setData,
+        put,
+        processing,
+        errors: formErrors,
+        reset,
+    } = useForm({
+        name: "",
+        adminNo: "",
+        gpa: 0.0,
+        location: "",
+        user_id: 0,
+    });
+
+    const fetchStudentData = useCallback(
+        async (id) => {
+            try {
+                const res = await fetch(`/ftsp-proj/api/students/${id}`);
+                const studentData = await res.json();
+                setData({
+                    name: studentData.name,
+                    adminNo: studentData.admin_no,
+                    gpa: parseFloat(studentData.gpa),
+                    location: studentData.location,
+                    user_id: +id,
+                });
+                return studentData;
+            } catch (err) {
+                console.error(err);
+            }
+        },
+        [setData]
+    );
+
+    // Modified handleEdit to use the combined fetch function
+    const handleEdit = async (e) => {
         const { id } = e.currentTarget.dataset;
-        // First fetch student data before opening modal
-        if (hoveredStudent === null) return;
-        fetch(`/ftsp-proj/api/students/${id}`, {
-            method: "GET",
-            redirect: "follow",
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                setHoveredStudent(data);
-                setIsOpen(true); // Only open modal after data is fetched
-            })
-            .catch((err) => console.error(err));
+        const data = await fetchStudentData(id);
+        if (data) setIsOpen(true);
     };
 
-    const handleMouseEnter = (id) => {
-        setIsLoading(true);
-        fetch(`/ftsp-proj/api/students/${id}`, {
-            method: "GET",
-            redirect: "follow",
-        })
-            .then((res) => res.json())
-            .then((data) => setHoveredStudent(data))
-            .catch((err) => console.error(err))
-            .finally(() => setIsLoading(false)); // Fix: Wrap in arrow function
-    };
+    // Cleanup effect
+    useEffect(() => {
+        return () => {
+            setIsOpen(false);
+            reset();
+        };
+    }, []);
 
-    const handleMouseLeave = () => {
-        setHoveredStudent(null);
-    };
+    useEffect(() => {
+        if (hoveredStudent === null) {
+            setData({
+                name: "",
+                adminNo: "",
+                gpa: 0.0,
+                location: "",
+                user_id: 0,
+            });
+            return; // Add early return to prevent unnecessary setData call
+        }
+    }, [hoveredStudent]);
+
+    useEffect(() => {
+        if (flash?.message) {
+            toast.success(flash?.message);
+        }
+        if (errors?.error) {
+            Object.entries(JSON.parse(errors?.error)).forEach(
+                ([key, message]) => toast.error(`${key}: ${message}`)
+            );
+        }
+    }, [flash, errors]);
 
     function handleSubmit(e) {
         e.preventDefault();
+        setIsOpen(false);
+        setHoveredStudent(null);
+        put("/ftsp-proj/editStudent");
+        reset();
     }
 
     return (
         <section className="w-90">
+            {(errors.error || flash.message) && (
+                <ToastContainer
+                    closeOnClick
+                    autoClose={3000}
+                    position="top-center"
+                />
+            )}
             <h3 className="text-primary my-5 fw-semibold">
                 Student Information
             </h3>
@@ -78,10 +133,6 @@ function StudentInfo({ students }) {
                                 <button
                                     onClick={handleEdit}
                                     data-id={student.id}
-                                    onMouseEnter={() =>
-                                        handleMouseEnter(student.id)
-                                    }
-                                    onMouseLeave={handleMouseLeave}
                                     style={{ position: "relative" }}
                                 >
                                     <img
@@ -129,33 +180,69 @@ function StudentInfo({ students }) {
                 </tbody>
             </table>
             {isOpen && (
-                <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
-                    {!isLoading && (
+                <Modal
+                    isOpen={isOpen}
+                    onClose={() => setIsOpen(false)}
+                    className="p-4"
+                >
+                    {isOpen && (
                         <form onSubmit={handleSubmit}>
+                            <h3 className="text-primary">Edit Student Info</h3>
                             <label htmlFor="">Name</label>
                             <br />
-                            <input type="text" value={hoveredStudent?.name} />
+                            <input
+                                type="text"
+                                value={data.name}
+                                className="input-group"
+                                onChange={(e) =>
+                                    setData("name", e.target.value)
+                                }
+                            />
                             <br />
                             <label htmlFor="">Admin No</label>
                             <br />
                             <input
                                 type="text"
-                                value={hoveredStudent?.admin_no}
+                                value={data.adminNo}
+                                className="input-group"
+                                onChange={(e) =>
+                                    setData("adminNo", e.target.value)
+                                }
                             />
                             <br />
                             <label htmlFor="">GPA</label>
                             <br />
-                            <input type="text" value={hoveredStudent?.gpa} />
+                            <input
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                max="4"
+                                value={data.gpa}
+                                className="input-group"
+                                onChange={(e) =>
+                                    setData("gpa", parseFloat(e.target.value))
+                                }
+                            />
                             <br />
                             <label htmlFor="">Location</label>
                             <br />
 
                             <input
                                 type="text"
-                                value={hoveredStudent?.location}
+                                value={data.location}
+                                className="input-group"
+                                onChange={(e) =>
+                                    setData("location", e.target.value)
+                                }
                             />
                             <br />
-                            <input type="submit" value="edit" />
+
+                            <input
+                                className="smallBtn"
+                                type="submit"
+                                value="edit"
+                                disabled={processing}
+                            />
                         </form>
                     )}
                 </Modal>

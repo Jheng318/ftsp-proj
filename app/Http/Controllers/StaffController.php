@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Internship;
 use App\Models\Student;
+use App\Models\StudentInternship;
+use App\Models\User;
 use App\UsefulTraits;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
@@ -27,7 +30,10 @@ class StaffController extends Controller
         return response()->json("Staff prisim page");
     }
     public function unassignedAllo(){
-        return response()->json("Unassigned allocation page");
+        // it get the information about the unallocated students
+        $unallocatedData = Student::whereNotIn('id', StudentInternship::pluck('student_id'))->paginate(10);
+        
+        return inertia('Staff/Unallocated', compact('unallocatedData'));
     }
     public function assignedAllo(){
         return response()->json("assigned allocation page");
@@ -108,6 +114,34 @@ class StaffController extends Controller
         catch(ValidationException $e){
             return redirect()->back()->withErrors(['error' => $e]);
         }
+    }
+
+    public function editStudent(Request $request){
+        try{
+            $validated = $request->validate([
+                'name' => 'required|string',
+                'adminNo' => 'required|size:7|string',
+                'gpa' => 'required|numeric',
+                'location' => 'required|string',
+                'user_id' => 'required|integer',
+            ]);
+
+            $student = Student::with('user')->find($request->user_id);
+            $student->update([
+                'name' => $validated['name'],
+                'admin_no' => $validated['adminNo'],
+                'gpa' => $validated['gpa'],
+                'location' => $validated['location'],
+            ]);
+            $student->user->update([
+                'name' => $validated['name']
+            ]);
+            return Redirect::back()->with('message', 'Successfully updated the students details');
+        }
+        catch(ValidationException $e){
+            return redirect()->back()->withErrors(['error' => json_encode($e->errors())]);
+        }
+
     }
     
 }   

@@ -30,10 +30,10 @@ export default function Layout({ children }) {
                                     PRISM
                                 </Nav.Link>
                                 <NavDropdown title="Allocation">
-                                    <NavDropdown.Item href="/ftsp-proj/unassigned-allocation">
+                                    <NavDropdown.Item href="/ftsp-proj/unallocated">
                                         Unassigned Allocation
                                     </NavDropdown.Item>
-                                    <NavDropdown.Item href="/ftsp-proj/assigned-allocation">
+                                    <NavDropdown.Item href="/ftsp-proj/allocated">
                                         Assigned Allocation
                                     </NavDropdown.Item>
                                 </NavDropdown>
