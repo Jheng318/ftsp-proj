@@ -7,6 +7,7 @@ use App\Models\Prisim;
 use App\Models\Student;
 use App\Models\StudentInterestInternship;
 use App\Models\StudentInternship;
+use App\Models\StudentPrisim;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Faker\Factory as Faker;
@@ -41,6 +42,13 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('Password123'),
             'contact' => '8394 1029',
             'role' => 'Staff',
+        ]);
+        $ryan = User::create([
+            'name' => "Mr Ryan",
+            'email' => "ryan@gmail.com",
+            'password' => Hash::make('Password123'),
+            'contact' => '9381 2011',
+            'role' => 'Staff'
         ]);
         $studentData = [
             ['name' => 'Sarah Tan', 'email' => '238901A@mymail.nyp.edu.sg', 'admin_no' => '238901A'],
@@ -126,7 +134,7 @@ class DatabaseSeeder extends Seeder
             'languages' => 'Python',
             'frameworks' => 'Django, Flask',
             'location' => '8 Marina View, Asia Square Tower 1, Singapore 018960',
-            'user_id' => $staff->id,
+            'user_id' => $ryan->id,
             'gpa_requirement' => 3.75,
             'salary' => 1000,
             'no_of_students' => 1,
@@ -208,5 +216,6 @@ class DatabaseSeeder extends Seeder
     
          StudentInterestInternship::factory()->count(3)->create();
          StudentInternship::factory()->count(5)->create();
+         StudentPrisim::factory()->count(5)->create();
     }
 }

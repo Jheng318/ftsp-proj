@@ -64,7 +64,10 @@ function Internship({ internships }) {
                 internship.name.toLowerCase().includes(search.toLowerCase()) ||
                 internship.description
                     .toLowerCase()
-                    .includes(search.toLowerCase())
+                    .includes(search.toLowerCase()) ||
+                internship.user.name
+                    .toLowerCase()
+                    .includes(search.toLocaleLowerCase())
         );
         setFilteredIntern(filtered);
     }
@@ -141,7 +144,7 @@ function Internship({ internships }) {
             <div className="d-flex justify-content-between w-90">
                 <div className="d-flex align-items-center justify-content-around">
                     <h3 className="pe-5">Internship Listing</h3>
-                    <div className="d-flex">
+                    <div>
                         <input
                             type="text"
                             placeholder="Search"
@@ -149,9 +152,6 @@ function Internship({ internships }) {
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                         />
-                        <button className="smallBtn" onClick={handleSearch}>
-                            <img src={searchIcon} alt="search icon" />
-                        </button>
                     </div>
                 </div>
                 <div className="d-flex align-items-center" id="right">

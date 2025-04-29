@@ -1,0 +1,63 @@
+#unallo div #right {
+    position: relative;
+    & > #filterBtn:checked ~ .filterOption {
+        display: block;
+    }
+    & > label:hover {
+        cursor: pointer;
+    }
+    .filterOption {
+        display: none;
+        position: absolute;
+        padding: 1rem;
+        border-radius: 10px;
+        height: auto;
+        background-color: var(--blue-primary);
+        top: 4rem;
+        right: -11.2rem;
+        z-index: 1;
+    }
+    .filterOption::before {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-left: 1rem solid transparent;
+        border-right: 1rem solid transparent;
+        border-bottom: 1rem solid var(--blue-primary);
+        top: -1rem;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
+#unallo .toggle {
+    border: 2px solid black;
+    display: flex;
+    align-items: center;
+    margin-left: 3rem;
+    border-radius: 0.5rem;
+    height: 2rem;
+
+    & > .intern,
+    .prism {
+        height: 100%;
+        width: 50%;
+        text-align: center;
+        font-weight: bold;
+        box-sizing: border-box;
+        padding: 0.4rem 1.5rem;
+        display: inherit;
+        justify-content: center;
+        align-items: center;
+        transition: background-color 0.3s linear, color 0.3s linear;
+    }
+    & > .active {
+        background-color: var(--blue-primary);
+        color: var(--gray);
+    }
+    & .inactive {
+        background-color: var(--gray);
+        color: var(--black);
+    }
+}

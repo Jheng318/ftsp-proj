@@ -5,12 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Internship;
 use App\Models\Student;
 use App\Models\StudentInternship;
-use App\Models\User;
+use App\Models\StudentPrisim;
 use App\UsefulTraits;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\ValidationException;
-use Inertia\Inertia;
 
 class StaffController extends Controller
 {
@@ -30,10 +29,12 @@ class StaffController extends Controller
         return response()->json("Staff prisim page");
     }
     public function unassignedAllo(){
-        // it get the information about the unallocated students
-        $unallocatedData = Student::whereNotIn('id', StudentInternship::pluck('student_id'))->paginate(10);
+        // it get the information about the unallocated students. The I and P stands for Internship or Prisim respectfully
         
-        return inertia('Staff/Unallocated', compact('unallocatedData'));
+        $unallocatedDataI = Student::whereNotIn('id', StudentInternship::pluck('student_id'))->paginate(10);
+        $unallocatedDataP = Student::whereNotIn('id', StudentPrisim::pluck('student_id'))->paginate(10);
+
+        return inertia('Staff/Unallocated', compact(['unallocatedDataI','unallocatedDataP' ]));
     }
     public function assignedAllo(){
         return response()->json("assigned allocation page");
@@ -144,4 +145,7 @@ class StaffController extends Controller
 
     }
     
+    public function matchStudents(){
+        return response()->json(['message'=> 'matching students']);
+    }
 }   

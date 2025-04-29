@@ -45,6 +45,8 @@ Route::middleware(['auth', 'staff'])->group(function(){
     Route::get('/student-info' ,[StaffController::class , 'studentInfo'])->name('staff.studentInfo');
     Route::put('/editStudent', [StaffController::class, 'editStudent'])->name('staff.editStudent');
 
+    // match students routes
+    Route::get("/matchStudents", [StaffController::class, 'matchStudents'])->name('staff.matchStudents');
 });
 
 //Student routes
