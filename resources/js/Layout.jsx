@@ -47,11 +47,7 @@ export default function Layout({ children }) {
                                     Internship
                                 </Nav.Link>
                                 <Nav.Link href="/ftsp-proj/prism-student">
-<<<<<<< Updated upstream
-                                    PRISM
-=======
                                     PRISIM
->>>>>>> Stashed changes
                                 </Nav.Link>
                                 <Nav.Link href="/ftsp-proj/allocation-student">
                                     Allocation
