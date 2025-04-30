@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\ValidationException;
 
+use function PHPUnit\Framework\matches;
+
 class StaffController extends Controller
 {
     //
@@ -169,19 +171,34 @@ class StaffController extends Controller
             $interest = StudentInterestPrisim::whereIn('student_id', $unallocated->pluck('id'))->get();
         }
 
-        $prompt = "Match each student to the most suitable internship based on the following criteria:\n
+        $prompt = "For each student, match them to the most suitable internship using the following criteria:
 
-        1. Prioritize internship role alignment with the student's interest.\n
-        2. Consider preferred frameworks and programming languages (only if multiple internships match the interest).\n
-        3. Take into account the student's GPA and location, ensuring it meets the internship's GPA requirement and location compatibility.\n
+        1. Prioritize the internship role that best aligns with the student's interest.
+        2. If multiple internships match the interest, consider the student's preferred frameworks and programming languages.
+        3. Ensure the student's GPA meets the internship's GPA requirement, and consider location compatibility.
 
-        Provide only the matched results in this format\n:
-        Student Name -> Internship Role at Company Name\n";
+        Return only the matched results in this exact format:
+        StudentId -> InternshipId
+
+        Only return one line per student. Do not include any headings, titles, or explanations.";
 
         $prompt .= "Internship: " . json_encode($type, JSON_PRETTY_PRINT) . "\n";
         $prompt .= "Student's Interest: " . json_encode($interest, JSON_PRETTY_PRINT) . "\n";
 
-        dd($prompt);
         $response = GeminiAi::generateText($prompt, ["model" => "gemini-2.0-flash-lite"]);
+        $matches = []; 
+
+        $lines = array_filter(explode("\n", $response));
+        foreach ($lines as $line) {
+            $split = explode('->', $line);
+            $matches[intval($split[0])] =  intval($split[1]);
+        }
+        foreach($matches as $studentId => $internshipId){
+            StudentInternship::create([
+                'student_id' => $studentId,
+                'internship_id' => $internshipId,
+            ]);
+        }
+
     }
 }   
