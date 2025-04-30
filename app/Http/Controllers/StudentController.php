@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Internship;
-use App\Models\Prisim;
+use App\Models\Prism;
 use App\Models\Student;
 use App\Models\StudentInternship;
-use App\Models\StudentPrisim;
+use App\Models\StudentPrism;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -34,7 +34,7 @@ class StudentController extends Controller
             }
         );
 
-        $prism_projects = prisim::with('user')->orderBy('start_date', 'DESC')->take(3)->get()->map(
+        $prism_projects = Prism::with('user')->orderBy('start_date', 'DESC')->take(3)->get()->map(
             function ($prism) {
                 // Ensure the date field is a Carbon instance
                 $createdAt = Carbon::parse($prism->created_at);
@@ -58,7 +58,7 @@ class StudentController extends Controller
             $internship_check = false;
         }
 
-        if (!StudentPrisim::where('student_id', $student_id)->exists()) {
+        if (!StudentPrism::where('student_id', $student_id)->exists()) {
             $prism_check = false;
         }
         
@@ -83,12 +83,12 @@ class StudentController extends Controller
     }
     public function prism()
     {
-        return response()->json("prisim page");
+        return response()->json("prism page");
     }
 
     public function prismDetail($id)
     {
-        $displayPrism = prisim::find($id);
+        $displayPrism = Prism::find($id);
         $prism_projects = Internship::with('user')->get();
 
         return inertia('Student/PrismDetails', compact('prism_projects', 'displayPrism'));

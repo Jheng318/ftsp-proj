@@ -16,8 +16,8 @@ class StudentInternship extends Model
     public function student(){
         return $this->belongsTo(Student::class);
     }
-    public function prisim(){
-        return $this->belongsTo(Prisim::class);
+    public function prism(){
+        return $this->belongsTo(Prism::class);
     }
     public function internship(){
         return $this->belongsTo(Internship::class);

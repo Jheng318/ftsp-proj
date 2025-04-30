@@ -2,15 +2,15 @@
 
 namespace Database\Factories;
 
-use App\Models\Prisim;
+use App\Models\Prism;
 use App\Models\Student;
 use Faker\Factory as Faker;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\StudentPrisim>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Studentprism>
  */
-class StudentPrisimFactory extends Factory
+class StudentprismFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -23,7 +23,7 @@ class StudentPrisimFactory extends Factory
         return [
             //
             'student_id' => $faker->randomElement(Student::pluck('id')),
-            'prisim_id' => $faker->randomElement(Prisim::pluck('id')),
+            'prism_id' => $faker->randomElement(Prism::pluck('id')),
         ];
     }
 }

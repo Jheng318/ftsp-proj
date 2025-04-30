@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Prisim extends Model
+class Prism extends Model
 {
     //
     protected $fillable = [
@@ -20,10 +20,8 @@ class Prisim extends Model
     public function user(){
         return $this->belongsTo(User::class);
     }
-    public function allocation(){
-        return $this->belongsTo(Allocation::class);
-    }
-    public function student_prisim(){
-        return $this->hasMany(StudentPrisim::class);
+
+    public function student_prism(){
+        return $this->hasMany(StudentPrism::class);
     }
 }

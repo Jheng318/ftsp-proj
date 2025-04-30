@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('student_interest_prisims', function (Blueprint $table) {
+        Schema::create('student_interest_prisms', function (Blueprint $table) {
             $table->id();
             $table->string('framework');
             $table->string('languages');
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('student_interest_prisims');
+        Schema::dropIfExists('student_interest_prisms');
     }
 };

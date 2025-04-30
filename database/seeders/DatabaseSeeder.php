@@ -3,11 +3,11 @@
 namespace Database\Seeders;
 
 use App\Models\Internship;
-use App\Models\Prisim;
+use App\Models\Prism;
 use App\Models\Student;
 use App\Models\StudentInterestInternship;
 use App\Models\StudentInternship;
-use App\Models\StudentPrisim;
+use App\Models\Studentprism;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Faker\Factory as Faker;
@@ -183,7 +183,7 @@ class DatabaseSeeder extends Seeder
             'start_date' => '2024-09-02',
             'end_date' => '2025-01-28'
         ]);
-        Prisim::create([
+        Prism::create([
             'name' => 'Customer Segmentation Analysis',
             'type' => 'Data Science',
             'description' => 'Analyze customer data to segment customers into different groups based on their behavior and preferences.  Develop targeted marketing strategies for each segment.',
@@ -193,7 +193,7 @@ class DatabaseSeeder extends Seeder
             'start_date' => '2024-06-12',
             'end_date' => '2024-09-20'
         ]);
-        Prisim::create([
+        Prism::create([
             'name' => 'Todo App',
             'type' => 'Web Development',
             'description' => 'Create a todo app in React to allow users to take down notes.',
@@ -203,7 +203,7 @@ class DatabaseSeeder extends Seeder
             'start_date' => '2024-07-03',
             'end_date' => '2024-11-15'
         ]);
-        Prisim::create([
+        Prism::create([
             'name' => 'Mobile Chat Application',
             'type' => 'Web Development',
             'description' => 'Develop a real-time mobile chat application with features like direct messaging, group chats, and user presence.',
@@ -238,6 +238,6 @@ class DatabaseSeeder extends Seeder
             StudentInterestInternship::create($interest);
         }
         StudentInternship::factory()->count(5)->create();
-        StudentPrisim::factory()->count(5)->create();
+        StudentPrism::factory()->count(5)->create();
     }
 }

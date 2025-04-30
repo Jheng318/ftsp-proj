@@ -50,8 +50,8 @@ class User extends Authenticatable
     public function internship(){
         return $this->hasMany(Internship::class);
     }
-    public function prisim(){
-        return $this->hasMany(Prisim::class);
+    public function prism(){
+        return $this->hasMany(Prism::class);
     }
     public function isStaff(){
         return $this->role === 'Staff';

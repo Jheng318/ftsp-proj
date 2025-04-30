@@ -4,19 +4,18 @@ namespace App\Http\Controllers;
 
 use Amrachraf6699\LaravelGeminiAi\Facades\GeminiAi;
 use App\Models\Internship;
-use App\Models\Prisim;
+use App\Models\Prism;
 use App\Models\Student;
 use App\Models\StudentInterestInternship;
-use App\Models\StudentInterestPrisim;
+use App\Models\StudentInterestPrism;
 use App\Models\StudentInternship;
-use App\Models\StudentPrisim;
+use App\Models\StudentPrism;
 use App\UsefulTraits;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\ValidationException;
 
-use function PHPUnit\Framework\matches;
 
 class StaffController extends Controller
 {
@@ -32,14 +31,14 @@ class StaffController extends Controller
         }])->get();
         return inertia('Staff/Internship', compact('internships'));
     }
-    public function prisim(){
-        return response()->json("Staff prisim page");
+    public function prism(){
+        return response()->json("Staff prism page");
     }
     public function unassignedAllo(){
-        // it get the information about the unallocated students. The I and P stands for Internship or Prisim respectfully
+        // it get the information about the unallocated students. The I and P stands for Internship or prism respectfully
         
         $unallocatedDataI = Student::whereNotIn('id', StudentInternship::pluck('student_id'))->paginate(10);
-        $unallocatedDataP = Student::whereNotIn('id', StudentPrisim::pluck('student_id'))->paginate(10);
+        $unallocatedDataP = Student::whereNotIn('id', StudentPrism::pluck('student_id'))->paginate(10);
 
         return inertia('Staff/Unallocated', compact(['unallocatedDataI','unallocatedDataP' ]));
     }
@@ -103,7 +102,7 @@ class StaffController extends Controller
     }
     public function addIntern(Request $request){
         try{
-            $createIntern =  Internship::create([
+            Internship::create([
                     'name' => $request->jobTitle,
                     'company_name' => $request->companyName,
                     'description' => $request->jobDesc,
@@ -144,7 +143,7 @@ class StaffController extends Controller
             $student->user->update([
                 'name' => $validated['name']
             ]);
-            return Redirect::back()->with('message', 'Successfully updated the students details');
+            return redirect()->back()->with('message', 'Successfully updated the students details');
         }
         catch(ValidationException $e){
             return redirect()->back()->withErrors(['error' => json_encode($e->errors())]);
@@ -166,9 +165,9 @@ class StaffController extends Controller
             $interest = StudentInterestInternship::whereIn('student_id', $unallocated->pluck('id'))->get();
         }
         else{
-            $unallocated = Student::whereNotIn('id', StudentPrisim::pluck('student_id'))->get();
-            $type = Prisim::all();
-            $interest = StudentInterestPrisim::whereIn('student_id', $unallocated->pluck('id'))->get();
+            $unallocated = Student::whereNotIn('id', StudentPrism::pluck('student_id'))->get();
+            $type = Prism::all();
+            $interest = StudentInterestPrism::whereIn('student_id', $unallocated->pluck('id'))->get();
         }
 
         $prompt = "For each student, match them to the most suitable internship using the following criteria:
@@ -182,8 +181,10 @@ class StaffController extends Controller
 
         Only return one line per student. Do not include any headings, titles, or explanations.";
 
-        $prompt .= "Internship: " . json_encode($type, JSON_PRETTY_PRINT) . "\n";
+        $prompt .= $activeTab == "intern" ? "Internship: ": "Prism: " . json_encode($type, JSON_PRETTY_PRINT) . "\n";
         $prompt .= "Student's Interest: " . json_encode($interest, JSON_PRETTY_PRINT) . "\n";
+
+        dd($prompt);
 
         $response = GeminiAi::generateText($prompt, ["model" => "gemini-2.0-flash-lite"]);
         $matches = []; 
@@ -193,11 +194,20 @@ class StaffController extends Controller
             $split = explode('->', $line);
             $matches[intval($split[0])] =  intval($split[1]);
         }
-        foreach($matches as $studentId => $internshipId){
-            StudentInternship::create([
-                'student_id' => $studentId,
-                'internship_id' => $internshipId,
-            ]);
+        if($activeTab == "intern"){
+            foreach($matches as $studentId => $interestId){
+                StudentInternship::create([
+                    'student_id' => $studentId,
+                    'internship_id' => $interestId,
+                ]);
+            }
+        } elseif ($activeTab == "prism"){
+            foreach($matches as $studentId => $interestId){
+                StudentPrism::create([
+                    'student_id' => $studentId,
+                    'prism_id' => $interestId,
+                ]);
+            }
         }
 
     }

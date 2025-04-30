@@ -1,4 +1,4 @@
-import { Link, usePage } from "@inertiajs/react";
+import { usePage } from "@inertiajs/react";
 import logo from "@/images/logo.png";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
@@ -47,7 +47,7 @@ export default function Layout({ children }) {
                                     Internship
                                 </Nav.Link>
                                 <Nav.Link href="/ftsp-proj/prism-student">
-                                    PRISIM
+                                    prism
                                 </Nav.Link>
                                 <Nav.Link href="/ftsp-proj/allocation-student">
                                     Allocation
