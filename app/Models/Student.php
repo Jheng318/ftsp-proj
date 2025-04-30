@@ -15,6 +15,8 @@ class Student extends Model
         'resume_status',
         'user_id',
         'resume_name',
+        'internship_start',
+        'internship_end',
     ];
     public function user(){
         return $this->belongsTo(User::class);

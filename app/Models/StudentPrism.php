@@ -16,4 +16,7 @@ class StudentPrism extends Model
     public function student(){
         return $this->belongsTo(Student::class);
     }
+    public function prism(){
+        return $this->belongsTo(Prism::class);
+    }
 }

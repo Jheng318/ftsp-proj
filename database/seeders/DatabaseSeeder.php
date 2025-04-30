@@ -90,6 +90,8 @@ class DatabaseSeeder extends Seeder
                 'resume_status' => false,
                 'user_id' => $user->id,
                 'resume_name' => null,
+                'internship_start' => $user->id % 2 == 0 ? "2025-06-02" : "2025-03-03",
+                'internship_end' => "2025-08-22",
             ]);
         }
         Student::create([
@@ -100,6 +102,8 @@ class DatabaseSeeder extends Seeder
             'resume_status' => false,
             'user_id' => $john->id,
             'resume_name' => null,
+            'internship_start' => "2025-03-03",
+            'internship_end' => "2025-08-22",
         ]);
         Student::create([
             'name' => $mary->name,
@@ -109,6 +113,8 @@ class DatabaseSeeder extends Seeder
             'resume_status' => false,
             'user_id' => $mary->id,
             'resume_name' => null,
+            'internship_start' => "2025-06-02",
+            'internship_end' => "2025-08-22",
         ]);
         Internship::create([
             'name' => 'Frontend Software Engineer',
@@ -124,8 +130,8 @@ class DatabaseSeeder extends Seeder
             'gpa_requirement' => 3.50,
             'salary' => 1200,
             'no_of_students' => 2,
-            'start_date' => '2025-09-04',
-            'end_date' => '2026-03-08'
+            'start_date' => "2025-06-02",
+            'end_date' => "2025-08-22"
         ]);
         Internship::create([
             'name' => 'Backend Developer Intern',
@@ -138,8 +144,8 @@ class DatabaseSeeder extends Seeder
             'gpa_requirement' => 3.75,
             'salary' => 1000,
             'no_of_students' => 1,
-            'start_date' => '2025-10-18',
-            'end_date' => '2026-01-20'
+            'start_date' => "2025-03-03",
+            'end_date' => "2025-08-22"
         ]);
         Internship::create([
             'name' => 'Data Science Intern',
@@ -152,8 +158,8 @@ class DatabaseSeeder extends Seeder
             'gpa_requirement' => 3.05,
             'salary' => 800,
             'no_of_students' => 3,
-            'start_date' => '2025-03-06',
-            'end_date' => '2025-08-08'
+            'start_date' => "2025-06-02",
+            'end_date' => "2025-08-22"
         ]);
         Internship::create([
             'name' => 'Mobile App Developer Intern',
@@ -166,8 +172,8 @@ class DatabaseSeeder extends Seeder
             'gpa_requirement' => 3.65,
             'salary' => 1000,
             'no_of_students' => 1,
-            'start_date' => '2025-04-10',
-            'end_date' => '2026-06-20'
+            'start_date' => "2025-03-03",
+            'end_date' => "2025-08-22"
         ]);
         Internship::create([
             'name' => 'UI/UX Design Intern',
@@ -180,8 +186,8 @@ class DatabaseSeeder extends Seeder
             'gpa_requirement' => 2.60,
             'salary' => 900,
             'no_of_students' => 3,
-            'start_date' => '2024-09-02',
-            'end_date' => '2025-01-28'
+            'start_date' => "2025-06-02",
+            'end_date' => "2025-08-22"
         ]);
         Prism::create([
             'name' => 'Customer Segmentation Analysis',
