@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Internship;
 use App\Models\Prism;
 use App\Models\Student;
+use App\Models\StudentInterestInternship;
 use App\Models\StudentInternship;
 use App\Models\StudentPrism;
 use Illuminate\Http\Request;
@@ -61,8 +62,12 @@ class StudentController extends Controller
         if (!StudentPrism::where('student_id', $student_id)->exists()) {
             $prism_check = false;
         }
-        
+
         if (!$prism_check && !$internship_check) {
+            $allocation = [
+                "allocation_status" => false
+            ];
+        } else {
             $allocation = [
                 "allocation_status" => false
             ];
@@ -98,9 +103,47 @@ class StudentController extends Controller
         return response()->json("allocation page");
     }
 
-    public function getStudent($id)
+    public function addInternshipInterest(Request $request)
     {
-        $student = Student::find($id);
-        return response()->json($student);
+
+        $validated = $request->validate([
+            'interests' => 'required',
+            'languages' => 'required',
+            'framework' => 'required'
+        ]);
+
+/*         if ($request->files !== null) {
+            $fileName = time() . '.' . $request->files->extension();
+            dd($fileName);
+            $request->files->move(public_path('uploads'), $fileName);
+        } */
+
+        $languages_array = $request->languages;
+        $frameworks_array = $request->framework;
+
+        if ($request->otherLanguages !== null) {
+            $new_array = explode(", ", $request->otherLanguages);
+            foreach ($new_array as $item) {
+                array_push($languages_array, $item);
+            }
+        }
+        if ($request->otherFrameworks !== null) {
+            $new_array = explode(", ", $request->otherFrameworks);
+            foreach ($new_array as $item) {
+                array_push($frameworks_array, $item);
+            }
+        }
+
+
+        $interest = StudentInterestInternship::create([
+            'framework' => implode(", ", $frameworks_array),
+            'languages' => implode(", ", $languages_array),
+            'interest' => $request->interests,
+            'student_id' => $request->user_id
+        ]);
+
+        if ($interest) {
+            return redirect()->route('student.main');
+        }
     }
 }
