@@ -57,4 +57,11 @@ Route::middleware(['auth', 'student'])->group(function(){
     Route::get('/prism-student', [StudentController::class, 'prism'])->name('student.prism.index');
     Route::get('/prism-student/{id}', [StudentController::class, 'prismDetail'])->name('student.prism.prismDetail');
     Route::get('/allocation-student', [StudentController::class, 'allocation'])->name('student.allocation');
+
+    Route::inertia('/intern-interest', 'Student/InternshipInterest')->name('student.internship.interest');
+    Route::inertia('/prism-interest', 'Student/PrismInterest')->name('student.prism.interest');
+    
+    Route::post('/intern-interest', [StudentController::class, 'addInternshipInterest'])->name('student.add.internship.interest');
+    Route::post('/prism-interest', [StudentController::class, 'addPrismInterest'])->name('student.add.prism.interest');
+
 });

@@ -26,6 +26,19 @@ function Main({ internships, prism_projects, allocation }) {
             </section>
 
             <div className="title">
+                <h2>Allocation Status</h2>
+            </div>
+
+            <section id="allocation">
+                {allocation.allocation_status == false && 
+                <>
+                    <h3 className="blue margin-left">Unsuccessful Allocation</h3>
+                    <p className="description margin-left">You have not been assigned to a internship/PRISM allocation yet. Please hold. </p>
+                </>
+                }
+            </section>
+
+            <div className="title">
                 <h2>Indicate your Interest</h2>
             </div>
 
@@ -43,10 +56,10 @@ function Main({ internships, prism_projects, allocation }) {
                     </p>
                     <div className="d-flex">
                         <div className="detail-btn">
-                            <a href="/prism-proj/intern-student">View More</a>
+                            <a href="/ftsp-proj/intern-interest">Internship Interest</a>
                         </div>
                         <div className="detail-btn">
-                            <a href="/prism-proj/intern-student">View More</a>
+                            <a href="/ftsp-proj/prism-interest">PRISM Interest</a>
                         </div>
                     </div>
                 </div>
@@ -177,6 +190,8 @@ function Main({ internships, prism_projects, allocation }) {
             <div className="view-btn">
                 <a href="/prism-proj/intern-student">View More</a>
             </div>
+
+            <div className=""></div>
         </>
     );
 }
