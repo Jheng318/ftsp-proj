@@ -71,3 +71,4 @@ class AIController extends Controller
         dd($distance);
     }
 }
+

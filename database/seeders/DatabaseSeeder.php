@@ -213,9 +213,31 @@ class DatabaseSeeder extends Seeder
             'start_date' => '2025-03-02',
             'end_date' => '2025-06-01'
         ]);
-    
-         StudentInterestInternship::factory()->count(3)->create();
-         StudentInternship::factory()->count(5)->create();
-         StudentPrisim::factory()->count(5)->create();
+        
+        $internshipInterest = [
+            [
+                'framework' => 'React, Vuejs',
+                'languages' => 'HTML, CSS, Javascript',
+                'interest' => 'web developer',
+                'student_id' => 17,
+            ],
+            [
+                'framework' => 'Uipath',
+                'languages' => 'Javascript, Python',
+                'interest' => 'automation',
+                'student_id' => 7,
+            ],
+            [
+                'framework' => 'Flutter, React Native, SwiftUi, Kotlin',
+                'languages' => 'Dart, Swift, Kotlin',
+                'interest' => 'Mobile Developer',
+                'student_id' => 11,
+            ]
+        ];
+        foreach($internshipInterest as $interest){
+            StudentInterestInternship::create($interest);
+        }
+        StudentInternship::factory()->count(5)->create();
+        StudentPrisim::factory()->count(5)->create();
     }
 }

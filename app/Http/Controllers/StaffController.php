@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use Amrachraf6699\LaravelGeminiAi\Facades\GeminiAi;
 use App\Models\Internship;
+use App\Models\Prisim;
 use App\Models\Student;
+use App\Models\StudentInterestInternship;
+use App\Models\StudentInterestPrisim;
 use App\Models\StudentInternship;
 use App\Models\StudentPrisim;
 use App\UsefulTraits;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\ValidationException;
 
@@ -145,7 +150,38 @@ class StaffController extends Controller
 
     }
     
-    public function matchStudents(){
-        return response()->json(['message'=> 'matching students']);
+    public function matchStudents(Request $request){
+        // type is varibale to fetch the itp or ftsp based on whether the activeTab variable
+        $activeTab = $request->query('tab');
+        $unallocated = null;
+        $type = null;
+        $interest = null;
+
+        // the list of unallocated students for wither prism or itp
+        if($activeTab == "intern"){
+            $unallocated = Student::whereNotIn('id', StudentInternship::pluck('student_id'))->get();
+            $type = Internship::all();
+            $interest = StudentInterestInternship::whereIn('student_id', $unallocated->pluck('id'))->get();
+        }
+        else{
+            $unallocated = Student::whereNotIn('id', StudentPrisim::pluck('student_id'))->get();
+            $type = Prisim::all();
+            $interest = StudentInterestPrisim::whereIn('student_id', $unallocated->pluck('id'))->get();
+        }
+
+        $prompt = "Match each student to the most suitable internship based on the following criteria:\n
+
+        1. Prioritize internship role alignment with the student's interest.\n
+        2. Consider preferred frameworks and programming languages (only if multiple internships match the interest).\n
+        3. Take into account the student's GPA and location, ensuring it meets the internship's GPA requirement and location compatibility.\n
+
+        Provide only the matched results in this format\n:
+        Student Name -> Internship Role at Company Name\n";
+
+        $prompt .= "Internship: " . json_encode($type, JSON_PRETTY_PRINT) . "\n";
+        $prompt .= "Student's Interest: " . json_encode($interest, JSON_PRETTY_PRINT) . "\n";
+
+        dd($prompt);
+        $response = GeminiAi::generateText($prompt, ["model" => "gemini-2.0-flash-lite"]);
     }
 }   

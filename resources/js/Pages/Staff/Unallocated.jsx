@@ -70,7 +70,7 @@ function Unallocated({ unallocatedDataI, unallocatedDataP }) {
             <table className="w-100 my-5">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>Student ID</th>
                         <th>Student Name</th>
                         <th>Admin No</th>
                         <th>Company</th>
@@ -131,7 +131,11 @@ function Unallocated({ unallocatedDataI, unallocatedDataP }) {
             </table>
             <button
                 className="primaryBtn fw-bold mb-5"
-                onClick={() => router.get("/ftsp-proj/matchStudents")}
+                onClick={() =>
+                    router.get("/ftsp-proj/matchStudents", {
+                        tab: activeTab,
+                    })
+                }
             >
                 Start Matching
             </button>
