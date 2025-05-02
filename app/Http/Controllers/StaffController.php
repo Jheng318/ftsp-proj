@@ -43,11 +43,15 @@ class StaffController extends Controller
         return inertia('Staff/Unallocated', compact(['unallocatedDataI','unallocatedDataP' ]));
     }
     public function assignedAllo(){
-        $allocatedIntern = StudentInternship::with(['internship', 'student'])->get();
-        $allocatedPrism = StudentPrism::with(['prism', 'student'])->get();
+        $allocatedIntern = Internship::with(['student_internship.student', 'user'])
+            ->whereHas('student_internship')
+            ->get();
+        //StudentInternship::with(['internship', 'student'])->get();
+        $allocatedPrism = Prism::with(['student_prism.student'])
+            ->whereHas('student_prism')
+            ->get();
 
         return inertia('Staff/Allocated', compact(['allocatedIntern', 'allocatedPrism']));
-
     }
 
 

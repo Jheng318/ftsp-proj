@@ -2,11 +2,10 @@
 
 use App\Http\Controllers\AIController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CommonController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\StudentController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
+//use Illuminate\Support\Facades\Storage;
 
 
 Route::inertia('/', 'Login')->name('show.login');

@@ -15,7 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('framework');
             $table->string('languages');
-            $table->string('interest_ranking');
+            $table->integer('web_dev_ranking')->nullable();
+            $table->integer('mad_ranking')->nullable();
+            $table->integer('rpa_ranking')->nullable();
+            $table->integer('uiux_ranking')->nullable();
             $table->unsignedBigInteger('student_id');
             $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
             $table->timestamps();

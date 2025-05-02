@@ -30,12 +30,17 @@ function Main({ internships, prism_projects, allocation }) {
             </div>
 
             <section id="allocation">
-                {allocation.allocation_status == false && 
-                <>
-                    <h3 className="blue margin-left">Unsuccessful Allocation</h3>
-                    <p className="description margin-left">You have not been assigned to a internship/PRISM allocation yet. Please hold. </p>
-                </>
-                }
+                {allocation.allocation_status == false && (
+                    <>
+                        <h3 className="blue margin-left">
+                            Unsuccessful Allocation
+                        </h3>
+                        <p className="description margin-left">
+                            You have not been assigned to a internship/PRISM
+                            allocation yet. Please hold.{" "}
+                        </p>
+                    </>
+                )}
             </section>
 
             <div className="title">
@@ -56,10 +61,14 @@ function Main({ internships, prism_projects, allocation }) {
                     </p>
                     <div className="d-flex">
                         <div className="detail-btn">
-                            <a href="/ftsp-proj/intern-interest">Internship Interest</a>
+                            <a href="/ftsp-proj/intern-interest">
+                                Internship Interest
+                            </a>
                         </div>
                         <div className="detail-btn">
-                            <a href="/ftsp-proj/prism-interest">PRISM Interest</a>
+                            <a href="/ftsp-proj/prism-interest">
+                                PRISM Interest
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -70,8 +79,8 @@ function Main({ internships, prism_projects, allocation }) {
             <div className="d-flex justify-content-between align-items-center title">
                 <h2>Posted Internships</h2>
                 <CardButton btnColor="#6393F2">
-                    <img src={sortIcon} alt="sortIcon" />
-                    Sort By
+                    <img src={sortIcon} alt="sortIcon" id="sortIcon" />
+                    <span className="text-gray">Sort By</span>
                 </CardButton>
             </div>
 
@@ -136,8 +145,8 @@ function Main({ internships, prism_projects, allocation }) {
             <div className="d-flex justify-content-between align-items-center title">
                 <h2>Posted PRISM Projects</h2>
                 <CardButton btnColor="#6393F2">
-                    <img src={sortIcon} alt="sortIcon" />
-                    Sort By
+                    <img src={sortIcon} alt="sortIcon" id="sortIcon" />
+                    <span className="text-gray">Sort By</span>
                 </CardButton>
             </div>
 
