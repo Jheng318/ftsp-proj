@@ -5,6 +5,7 @@ import edit from "@/images/edit-icon.svg";
 import deleteIcon from "@/images/delete-icon.svg";
 import CardButton from "../../components/CardButton";
 import Modal from "../../components/Modal";
+import { formatDate } from "../../reusable";
 
 function Allocated({ allocatedIntern, allocatedPrism }) {
     const [search, setSearch] = useState(null);
@@ -28,7 +29,6 @@ function Allocated({ allocatedIntern, allocatedPrism }) {
     function toggleActive(tab) {
         setActiveTab(tab);
     }
-    console.log(selectedAllo);
     function handleSearch() {
         const result = currentData?.data?.filter(
             (data) =>
@@ -159,7 +159,68 @@ function Allocated({ allocatedIntern, allocatedPrism }) {
             </div>
             {openModal && selectedAllo && (
                 <Modal isOpen={openModal} onClose={closeModal}>
-                    {selectedAllo[0].name}
+                    <h3 className="text-primary">{selectedAllo[0].name}</h3>
+                    <div className="flex">
+                        <div>
+                            <p>Description: {selectedAllo[0]?.description}</p>
+                            <p>Company Name: {selectedAllo[0]?.company_name}</p>
+                            <p>Location: {selectedAllo[0]?.location}</p>
+                            <p>Salary: ${selectedAllo[0]?.salary}</p>
+                            <p>Languages: {selectedAllo[0]?.languages}</p>
+                            <p>Frameworks: {selectedAllo[0]?.frameworks}</p>
+                            <p>
+                                Internship Period:{" "}
+                                {formatDate(selectedAllo[0]?.start_date)} to{" "}
+                                {formatDate(selectedAllo[0]?.end_date)}
+                            </p>
+                        </div>
+                        <div>
+                            <p className="fw-bold">Students</p>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <td>Name</td>
+                                        <td>Admin No</td>
+                                        <td>GPA</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {selectedAllo[0]?.student_internship?.map(
+                                        (student) => {
+                                            console.log(student);
+                                            return (
+                                                <tr>
+                                                    <td>
+                                                        {student.student.name}
+                                                    </td>
+                                                    <td>
+                                                        {
+                                                            student.student
+                                                                .admin_no
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        {student.student.gpa}
+                                                    </td>
+                                                </tr>
+                                            );
+                                        }
+                                    )}
+                                </tbody>
+                            </table>
+                            <p>
+                                Number of Students:{" "}
+                                {selectedAllo[0]?.no_of_students}
+                            </p>
+                            <p>
+                                Teacher in Charge: {selectedAllo[0]?.user?.name}
+                            </p>
+                            <p>
+                                GPA Requirement:{" "}
+                                {selectedAllo[0]?.gpa_requirement}
+                            </p>
+                        </div>
+                    </div>
                 </Modal>
             )}
         </section>

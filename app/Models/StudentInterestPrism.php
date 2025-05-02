@@ -10,7 +10,10 @@ class StudentInterestPrism extends Model
     protected $fillable = [
         'framework',
         'languages',
-        'interest_ranking',
+        'web_dev_ranking',
+        'mad_ranking',
+        'rpa_ranking',
+        'uiux_ranking',
         'student_id'
     ];
     public function student(){
