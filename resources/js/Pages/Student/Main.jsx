@@ -43,17 +43,6 @@ function Main({ internships, prism_projects, allocation }) {
                         </p>
                     </>
                 )}
-                {allocation.allocation_status == false && (
-                    <>
-                        <h3 className="blue margin-left">
-                            Unsuccessful Allocation
-                        </h3>
-                        <p className="description margin-left">
-                            You have not been assigned to a internship/PRISM
-                            allocation yet. Please hold.{" "}
-                        </p>
-                    </>
-                )}
             </section>
 
             <div className="title">
@@ -67,21 +56,8 @@ function Main({ internships, prism_projects, allocation }) {
                         submit a form depending on which allocation and indicate
                         your skills and strengths.
                     </p>
-                    <p>
-                        If you have submitted either of the interest forms, you
-                        can also edit your interests by clicking the respective
-                        links below.
-                    </p>
                     <div className="d-flex">
                         <div className="detail-btn">
-                            <a href="/ftsp-proj/intern-interest">
-                                Internship Interest
-                            </a>
-                        </div>
-                        <div className="detail-btn">
-                            <a href="/ftsp-proj/prism-interest">
-                                PRISM Interest
-                            </a>
                             <button
                                 onClick={() => {
                                     router.get(
