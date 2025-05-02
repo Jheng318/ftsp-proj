@@ -65,7 +65,7 @@ function Main({ internships, prism_projects, allocation }) {
                         </div>
                         <div className="detail-btn">
                             <button onClick={() => {
-                                router.get(`${BASE_PATH}/add-internship`);
+                                router.get(`prism-interest/${auth.user.id}`);
                             }}>PRISM Interest</button>
                         </div>
                     </div>

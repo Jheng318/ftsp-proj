@@ -6,6 +6,7 @@ use App\Models\Internship;
 use App\Models\Prism;
 use App\Models\Student;
 use App\Models\StudentInterestInternship;
+use App\Models\StudentInterestPrism;
 use App\Models\StudentInternship;
 use App\Models\StudentPrism;
 use Illuminate\Http\Request;
@@ -104,16 +105,28 @@ class StudentController extends Controller
     }
 
     public function getInterestForm($id) {
-        $studentInterest = StudentInterestInternship::where("student_id", $id)->get();
-        if ($studentInterest) {
+        if (StudentInterestPrism::where("student_id", $id)->exists()) {
+            $status = ["denied" => "internship"];
+            return inertia('Student/AccessDenied', compact('status'));
+        } else {
+            $studentInterest = StudentInterestInternship::where("student_id", $id)->get();
             return inertia('Student/InternshipInterest', compact('studentInterest'));
         }
-        return inertia('Student/InternshipInterest');
+    }
+
+    public function getPrismForm($id) {
+        if (StudentInterestInternship::where("student_id", $id)->exists()) {
+            $status = ["denied" => "PRISM"];
+            return inertia('Student/AccessDenied', compact('status'));
+        } else {
+            $studentInterest = StudentInterestPrism::where("student_id", $id)->get();
+            return inertia('Student/PrismInterest', compact('studentInterest'));
+        }
     }
 
     public function addInternshipInterest(Request $request)
     {
-
+        
         $validated = $request->validate([
             'interests' => 'required',
             'languages' => 'required',
@@ -165,24 +178,24 @@ class StudentController extends Controller
         $languages_array = $request->languages;
         $frameworks_array = $request->framework;
 
+        //dd($request);
 
         if ($request->otherLanguages !== null) {
-            $new_array = explode(", ", trim($request->otherLanguages, ","));
-            $trim = str_replace(' ', '', trim($request->otherLanguages, ', '));
+            $trim_array = explode(", ", str_replace(' ', '', trim($request->otherLanguages, ', ')));
 
-            if (!in_array($trim, $new_array)) {
-                foreach ($new_array as $item) {
-                    array_push($languages_array, $item);
+            foreach ($trim_array as $word) {
+                if (!in_array($word, $languages_array)) {
+                    array_push($languages_array, strtolower($word));
                 }
             }
         }
-        if ($request->otherFrameworks !== null) {
-            $new_array = explode(", ", trim($request->otherFrameworks, ","));
-            $trim = str_replace(' ', '', trim($request->otherFrameworks, ', '));
 
-            if (!in_array($trim, $new_array)) {
-                foreach ($new_array as $item) {
-                    array_push($frameworks_array, $item);
+        if ($request->otherFrameworks !== null) {
+            $trim_array = explode(", ", str_replace(' ', '', trim($request->otherFrameworks, ', ')));
+
+            foreach ($trim_array as $word) {
+                if (!in_array($word, $frameworks_array)) {
+                    array_push($frameworks_array, strtolower($word));
                 }
             }
         }
