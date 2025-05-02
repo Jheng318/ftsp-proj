@@ -6,8 +6,8 @@ function InternshipInterest({ studentInterest }) {
   const { auth } = usePage().props;
   let otherLanguages = "";
   let otherFrameworks = "";
-  let languages = studentInterest[0].languages.toLowerCase().split(", ");
-  let frameworks = studentInterest[0].framework.toLowerCase().split(", ");
+  let languages = (studentInterest.length !== 0) ? studentInterest[0].languages.toLowerCase().split(", ") : [];
+  let frameworks = (studentInterest.length !== 0) ? studentInterest[0].framework.toLowerCase().split(", ") : [];
 
   if (studentInterest.length !== 0) {
 
