@@ -45,9 +45,11 @@ class StaffController extends Controller
     public function assignedAllo(){
         $allocatedIntern = StudentInternship::with(['internship', 'student'])->get();
         $allocatedPrism = StudentPrism::with(['prism', 'student'])->get();
-        
+
         return inertia('Staff/Allocated', compact(['allocatedIntern', 'allocatedPrism']));
+
     }
+
 
     public function studentInfo(){
         $students = Student::paginate(10);
