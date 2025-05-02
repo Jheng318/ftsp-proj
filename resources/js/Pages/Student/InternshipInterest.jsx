@@ -2,21 +2,52 @@ import { useForm, usePage } from "@inertiajs/react";
 import Button from "@/js/components/Button";
 import { useEffect } from "react";
 
-function InternshipInterest() {
+function InternshipInterest({ studentInterest }) {
   const { auth } = usePage().props;
+  let otherLanguages = "";
+  let otherFrameworks = "";
+  let languages = studentInterest[0].languages.toLowerCase().split(", ");
+  let frameworks = studentInterest[0].framework.toLowerCase().split(", ");
+
+  if (studentInterest.length !== 0) {
+
+    function removeMatchingItems(array1, array2) {
+      return array1.filter(item => array2.includes(item));
+    }
+    const allowedLanguages = ["html", "css", "javascript", "php", "c#"];
+    
+    languages.forEach(language => {
+      if (!allowedLanguages.includes(language)) {
+        otherLanguages += language + ", ";
+      }
+    });
+    languages = removeMatchingItems(languages, allowedLanguages);
+
+    const allowedFrameworks = ["angular", "vue", "react", "asp", "laravel"];
+
+
+    frameworks.forEach(framework => {
+      if (!allowedFrameworks.includes(framework)) {
+        otherFrameworks += framework + ", ";
+      }
+    });
+    frameworks = removeMatchingItems(frameworks, allowedFrameworks);
+  }
+
   const {
     data,
     setData,
     post,
+    put,
     reset,
     processing,
     errors: formErrors,
   } = useForm({
-    interests: "",
-    languages: [],
-    otherLanguages: "",
-    framework: [],
-    otherFrameworks: "",
+    interests: studentInterest[0]?.interest || "",
+    languages: languages || [],
+    otherLanguages: otherLanguages || "",
+    framework: frameworks || [],
+    otherFrameworks: otherFrameworks || "",
     user_id: "",
     resume: ""
   });
@@ -27,7 +58,11 @@ function InternshipInterest() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    post("/ftsp-proj/intern-interest");
+    if (studentInterest.length !== 0) {
+      put("/ftsp-proj/internship-interest");
+    } else {
+      post("/ftsp-proj/intern-interest");
+    }
   };
 
   function handleLanguageChange(e) {

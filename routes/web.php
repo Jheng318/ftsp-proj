@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommonController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\StudentController;
+use App\Models\Student;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
@@ -58,10 +59,13 @@ Route::middleware(['auth', 'student'])->group(function(){
     Route::get('/prism-student/{id}', [StudentController::class, 'prismDetail'])->name('student.prism.prismDetail');
     Route::get('/allocation-student', [StudentController::class, 'allocation'])->name('student.allocation');
 
-    Route::inertia('/intern-interest', 'Student/InternshipInterest')->name('student.internship.interest');
     Route::inertia('/prism-interest', 'Student/PrismInterest')->name('student.prism.interest');
+
+    Route::get('/intern-interest/{id}', [StudentController::class, 'getInterestForm'])->name('student.internship.interest');
     
     Route::post('/intern-interest', [StudentController::class, 'addInternshipInterest'])->name('student.add.internship.interest');
+    Route::put('/internship-interest', [StudentController::class, 'editInternshipInterest'])->name('student.edit.internship.interest');
+
     Route::post('/prism-interest', [StudentController::class, 'addPrismInterest'])->name('student.add.prism.interest');
 
 });

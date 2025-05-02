@@ -103,6 +103,14 @@ class StudentController extends Controller
         return response()->json("allocation page");
     }
 
+    public function getInterestForm($id) {
+        $studentInterest = StudentInterestInternship::where("student_id", $id)->get();
+        if ($studentInterest) {
+            return inertia('Student/InternshipInterest', compact('studentInterest'));
+        }
+        return inertia('Student/InternshipInterest');
+    }
+
     public function addInternshipInterest(Request $request)
     {
 
@@ -112,11 +120,11 @@ class StudentController extends Controller
             'framework' => 'required'
         ]);
 
-/*         if ($request->files !== null) {
-            $fileName = time() . '.' . $request->files->extension();
-            dd($fileName);
-            $request->files->move(public_path('uploads'), $fileName);
-        } */
+        if ($request->hasFile('resume')) {
+            $file = $request->file('resume');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('resume', $filename, 'public'); // Store in the 'public' disk under 'uploads' folder
+        }
 
         $languages_array = $request->languages;
         $frameworks_array = $request->framework;
@@ -145,5 +153,50 @@ class StudentController extends Controller
         if ($interest) {
             return redirect()->route('student.main');
         }
+    }
+
+    public function editInternshipInterest(Request $request) {
+        $validated = $request->validate([
+            'interests' => 'required',
+            'languages' => 'required',
+            'framework' => 'required'
+        ]);
+
+        $languages_array = $request->languages;
+        $frameworks_array = $request->framework;
+
+
+        if ($request->otherLanguages !== null) {
+            $new_array = explode(", ", trim($request->otherLanguages, ","));
+            $trim = str_replace(' ', '', trim($request->otherLanguages, ', '));
+
+            if (!in_array($trim, $new_array)) {
+                foreach ($new_array as $item) {
+                    array_push($languages_array, $item);
+                }
+            }
+        }
+        if ($request->otherFrameworks !== null) {
+            $new_array = explode(", ", trim($request->otherFrameworks, ","));
+            $trim = str_replace(' ', '', trim($request->otherFrameworks, ', '));
+
+            if (!in_array($trim, $new_array)) {
+                foreach ($new_array as $item) {
+                    array_push($frameworks_array, $item);
+                }
+            }
+        }
+
+        $originalForm = StudentInterestInternship::where("student_id", $request->user_id)->first();
+
+        if ($originalForm) {
+            $originalForm->update([
+                'framework' => implode(", ", $frameworks_array),
+                'languages' => implode(", ", $languages_array),
+                'interest' => $request->interests,
+                'student_id' => $request->user_id
+            ]);
+        }
+        return redirect()->route('student.main');
     }
 }

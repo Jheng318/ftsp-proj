@@ -79,8 +79,14 @@
   height: 100%;
 }
 
-.view-btn a , .detail-btn a{
+.view-btn a{
   text-decoration: none;
+  color: white;
+}
+
+.detail-btn button {
+  border: none;
+  background-color: inherit;
   color: white;
 }
 

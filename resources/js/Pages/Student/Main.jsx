@@ -6,9 +6,12 @@ import CardButton from "../../components/CardButton";
 import sortIcon from "@/images/sort.png";
 import personIcon from "@/images/person.png";
 import salaryIcon from "@/images/salary.png";
-import { usePage } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 
 function Main({ internships, prism_projects, allocation }) {
+
+    const { auth } = usePage().props;
+
     return (
         <>
             <section
@@ -30,11 +33,11 @@ function Main({ internships, prism_projects, allocation }) {
             </div>
 
             <section id="allocation">
-                {allocation.allocation_status == false && 
-                <>
-                    <h3 className="blue margin-left">Unsuccessful Allocation</h3>
-                    <p className="description margin-left">You have not been assigned to a internship/PRISM allocation yet. Please hold. </p>
-                </>
+                {allocation.allocation_status == false &&
+                    <>
+                        <h3 className="blue margin-left">Unsuccessful Allocation</h3>
+                        <p className="description margin-left">You have not been assigned to a internship/PRISM allocation yet. Please hold. </p>
+                    </>
                 }
             </section>
 
@@ -56,10 +59,14 @@ function Main({ internships, prism_projects, allocation }) {
                     </p>
                     <div className="d-flex">
                         <div className="detail-btn">
-                            <a href="/ftsp-proj/intern-interest">Internship Interest</a>
+                            <button onClick={() => {
+                                router.get(`intern-interest/${auth.user.id}`);
+                            }}>Internship Interest</button>
                         </div>
                         <div className="detail-btn">
-                            <a href="/ftsp-proj/prism-interest">PRISM Interest</a>
+                            <button onClick={() => {
+                                router.get(`${BASE_PATH}/add-internship`);
+                            }}>PRISM Interest</button>
                         </div>
                     </div>
                 </div>
