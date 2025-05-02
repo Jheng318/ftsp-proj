@@ -2,21 +2,52 @@ import { useForm, usePage } from "@inertiajs/react";
 import Button from "@/js/components/Button";
 import { useEffect } from "react";
 
-function InternshipInterest() {
+function InternshipInterest({ studentInterest }) {
   const { auth } = usePage().props;
+  let otherLanguages = "";
+  let otherFrameworks = "";
+  let languages = studentInterest[0].languages.toLowerCase().split(", ");
+  let frameworks = studentInterest[0].framework.toLowerCase().split(", ");
+
+  if (studentInterest.length !== 0) {
+
+    function removeMatchingItems(array1, array2) {
+      return array1.filter(item => array2.includes(item));
+    }
+    const allowedLanguages = ["html", "css", "javascript", "php", "c#"];
+    
+    languages.forEach(language => {
+      if (!allowedLanguages.includes(language)) {
+        otherLanguages += language + ", ";
+      }
+    });
+    languages = removeMatchingItems(languages, allowedLanguages);
+
+    const allowedFrameworks = ["angular", "vue", "react", "asp", "laravel"];
+
+
+    frameworks.forEach(framework => {
+      if (!allowedFrameworks.includes(framework)) {
+        otherFrameworks += framework + ", ";
+      }
+    });
+    frameworks = removeMatchingItems(frameworks, allowedFrameworks);
+  }
+
   const {
     data,
     setData,
     post,
+    put,
     reset,
     processing,
     errors: formErrors,
   } = useForm({
-    interests: "",
-    languages: [],
-    otherLanguages: "",
-    framework: [],
-    otherFrameworks: "",
+    interests: studentInterest[0]?.interest || "",
+    languages: languages || [],
+    otherLanguages: otherLanguages || "",
+    framework: frameworks || [],
+    otherFrameworks: otherFrameworks || "",
     user_id: "",
     resume: ""
   });
@@ -27,7 +58,11 @@ function InternshipInterest() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    post("/ftsp-proj/intern-interest");
+    if (studentInterest.length !== 0) {
+      put("/ftsp-proj/intern-interest");
+    } else {
+      post("/ftsp-proj/intern-interest");
+    }
   };
 
   function handleLanguageChange(e) {
@@ -292,10 +327,11 @@ function InternshipInterest() {
           <input type="file" id="resume" name="resume" className="mt-1" onChange={(e) => setData("resume", e.target.files[0])}></input>
           <br />
           <input hidden value={data.user_id} readOnly />
+          <p className="text-danger mt-2">*If you are submitting this form for the first time, do note that you will not be able to access the PRISM form & allocations after submission.</p>
           <Button
             disabled={processing}
             type="submit"
-            className="ms-2 mt-5"
+            className="ms-2 mt-2"
           >
             Add Listing
           </Button>

@@ -6,9 +6,11 @@ import CardButton from "../../components/CardButton";
 import sortIcon from "@/images/sort.png";
 import personIcon from "@/images/person.png";
 import salaryIcon from "@/images/salary.png";
-import { usePage } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 
 function Main({ internships, prism_projects, allocation }) {
+    const { auth } = usePage().props;
+
     return (
         <>
             <section
@@ -30,6 +32,17 @@ function Main({ internships, prism_projects, allocation }) {
             </div>
 
             <section id="allocation">
+                {allocation.allocation_status == false && (
+                    <>
+                        <h3 className="blue margin-left">
+                            Unsuccessful Allocation
+                        </h3>
+                        <p className="description margin-left">
+                            You have not been assigned to a internship/PRISM
+                            allocation yet. Please hold.{" "}
+                        </p>
+                    </>
+                )}
                 {allocation.allocation_status == false && (
                     <>
                         <h3 className="blue margin-left">
@@ -69,6 +82,26 @@ function Main({ internships, prism_projects, allocation }) {
                             <a href="/ftsp-proj/prism-interest">
                                 PRISM Interest
                             </a>
+                            <button
+                                onClick={() => {
+                                    router.get(
+                                        `intern-interest/${auth.user.id}`
+                                    );
+                                }}
+                            >
+                                Internship Interest
+                            </button>
+                        </div>
+                        <div className="detail-btn">
+                            <button
+                                onClick={() => {
+                                    router.get(
+                                        `prism-interest/${auth.user.id}`
+                                    );
+                                }}
+                            >
+                                PRISM Interest
+                            </button>
                         </div>
                     </div>
                 </div>

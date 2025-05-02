@@ -1,0 +1,16 @@
+h1 {
+  color: #6393F2;
+}
+
+ul {
+  margin: 1rem;
+  color: red;
+}
+
+button {
+  border: none;
+    background-color: #6393F2;
+    padding: 0.5rem;
+    border-radius: 1rem;
+    color: white;
+}

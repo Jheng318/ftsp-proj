@@ -6,6 +6,7 @@ use App\Models\Internship;
 use App\Models\Prism;
 use App\Models\Student;
 use App\Models\StudentInterestInternship;
+use App\Models\StudentInterestPrism;
 use App\Models\StudentInternship;
 use App\Models\StudentPrism;
 use Illuminate\Http\Request;
@@ -103,20 +104,40 @@ class StudentController extends Controller
         return response()->json("allocation page");
     }
 
+    public function getInterestForm($id) {
+        if (StudentInterestPrism::where("student_id", $id)->exists()) {
+            $status = ["denied" => "internship"];
+            return inertia('Student/AccessDenied', compact('status'));
+        } else {
+            $studentInterest = StudentInterestInternship::where("student_id", $id)->get();
+            return inertia('Student/InternshipInterest', compact('studentInterest'));
+        }
+    }
+
+    public function getPrismForm($id) {
+        if (StudentInterestInternship::where("student_id", $id)->exists()) {
+            $status = ["denied" => "PRISM"];
+            return inertia('Student/AccessDenied', compact('status'));
+        } else {
+            $studentInterest = StudentInterestPrism::where("student_id", $id)->get();
+            return inertia('Student/PrismInterest', compact('studentInterest'));
+        }
+    }
+
     public function addInternshipInterest(Request $request)
     {
-
+        
         $validated = $request->validate([
             'interests' => 'required',
             'languages' => 'required',
             'framework' => 'required'
         ]);
 
-/*         if ($request->files !== null) {
-            $fileName = time() . '.' . $request->files->extension();
-            dd($fileName);
-            $request->files->move(public_path('uploads'), $fileName);
-        } */
+        if ($request->hasFile('resume')) {
+            $file = $request->file('resume');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('resume', $filename, 'public'); // Store in the 'public' disk under 'uploads' folder
+        }
 
         $languages_array = $request->languages;
         $frameworks_array = $request->framework;
@@ -145,5 +166,50 @@ class StudentController extends Controller
         if ($interest) {
             return redirect()->route('student.main');
         }
+    }
+
+    public function editInternshipInterest(Request $request) {
+        $validated = $request->validate([
+            'interests' => 'required',
+            'languages' => 'required',
+            'framework' => 'required'
+        ]);
+
+        $languages_array = $request->languages;
+        $frameworks_array = $request->framework;
+
+        //dd($request);
+
+        if ($request->otherLanguages !== null) {
+            $trim_array = explode(", ", str_replace(' ', '', trim($request->otherLanguages, ', ')));
+
+            foreach ($trim_array as $word) {
+                if (!in_array($word, $languages_array)) {
+                    array_push($languages_array, strtolower($word));
+                }
+            }
+        }
+
+        if ($request->otherFrameworks !== null) {
+            $trim_array = explode(", ", str_replace(' ', '', trim($request->otherFrameworks, ', ')));
+
+            foreach ($trim_array as $word) {
+                if (!in_array($word, $frameworks_array)) {
+                    array_push($frameworks_array, strtolower($word));
+                }
+            }
+        }
+
+        $originalForm = StudentInterestInternship::where("student_id", $request->user_id)->first();
+
+        if ($originalForm) {
+            $originalForm->update([
+                'framework' => implode(", ", $frameworks_array),
+                'languages' => implode(", ", $languages_array),
+                'interest' => $request->interests,
+                'student_id' => $request->user_id
+            ]);
+        }
+        return redirect()->route('student.main');
     }
 }

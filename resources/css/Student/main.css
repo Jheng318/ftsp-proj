@@ -96,6 +96,28 @@
     margin: 2rem auto;
     display: block;
 }
+.view-btn a {
+    text-decoration: none;
+    color: white;
+}
+
+.detail-btn button {
+    border: none;
+    background-color: inherit;
+    color: white;
+}
+
+.detail-btn,
+.view-btn {
+    background-color: #6393f2;
+    border-radius: 10px;
+    cursor: pointer;
+    width: 100px;
+    padding: 8px;
+    text-align: center;
+    margin: 2rem auto;
+    display: block;
+}
 
 .detail-btn {
     margin: 1rem 1rem;
