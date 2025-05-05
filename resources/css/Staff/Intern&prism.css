@@ -1,4 +1,5 @@
-#internship {
+#internship,
+#prism {
     & > div div h3 {
         color: var(--blue-primary);
     }
@@ -34,7 +35,7 @@
 /* #internship div #filterBtn:checked ~ #span {
     display: block;
 } */
-#internship div #right {
+:is(#internship, #prism) div #right {
     position: relative;
     & > #filterBtn:checked ~ .filterOption {
         display: block;
@@ -66,7 +67,7 @@
     }
 }
 .cutoff-text {
-    --max-lines: 6;
+    --max-lines: 3;
     display: -webkit-box;
     overflow: hidden;
     -webkit-box-orient: vertical;

@@ -12,7 +12,7 @@ class Prism extends Model
         'type',
         'description',
         'user_id',
-        'gpa_requirenment',
+        'gpa_constraints',
         'no_of_students',
         'start_date',
         'end_date',
@@ -24,4 +24,5 @@ class Prism extends Model
     public function student_prism(){
         return $this->hasMany(StudentPrism::class);
     }
+    
 }

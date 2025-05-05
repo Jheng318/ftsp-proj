@@ -160,3 +160,10 @@ table tbody button {
     font-size: 1.5rem;
     color: var(--black);
 }
+.h-30 {
+    height: 30%;
+}
+
+.w-83 {
+    width: 83%;
+}

@@ -56,6 +56,7 @@ function AddInternship() {
         reset();
     }
 
+    // to set the user id when it is first rendered
     useEffect(() => {
         setData("user_id", auth.user.id);
     }, []);

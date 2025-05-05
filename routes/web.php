@@ -2,8 +2,11 @@
 
 use App\Http\Controllers\AIController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\InternController;
+use App\Http\Controllers\PrismController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\StudentController;
+use App\Models\Prism;
 use App\Models\Student;
 use Illuminate\Support\Facades\Route;
 //use Illuminate\Support\Facades\Storage;
@@ -25,17 +28,23 @@ Route::middleware(['auth'])->group(function(){
 
 // Staffs routes
 Route::middleware(['auth', 'staff'])->group(function(){
-    Route::get('/dashboard',[StaffController::class , 'index'] )->name('staff.dashboard');
     // internship
-    Route::get('/intern-staff', [StaffController::class, 'intern'])->name('staff.intern.index');
-    Route::delete('/delete-internship/{id}', [StaffController::class , 'deleteIntern'])->name('staff.delete.intern');
-    Route::get('/edit-internship/{id}', [StaffController::class, 'showEditIntern'])->name('staff.show.edit.intern');
-    Route::put('/edit-internship/{id}', [StaffController::class, 'editIntern'])->name('staff.edit.intern');
+    Route::get('/intern-staff', [InternController::class, 'intern'])->name('staff.intern.index');
+    Route::delete('/delete-internship/{id}', [InternController::class , 'deleteIntern'])->name('staff.delete.intern');
+    Route::get('/edit-internship/{id}', [InternController::class, 'showEditIntern'])->name('staff.show.edit.intern');
+    Route::put('/edit-internship/{id}', [InternController::class, 'editIntern'])->name('staff.edit.intern');
     Route::inertia('/add-internship', 'Staff/AddInternship')->name('staff.show.add.intern');
-    Route::post('/add-internship', [StaffController::class, 'addIntern'])->name('staff.add.intern');
+    Route::post('/add-internship', [InternController::class, 'addIntern'])->name('staff.add.intern');
 
     // prism
-    Route::get('/prism-staff', [StaffController::class, 'prism'])->name('staff.prism.index');
+    Route::get('/prism-staff', [PrismController::class, 'prism'])->name('staff.prism.index');
+    Route::delete('/delete-prism/{id}', [PrismController::class , 'delete'])->name('staff.delete.prism');
+    Route::get('/edit-prism/{id}', [PrismController::class, 'showEditPrism'])->name('staff.show.edit.prism');
+    Route::put('/edit-prism/{id}', [PrismController::class, 'editPrism'])->name('staff.edit.prism');
+    Route::inertia('/add-prism', 'Staff/AddPrism')->name('staff.show.add.prism');
+    Route::post('/add-prism', [PrismController::class, 'addPrism'])->name('staff.add.prism');
+
+    Route::get('/dashboard',[StaffController::class , 'index'] )->name('staff.dashboard');
 
     // allocation
     Route::get('/unallocated', [StaffController::class, 'unassignedAllo'])->name('staff.unassignedAllo');
