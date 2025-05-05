@@ -54,6 +54,7 @@ class StudentController extends Controller
 
         $prism_check = true;
         $internship_check = true;
+        $allocation = true;
         $student_id = Auth::user()->student->id;
 
         if (!StudentInternship::where('student_id', $student_id)->exists()) {
@@ -68,9 +69,16 @@ class StudentController extends Controller
             $allocation = [
                 "allocation_status" => false
             ];
-        } else {
+        } else if ($internship_check) {
+            $internship_id = StudentInternship::where('student_id', $student_id)->value('internship_id');
+            $allocatedIntern = Internship::where('id', $internship_id)->first();
+
             $allocation = [
-                "allocation_status" => false
+                "allocation_status" => true,
+                "allocation_type" => "Internship",
+                "job_title" => $allocatedIntern->name,
+                "company_name" => $allocatedIntern->company_name,
+                "internship_id" => $internship_id
             ];
         }
 
@@ -101,7 +109,22 @@ class StudentController extends Controller
     }
     public function allocation()
     {
-        return response()->json("allocation page");
+        $student_id = Auth::user()->student->id;
+        $studentDetails = Student::where("id", $student_id)->first();
+        $internship_id = StudentInternship::where("student_id", $student_id)->pluck("internship_id");
+        $internshipDetails = Internship::find($internship_id)->map(
+            function ($internship) {
+                return [
+                    "company_name" => $internship->company_name,
+                    "job_title" => $internship->name,
+                    "salary" => $internship->salary,
+                    "location" => $internship->location,
+                    "lecturer_name" => $internship->user->name,
+                    "lecturer_contact" => $internship->user->contact
+                ];
+            }
+        );
+        return inertia('Student/AllocationDetails', compact('studentDetails', 'internshipDetails'));
     }
 
     public function getInterestForm($id) {
@@ -123,6 +146,11 @@ class StudentController extends Controller
             return inertia('Student/PrismInterest', compact('studentInterest'));
         }
     }
+
+/*     public function getStudent($id) {
+        $student = Student::where('user_id', $id)->first();
+        return response()->json($student);
+    } */
 
     public function addInternshipInterest(Request $request)
     {

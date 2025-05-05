@@ -10,7 +10,6 @@ import { router, usePage } from "@inertiajs/react";
 
 function Main({ internships, prism_projects, allocation }) {
     const { auth } = usePage().props;
-
     return (
         <>
             <section
@@ -39,10 +38,31 @@ function Main({ internships, prism_projects, allocation }) {
                         </h3>
                         <p className="description margin-left">
                             You have not been assigned to a internship/PRISM
-                            allocation yet. Please hold.{" "}
+                            allocation yet. Please hold.
                         </p>
                     </>
                 )}
+                {allocation.allocation_type == "Internship" && (
+                    <>
+                        <h3 className="blue margin-left">
+                            Congratulations!
+                        </h3>
+                        <p className="description margin-left">
+                            You will be interning as a <b>{allocation.job_title}</b> at <b>{allocation.company_name}!</b><br></br>
+                            Click below to see your internship details
+                        </p>
+                        <button className="detail-btn"
+                                onClick={() => {
+                                    router.get(
+                                        `allocation-student`
+                                    );
+                                }}
+                            >
+                               View Details
+                        </button>
+                    </>
+                )}
+
             </section>
 
             <div className="title">

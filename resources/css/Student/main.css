@@ -85,16 +85,30 @@
     color: white;
 }
 
+.grid-layout {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    width: 80%;
+    grid-row-gap: 2rem;
+}
+.grid-layout2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: 80%;
+    grid-row-gap: 2rem;
+}
+
 .detail-btn,
 .view-btn {
     background-color: #6393f2;
     border-radius: 10px;
     cursor: pointer;
-    width: 100px;
+    width: 200px;
     padding: 8px;
     text-align: center;
     margin: 2rem auto;
     display: block;
+    font-size: 1.2rem !important;
 }
 .view-btn a {
     text-decoration: none;
@@ -107,21 +121,13 @@
     color: white;
 }
 
-.detail-btn,
-.view-btn {
-    background-color: #6393f2;
-    border-radius: 10px;
-    cursor: pointer;
-    width: 100px;
-    padding: 8px;
-    text-align: center;
-    margin: 2rem auto;
-    display: block;
-}
-
 .detail-btn {
     margin: 1rem 1rem;
     width: auto;
+}
+
+.view-btn {
+    width: 150px;
 }
 
 .right {
