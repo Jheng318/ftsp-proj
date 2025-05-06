@@ -79,6 +79,16 @@
     height: 100%;
 }
 
+.dropdown div {
+    padding: 2px 0;
+    cursor: pointer;
+}
+
+.dropdown div:hover {
+    background-color: #6393f2;
+    color: white;
+}
+
 .view-btn a,
 .detail-btn a {
     text-decoration: none;
@@ -88,13 +98,13 @@
 .grid-layout {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    width: 80%;
+    width: 70%;
     grid-row-gap: 2rem;
 }
 .grid-layout2 {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    width: 80%;
+    width: 70%;
     grid-row-gap: 2rem;
 }
 

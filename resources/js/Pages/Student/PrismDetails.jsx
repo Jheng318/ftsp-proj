@@ -1,9 +1,9 @@
-import "@/css/Student/main.css";
-import "@/css/Student/prismDetails.css";
+
+//import "@/css/Student/test.css";
 
 function PrismDetails({ prism_projects, displayPrism }) {
   return (
-    <section id="main">
+    <section className="grid-layout">
       Test
     </section>
   )
