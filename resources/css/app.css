@@ -55,6 +55,7 @@ a {
     font-size: 0.8rem;
 }
 .primaryBtn {
+    display: block;
     color: var(--gray);
     background-color: var(--blue-primary);
     border: unset;
@@ -98,6 +99,7 @@ a {
     border: unset;
     padding: 0.5rem 1rem;
     border-radius: 10px;
+    display: block;
 }
 .px-16px {
     padding: 0 16px;

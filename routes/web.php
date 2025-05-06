@@ -51,8 +51,11 @@ Route::middleware(['auth', 'staff'])->group(function(){
     Route::get('/allocated', [StaffController::class, 'assignedAllo'])->name('staff.assignedAllo');
 
     // student information
+    Route::get('/add-student', [StaffController::class, 'showAddStudent'])->name('staff.show.addStudents');
+    Route::post('/add-student', [StaffController::class, 'addStudent'])->name('staff.addStudents');
     Route::get('/student-info' ,[StaffController::class , 'studentInfo'])->name('staff.studentInfo');
     Route::put('/editStudent', [StaffController::class, 'editStudent'])->name('staff.editStudent');
+    Route::post('/bulk-addStudents', [StaffController::class, 'bulkAdd'])->name('staff.bulkAdd');
 
     // match students routes
     Route::get("/matchStudents", [StaffController::class, 'matchStudents'])->name('staff.matchStudents');

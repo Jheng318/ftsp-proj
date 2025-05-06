@@ -11,9 +11,10 @@ use App\Models\StudentInterestPrism;
 use App\Models\StudentInternship;
 use App\Models\StudentPrism;
 use App\UsefulTraits;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\ValidationException;
 
 
@@ -92,13 +93,13 @@ class StaffController extends Controller
             $unallocated = Student::whereNotIn('id', StudentInternship::pluck('student_id'))->get();
             $type = Internship::all();
             $interest = StudentInterestInternship::whereIn('student_id', $unallocated->pluck('id'))->get();
-            $prompt = "For each student, match them to the most suitable internship using the following criteria:
+            $prompt = "For each student that is provided as 'Student's Interest', match them to the most suitable internship using the following criteria:
 
             1. Prioritize the internship role that best aligns with the student's interest.
             2. If multiple internships match the interest, consider the student's preferred frameworks and programming languages.
             3. Ensure the student's GPA meets the internship's GPA requirement, and consider location compatibility.
             4. Ensure the student's internship period (internship_start and internship_end) aligns with the start and end of the internship in the internship listing.
-            4. Each internship can have a certain number of students, ensure that the total number of students assigned to each internship does not exceed the number of students (no_of_students) specified in the internship table.
+            5. Each internship can have a certain number of students, ensure that the total number of students assigned to each internship does not exceed the number of students (no_of_students) specified in the internship table.
 
             Return only the matched results in this exact format:
             StudentId -> InternshipId
@@ -119,12 +120,12 @@ class StaffController extends Controller
 
             StudentId -> ProjectId
 
-            Only return one line per student. Do not include any headings, titles, or explanations.";           
+            Only return one line per student. Do not include any headings, titles, or explanations.\n";           
         }
 
         
 
-        $prompt .= $activeTab == "intern" ? "Internship: ": "Prism: " . json_encode($type, JSON_PRETTY_PRINT) . "\n";
+        $prompt .= ($activeTab == "intern" ? "Internship: Listing" : "Prism: Listing") . json_encode($type, JSON_PRETTY_PRINT) . "\n";
         $prompt .= "Student's Interest: " . json_encode($interest, JSON_PRETTY_PRINT) . "\n";
 
         $response = GeminiAi::generateText($prompt, ["model" => "gemini-2.0-flash-lite"]);
@@ -151,6 +152,77 @@ class StaffController extends Controller
         //         ]);
         //     }
         // }
+        return redirect()->route('staff.assignedAllo');
+    }
+    public function getStudent($id){
+        $student = Student::select('name', 'gpa', 'location', 'admin_no')->find($id);
+        return response()->json($student);
+    }
+    public function showAddStudent(){
+        return inertia('Staff/AddStudents');
+    }
+    public function addStudent(Request $request){
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string',
+                'admin_no' => 'required|string|size:7',
+                'location' => 'required|string',
+                'gpa' => 'required|numeric',
+                'internship_start' => 'string',
+                'internship_end' => 'string'
+            ]);
+            $student = Student::create([
+                'name' => $validated['name'],
+                'admin_no' => $validated['admin_no'],
+                'location' => $validated['location'],
+                'gpa' => $validated['gpa'],
+                'internship_start' => $validated['internship_start'],
+                'internship_end' => $validated['internship_end'],
+                'user_id' => null,
+                'resume_name' => null,
+                'resume_status' => false
+            ]);
+            return redirect()->route('staff.studentInfo')->with('message', 'Student Information Added Succesfully');
+        }
+        catch(ValidationException $e){
 
+        }
+    }
+    public function bulkAdd(Request $request){
+        try{
+            $request->validate([
+                'csvfile' => 'required|mimes:csv',
+            ]);
+
+            DB::beginTransaction();
+            // this line is necessary ^
+            $csvfile = fopen($request->file('csvfile'), 'r');
+            $firstLine = true;
+
+            while(($data = fgetcsv($csvfile, 2000, ',')) !== false){
+                if(! $firstLine){
+                    Student::create([
+                        'name' => $data[0],
+                        'admin_no' => $data[1],
+                        'location' => $data[2],
+                        'gpa' => $data[3],
+                        'resume_status' => false,
+                        'resume_name' => null,
+                        'internship_start' => null,
+                        'internship_end' => null
+                    ]);
+                }
+                $firstLine = false;
+            }
+            fclose($csvfile);
+            DB::commit();
+            // this line is necessary ^
+            return redirect()->back()->with('message', 'Successfully inserted students');
+        }
+        catch(Exception $e){
+            // if there is any error in inserting the data, the csv entries inserted will be removed 
+            DB::rollBack();
+            return redirect()->back()->withErrors(['error' => 'Fail to Import Students']);
+        }
     }
 }   

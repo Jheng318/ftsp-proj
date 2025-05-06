@@ -118,7 +118,7 @@ function EditPrism({ prismPost }) {
                             </div>
                         </div>
                         <br />
-                        <label htmlFor="gpaConstraints">GPA Constraints</label>
+
                         <br />
                         <input
                             type="text"

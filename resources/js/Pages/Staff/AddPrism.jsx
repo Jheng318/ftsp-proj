@@ -6,7 +6,6 @@ import { useEffect } from "react";
 
 function AddPrism() {
     const { errors, auth } = usePage().props;
-    console.log(auth.user.id);
 
     const {
         data,

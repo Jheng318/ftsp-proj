@@ -29,7 +29,6 @@ function AddInternship() {
         user_id: "",
         no_of_students: 1,
     });
-    console.log(auth.user.id);
     const handleCodingLangChange = (e) => {
         const { value, checked } = e.target;
         // it adds the new lang that was checked into the data.codingLang and removes it if it is unchecked
@@ -75,7 +74,7 @@ function AddInternship() {
                     position="top-center"
                 />
             )}
-            <h3 className="ps-4 my-4">Add Internship</h3>
+            <h3 className="ps-4 my-4 text-primary">Add Internship</h3>
             <form className="container-fluid gap-6" onSubmit={handleSubmit}>
                 <div className="row container-fluid">
                     <div className="col">

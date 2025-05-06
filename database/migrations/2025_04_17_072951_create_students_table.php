@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('students', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->char('admin_no', 7);
+            $table->char('admin_no', 7)->unique();
             $table->string('location');
             $table->decimal('gpa', 3, 2);
             $table->boolean('resume_status');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('resume_name')->nullable();
             $table->date("internship_start")->nullable();

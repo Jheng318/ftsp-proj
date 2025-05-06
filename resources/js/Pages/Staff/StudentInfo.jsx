@@ -1,9 +1,11 @@
 import pencil from "@/images/edit-icon.svg";
-import { Link, useForm, usePage } from "@inertiajs/react";
+import { Link, useForm, usePage, router } from "@inertiajs/react";
 import { useEffect, useState, useCallback } from "react";
 import Modal from "../../components/Modal";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Form from "react-bootstrap/Form";
+import Button from "@/js/components/Button.jsx";
 
 function StudentInfo({ students }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -24,6 +26,19 @@ function StudentInfo({ students }) {
         location: "",
         user_id: 0,
     });
+    const {
+        data: bulkData,
+        setData: setBulkData,
+        post,
+        processing: bulkProcessing,
+        reset: bulkReset,
+    } = useForm({ csvfile: null });
+
+    function handleBulkSubmit(e) {
+        e.preventDefault();
+        post("/ftsp-proj/bulk-addStudents");
+        bulkReset();
+    }
 
     const fetchStudentData = useCallback(
         async (id) => {
@@ -101,9 +116,46 @@ function StudentInfo({ students }) {
                     position="top-center"
                 />
             )}
-            <h3 className="text-primary my-5 fw-semibold">
-                Student Information
-            </h3>
+            <div className="flex justify-content-between my-5 align-center">
+                <h3 className="text-primary">Student Information</h3>
+                <div className="d-flex border border-1 w-50 justify-content-between flex-grow-0 flex-shrink-0">
+                    <Form
+                        method="post"
+                        onSubmit={handleBulkSubmit}
+                        encType="multipart/form-data"
+                        className="d-flex align-items-center flex-nowrap w-100"
+                    >
+                        <Form.Label className="">Bulk Add</Form.Label>
+                        <Form.Control
+                            type="file"
+                            accept=".csv"
+                            name="csvfile"
+                            className="flex-grow-1"
+                            onChange={(e) =>
+                                setBulkData("csvfile", e.target.files[0])
+                            }
+                        />
+                        {bulkData.csvfile && (
+                            <input
+                                type="submit"
+                                value={
+                                    bulkProcessing ? "Uploading" : "Bulk Add"
+                                }
+                                disabled={bulkProcessing}
+                            />
+                        )}
+                    </Form>
+                    <Button
+                        className="smallBtn fw-bold fs-5"
+                        onClick={() => {
+                            router.get("/ftsp-proj/add-student");
+                        }}
+                    >
+                        +
+                    </Button>
+                </div>
+            </div>
+
             <table className="w-100">
                 <thead>
                     <tr>
@@ -179,6 +231,7 @@ function StudentInfo({ students }) {
                     </tr>
                 </tbody>
             </table>
+
             {isOpen && (
                 <Modal
                     isOpen={isOpen}
