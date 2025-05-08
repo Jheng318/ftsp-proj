@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { router } from "@inertiajs/react";
 import "@/css/Staff/allocated.css";
 import filter from "@/images/filter-icon.svg";
 import edit from "@/images/edit-icon.svg";
@@ -8,19 +9,18 @@ import Modal from "../../components/Modal";
 import InternModalItem from "../../components/InternModalItem";
 import PrismModalItem from "../../components/PrismModalItem";
 
-// the filter, delete, edit is not working
+// the delete, edit is not working
 function Allocated({ allocatedIntern, allocatedPrism }) {
     const [search, setSearch] = useState("");
     const [activeTab, setActiveTab] = useState("intern");
     const [openModal, setOpenModal] = useState(false);
     const [selectedAllo, setSelectedAllo] = useState(false);
     const [filterData, setFilterData] = useState(allocatedIntern?.data);
-    const [filterInternOp, setFilterInternOp] = useState({
+    const [filterOp, setFilterOp] = useState({
         company: "",
-        internPeriod: "",
+        jobRole: "",
         teacher: "",
         projectType: "",
-        projectDuration: "",
     });
 
     const currentData =
@@ -30,9 +30,41 @@ function Allocated({ allocatedIntern, allocatedPrism }) {
         setFilterData(currentData || []);
     }, [activeTab, currentData]);
 
+    // filter by the selected Internship: role, company. Prism: teacher, projectType
+    useEffect(() => {
+        if (
+            filterOp.company !== "" ||
+            filterOp.teacher !== "" ||
+            filterOp.projectType !== "" ||
+            filterOp.jobRole !== ""
+        )
+            handleFilter();
+        else setFilterOp(currentData);
+    }, [filterOp]);
+
+    function handleFilter() {
+        const filtered = currentData.filter((data) => {
+            if (activeTab === "intern") {
+                return (
+                    (!filterOp.company ||
+                        data.company_name === filterOp.company) &&
+                    (!filterOp.jobRole || data.name === filterOp.jobRole)
+                );
+            } else {
+                return (
+                    (!filterOp.projectType ||
+                        data.type === filterOp.projectType) &&
+                    (!filterOp.teacher || data.user?.name === filterOp.teacher)
+                );
+            }
+        });
+        setFilterData(filtered);
+    }
+
     function toggleActive(tab) {
         setActiveTab(tab);
     }
+
     function handleSearch() {
         const result = currentData?.filter(
             (data) =>
@@ -69,6 +101,12 @@ function Allocated({ allocatedIntern, allocatedPrism }) {
         } else setFilterData(currentData);
     }, [search]);
 
+    useEffect(() => {
+        filterOp.company !== "" ||
+            filterOp.jobRole !== "" ||
+            filterOp.projectType !== "" ||
+            filterOp.teacher;
+    }, [filterOp]);
     return (
         <section id="allocated" className="w-90">
             <div className="mt-5 d-flex justify-content-between align-items-center">
@@ -106,19 +144,19 @@ function Allocated({ allocatedIntern, allocatedPrism }) {
                     </label>
                     <input type="checkbox" id="filterBtn" className="d-none" />
                     <span className="filterOption w-100">
-                        <select name="company" id="company" className="w-100">
-                            <option value="">Select Company</option>
-                        </select>
-                        <select name="jobRole" id="jobRole" className="w-100">
-                            <option value="">Select Role</option>
-                        </select>
-                        <select
-                            name="itpPeriod"
-                            id="itpPeriod"
-                            className="w-100"
-                        >
-                            <option value="">Select ITP Period</option>
-                        </select>
+                        {activeTab == "intern" ? (
+                            <InternFilterOp
+                                filterOp={filterOp}
+                                setFilterOp={setFilterOp}
+                                currentData={currentData}
+                            />
+                        ) : (
+                            <PrismFilterOp
+                                filterOp={filterOp}
+                                setFilterOp={setFilterOp}
+                                currentData={currentData}
+                            />
+                        )}
                     </span>
                 </div>
             </div>
@@ -154,9 +192,8 @@ function Allocated({ allocatedIntern, allocatedPrism }) {
                                 <h3>{id}</h3>
                             </div>
                             <p>
-                                {activeTab == "intern"
-                                    ? `Company Name: ${company_name}`
-                                    : `Project Name : ${name}`}
+                                {activeTab == "intern" &&
+                                    `Company Name: ${company_name}`}
                             </p>
                             <p>
                                 {activeTab == "intern"
@@ -181,7 +218,14 @@ function Allocated({ allocatedIntern, allocatedPrism }) {
                                 <CardButton
                                     btnColor="#F26363"
                                     id={id}
-                                    onClick={(e) => e.stopPropagation()}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        const id = e.currentTarget.dataset.id;
+                                        router.get(
+                                            `/ftsp-proj/delete-allo/${id}`,
+                                            { activeTab }
+                                        );
+                                    }}
                                 >
                                     <img src={deleteIcon} alt="delete icon" />
                                 </CardButton>
@@ -211,3 +255,91 @@ function Allocated({ allocatedIntern, allocatedPrism }) {
 }
 
 export default Allocated;
+function InternFilterOp({ filterOp, setFilterOp, currentData }) {
+    const companies = [
+        ...new Set(currentData?.map((data) => data.company_name)),
+    ].filter(Boolean);
+    const jobRoles = [...new Set(currentData?.map((data) => data.name))].filter(
+        Boolean
+    );
+    return (
+        <>
+            <select
+                name="company"
+                id="company"
+                className="w-100"
+                value={filterOp.company}
+                onChange={(e) =>
+                    setFilterOp({ ...filterOp, company: e.target.value })
+                }
+            >
+                <option value="">Select Company</option>
+                {companies.map((company) => (
+                    <option key={company} value={company}>
+                        {company}
+                    </option>
+                ))}
+            </select>
+            <select
+                name="jobRole"
+                id="jobRole"
+                className="w-100"
+                value={filterOp.jobRole}
+                onChange={(e) =>
+                    setFilterOp({ ...filterOp, jobRole: e.target.value })
+                }
+            >
+                <option value="">Select Role</option>
+                {jobRoles.map((role) => (
+                    <option key={role} value={role}>
+                        {role}
+                    </option>
+                ))}
+            </select>
+        </>
+    );
+}
+function PrismFilterOp({ filterOp, setFilterOp, currentData }) {
+    const projectTypes = [
+        ...new Set(currentData?.map((data) => data.type)),
+    ].filter(Boolean);
+    const teachers = [
+        ...new Set(currentData?.map((data) => data.user?.name)),
+    ].filter(Boolean);
+    return (
+        <>
+            <select
+                name="projType"
+                id="projType"
+                className="w-100"
+                value={filterOp.projectType}
+                onChange={(e) =>
+                    setFilterOp({ ...filterOp, projectType: e.target.value })
+                }
+            >
+                <option value="">Select Project Type</option>
+                {projectTypes.map((type) => (
+                    <option key={type} value={type}>
+                        {type}
+                    </option>
+                ))}
+            </select>
+            <select
+                name="teacher"
+                id="teacher"
+                className="w-100"
+                value={filterOp.teacher}
+                onChange={(e) =>
+                    setFilterOp({ ...filterOp, teacher: e.target.value })
+                }
+            >
+                <option value="">Select Teacher in Charge</option>
+                {teachers.map((teacher) => (
+                    <option key={teacher} value={teacher}>
+                        {teacher}
+                    </option>
+                ))}
+            </select>
+        </>
+    );
+}

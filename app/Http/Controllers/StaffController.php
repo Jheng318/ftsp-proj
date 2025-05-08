@@ -10,10 +10,12 @@ use App\Models\StudentInterestInternship;
 use App\Models\StudentInterestPrism;
 use App\Models\StudentInternship;
 use App\Models\StudentPrism;
+use App\Models\User;
 use App\UsefulTraits;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
@@ -205,6 +207,13 @@ class StaffController extends Controller
                 if(! $firstLine){
                     $exists = Student::where('admin_no', $data[1])->exists();
                     if(!$exists){
+                        $user = User::create([
+                            'name' => $data[0],
+                            'email' => $data[4],
+                            'contact' => $data[5],
+                            'role' => 'Student',
+                            'password' => Hash::make('password'),
+                        ]);
                         Student::create([
                             'name' => $data[0],
                             'admin_no' => $data[1],
@@ -213,7 +222,8 @@ class StaffController extends Controller
                             'resume_status' => false,
                             'resume_name' => null,
                             'internship_start' => null,
-                            'internship_end' => null
+                            'internship_end' => null,
+                            'user_id' => $user->id
                         ]);
                     }
                 }
@@ -229,5 +239,14 @@ class StaffController extends Controller
             DB::rollBack();
             return redirect()->back()->withErrors(['error' => 'Fail to Import Students: '. $e->getMessage()]);
         }
+    }
+    public function showDeleteAllo(Request $request,$id ){
+        $activeTab = $request->input('activeTab');
+        if($activeTab == 'intern')
+            $data = StudentInternship::with(['student', 'internship:id,name'])->whereInternshipId($id)->get();
+        elseif($activeTab == 'prism')
+            $data = StudentPrism::with(['student', 'prism:id,name'])->wherePrismId($id)->get();
+        
+        return inertia('Staff/DeleteAllo', compact(['data', 'activeTab']));
     }
 }   

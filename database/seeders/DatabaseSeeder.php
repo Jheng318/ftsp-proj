@@ -65,6 +65,32 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Mary Jane', 'email' => '231234Z@mymail.nyp.edu.sg', 'admin_no' => '231234Z' ],
         ];
 
+        $addressList = [
+            "Blk 233, #07-18, Ang Mo Kio Avenue 3, Singapore 560233",
+            "Blk 51, #12-45, Havelock Road, Singapore 160051",
+            "Blk 789, #03-22, Tampines Street 71, Singapore 520789",
+            "Blk 16, #15-01, Bedok South Road, Singapore 460016",
+            "Blk 302, #09-56, Clementi Avenue 4, Singapore 120302",
+            "Blk 9, #04-11, Toa Payoh Lorong 7, Singapore 310009",
+            "Blk 418, #11-33, Jurong East Street 32, Singapore 600418",
+            "Blk 63, #02-08, Marine Parade Central, Singapore 440063",
+            "Blk 115, #18-27, Bukit Merah View, Singapore 150115",
+            "Blk 27, #05-14, Sengkang East Avenue, Singapore 540027",
+            "Blk 33, #06-42, Serangoon North Avenue 1, Singapore 550033",
+            "Blk 801, #14-05, Yishun Ring Road, Singapore 760801",
+            "Blk 177, #21-60, Hougang Street 13, Singapore 530177",
+            "Blk 22, #03-39, Telok Blangah Rise, Singapore 090022",
+            "Blk 506, #10-17, Pasir Ris Street 51, Singapore 510506",
+            "Blk 1, #08-25, Upper Aljunied Lane, Singapore 360001",
+            "Blk 440, #19-02, Choa Chu Kang Avenue 4, Singapore 680440",
+            "Blk 6, #16-31, Boon Lay Place, Singapore 640006",
+            "Blk 102, #04-48, MacPherson Lane, Singapore 360102",
+            "Blk 71, #13-55, Redhill Close, Singapore 150071",
+            "Blk 35, #11-09, Circuit Road, Singapore 370035",
+            "Blk 58, #20-44, Ghim Moh Road, Singapore 270058"
+        ];
+
+        $i = 0;
         foreach ($studentData as $data) {
             $dates = $this->getRandomInternshipDates();
             $user = User::create([
@@ -77,7 +103,7 @@ class DatabaseSeeder extends Seeder
             Student::create([
                 'name' => $data['name'],
                 'admin_no' => $data['admin_no'],
-                'location' => $faker->city(),
+                'location' => $addressList[$i],
                 'gpa' => $faker->randomFloat(1, 2.0, 4.0),
                 'resume_status' => false,
                 'user_id' => $user->id,
@@ -85,6 +111,7 @@ class DatabaseSeeder extends Seeder
                 "internship_start" => $dates['startDate'],
                 'internship_end' => $dates['endDate'],
             ]);
+            $i++;
         }
         $internshipData = [
             [

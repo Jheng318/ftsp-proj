@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Internship;
+use App\Models\StudentInternship;
+use App\Models\StudentPrism;
 use App\UsefulTraits;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -93,4 +95,5 @@ class InternController extends Controller
             return redirect()->back()->withErrors(['error' => $e]);
         }
     }
+    
 }

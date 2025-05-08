@@ -57,8 +57,8 @@ Route::middleware(['auth', 'staff'])->group(function(){
     Route::put('/editStudent', [StaffController::class, 'editStudent'])->name('staff.editStudent');
     Route::post('/bulk-addStudents', [StaffController::class, 'bulkAdd'])->name('staff.bulkAdd');
 
-    // match students routes
     Route::get("/matchStudents", [StaffController::class, 'matchStudents'])->name('staff.matchStudents');
+    Route::get('/delete-allo/{id}', [StaffController::class, 'showDeleteAllo'])->name('staff.show.deleteAllo');
 });
 
 //Student routes
