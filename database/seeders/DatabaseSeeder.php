@@ -6,6 +6,7 @@ use App\Models\Internship;
 use App\Models\Prism;
 use App\Models\Student;
 use App\Models\StudentInterestInternship;
+use App\Models\StudentInterestPrism;
 use App\Models\StudentInternship;
 use App\Models\Studentprism;
 use App\Models\User;
@@ -179,7 +180,7 @@ class DatabaseSeeder extends Seeder
         ]);
         Prism::create([
             'name' => 'Mobile Chat Application',
-            'type' => 'Web Development',
+            'type' => 'Mobile Development',
             'description' => 'Develop a real-time mobile chat application with features like direct messaging, group chats, and user presence.',
             'user_id' => $staff->id,
             'gpa_constraints' => '2.50, 3.00, 3.50',
@@ -208,6 +209,39 @@ class DatabaseSeeder extends Seeder
                 'student_id' => 11,
             ]
         ];
+        $prismInterest  = [
+            [
+                'framework' => 'React, Laravel',
+                'languages' => 'HTML, CSS, Javascript',
+                'web_dev_ranking' => 1,
+                'mad_ranking' => 2,
+                'rpa_ranking' => 3,
+                'uiux_ranking' => 4,
+                'student_id' => 26,
+            ],
+            [
+                'framework' => 'Flutter, React Native',
+                'languages' => 'Dart Javascript',
+                'web_dev_ranking' => 2,
+                'mad_ranking' => 1,
+                'rpa_ranking' => 3,
+                'uiux_ranking' => 4,
+                'student_id' => 21,
+            ],
+            [
+                'framework' => 'UiPath',
+                'languages' => 'nil',
+                'web_dev_ranking' => 4,
+                'mad_ranking' => 3,
+                'rpa_ranking' => 1,
+                'uiux_ranking' => 2,
+                'student_id' => 22,
+            ],
+
+        ];
+        foreach($prismInterest as $interest){
+            StudentInterestPrism::create($interest);
+        }
         foreach($internshipInterest as $interest){
             StudentInterestInternship::create($interest);
         }

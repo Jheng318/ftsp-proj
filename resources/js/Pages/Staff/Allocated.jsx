@@ -5,18 +5,22 @@ import edit from "@/images/edit-icon.svg";
 import deleteIcon from "@/images/delete-icon.svg";
 import CardButton from "../../components/CardButton";
 import Modal from "../../components/Modal";
-import { formatDate } from "../../reusable";
+import InternModalItem from "../../components/InternModalItem";
+import PrismModalItem from "../../components/PrismModalItem";
 
+// the filter, delete, edit is not working
 function Allocated({ allocatedIntern, allocatedPrism }) {
-    const [search, setSearch] = useState(null);
+    const [search, setSearch] = useState("");
     const [activeTab, setActiveTab] = useState("intern");
     const [openModal, setOpenModal] = useState(false);
     const [selectedAllo, setSelectedAllo] = useState(false);
     const [filterData, setFilterData] = useState(allocatedIntern?.data);
-    const [filterOp, setFilterOp] = useState({
-        role: "",
-        lang: "",
-        frame: "",
+    const [filterInternOp, setFilterInternOp] = useState({
+        company: "",
+        internPeriod: "",
+        teacher: "",
+        projectType: "",
+        projectDuration: "",
     });
 
     const currentData =
@@ -30,10 +34,17 @@ function Allocated({ allocatedIntern, allocatedPrism }) {
         setActiveTab(tab);
     }
     function handleSearch() {
-        const result = currentData?.data?.filter(
+        const result = currentData?.filter(
             (data) =>
-                data.name.toLowerCase().includes(search.toLowerCase()) ||
-                data.admin_no.toLowerCase().includes(search.toLowerCase())
+                data?.name?.toLowerCase()?.includes(search.toLowerCase()) ||
+                data?.company_name
+                    ?.toLowerCase()
+                    ?.includes(search.toLowerCase()) ||
+                data?.user?.name
+                    ?.toLowerCase()
+                    ?.includes(search.toLowerCase()) ||
+                data?.type?.toLowerCase()?.includes(search.toLowerCase()) ||
+                data?.location?.toLowerCase()?.includes(search.toLowerCase())
         );
 
         setFilterData(result);
@@ -52,11 +63,10 @@ function Allocated({ allocatedIntern, allocatedPrism }) {
         setOpenModal(false);
         setSelectedAllo(null);
     }, []);
-
     useEffect(() => {
         if (search) {
             handleSearch();
-        } else setFilterData(currentData?.data);
+        } else setFilterData(currentData);
     }, [search]);
 
     return (
@@ -113,17 +123,24 @@ function Allocated({ allocatedIntern, allocatedPrism }) {
                 </div>
             </div>
             <div className="grid-con w-100">
-                {currentData?.map((data) => {
-                    const { id, name, company_name, location } = data;
-                    const { name: staffName } = data.user;
+                {filterData?.map((data) => {
+                    const {
+                        id,
+                        name,
+                        company_name = undefined,
+                        location = undefined,
+                        type = undefined,
+                    } = data;
+                    const { name: staffName } = data?.user;
+
+                    let source =
+                        activeTab == "intern"
+                            ? data?.student_internship
+                            : data?.student_prism;
 
                     // the new Set helps to filter out duplicates
                     const studentNames = [
-                        ...new Set(
-                            data?.student_internship?.map(
-                                (d) => d?.student?.name
-                            )
-                        ),
+                        ...new Set(source?.map((d) => d?.student?.name)),
                     ];
 
                     return (
@@ -136,20 +153,36 @@ function Allocated({ allocatedIntern, allocatedPrism }) {
                                 <h3>{name}</h3>
                                 <h3>{id}</h3>
                             </div>
-                            <p>Company Name: {company_name}</p>
-                            <p>Location: {location}</p>
+                            <p>
+                                {activeTab == "intern"
+                                    ? `Company Name: ${company_name}`
+                                    : `Project Name : ${name}`}
+                            </p>
+                            <p>
+                                {activeTab == "intern"
+                                    ? `Location: ${location}`
+                                    : `Project Type: ${type}`}
+                            </p>
                             <p>
                                 Students:{" "}
                                 {studentNames.map((name) => (
-                                    <span>{name} </span>
+                                    <span key={name}>{name} </span>
                                 ))}
                             </p>
                             <p>Teacher in Charge: {staffName}</p>
                             <div className="d-flex justify-content-between px-16px container-fluid buttonsDiv">
-                                <CardButton btnColor="#6393F2" id={id}>
+                                <CardButton
+                                    btnColor="#6393F2"
+                                    id={id}
+                                    onClick={(e) => e.stopPropagation()}
+                                >
                                     <img src={edit} alt="edit icon" />
                                 </CardButton>
-                                <CardButton btnColor="#F26363" id={id}>
+                                <CardButton
+                                    btnColor="#F26363"
+                                    id={id}
+                                    onClick={(e) => e.stopPropagation()}
+                                >
                                     <img src={deleteIcon} alt="delete icon" />
                                 </CardButton>
                             </div>
@@ -158,69 +191,19 @@ function Allocated({ allocatedIntern, allocatedPrism }) {
                 })}
             </div>
             {openModal && selectedAllo && (
-                <Modal isOpen={openModal} onClose={closeModal}>
-                    <h3 className="text-primary">{selectedAllo[0].name}</h3>
-                    <div className="flex">
-                        <div>
-                            <p>Description: {selectedAllo[0]?.description}</p>
-                            <p>Company Name: {selectedAllo[0]?.company_name}</p>
-                            <p>Location: {selectedAllo[0]?.location}</p>
-                            <p>Salary: ${selectedAllo[0]?.salary}</p>
-                            <p>Languages: {selectedAllo[0]?.languages}</p>
-                            <p>Frameworks: {selectedAllo[0]?.frameworks}</p>
-                            <p>
-                                Internship Period:{" "}
-                                {formatDate(selectedAllo[0]?.start_date)} to{" "}
-                                {formatDate(selectedAllo[0]?.end_date)}
-                            </p>
-                        </div>
-                        <div>
-                            <p className="fw-bold">Students</p>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <td>Name</td>
-                                        <td>Admin No</td>
-                                        <td>GPA</td>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {selectedAllo[0]?.student_internship?.map(
-                                        (student) => {
-                                            console.log(student);
-                                            return (
-                                                <tr>
-                                                    <td>
-                                                        {student.student.name}
-                                                    </td>
-                                                    <td>
-                                                        {
-                                                            student.student
-                                                                .admin_no
-                                                        }
-                                                    </td>
-                                                    <td>
-                                                        {student.student.gpa}
-                                                    </td>
-                                                </tr>
-                                            );
-                                        }
-                                    )}
-                                </tbody>
-                            </table>
-                            <p>
-                                Number of Students:{" "}
-                                {selectedAllo[0]?.no_of_students}
-                            </p>
-                            <p>
-                                Teacher in Charge: {selectedAllo[0]?.user?.name}
-                            </p>
-                            <p>
-                                GPA Requirement:{" "}
-                                {selectedAllo[0]?.gpa_requirement}
-                            </p>
-                        </div>
-                    </div>
+                <Modal isOpen={openModal} onClose={closeModal} className="w-75">
+                    {" "}
+                    {activeTab == "intern" ? (
+                        <InternModalItem
+                            selectedAllo={selectedAllo}
+                            closeModal={closeModal}
+                        />
+                    ) : (
+                        <PrismModalItem
+                            selectedAllo={selectedAllo}
+                            closeModal={closeModal}
+                        />
+                    )}
                 </Modal>
             )}
         </section>

@@ -38,11 +38,10 @@ class StaffController extends Controller
         $allocatedIntern = Internship::with(['student_internship.student', 'user'])
             ->whereHas('student_internship')
             ->get();
-        //StudentInternship::with(['internship', 'student'])->get();
-        $allocatedPrism = Prism::with(['student_prism.student'])
+        $allocatedPrism = Prism::with(['student_prism.student', 'user'])
             ->whereHas('student_prism')
             ->get();
-
+        
         return inertia('Staff/Allocated', compact(['allocatedIntern', 'allocatedPrism']));
     }
 
@@ -100,6 +99,7 @@ class StaffController extends Controller
             3. Ensure the student's GPA meets the internship's GPA requirement, and consider location compatibility.
             4. Ensure the student's internship period (internship_start and internship_end) aligns with the start and end of the internship in the internship listing.
             5. Each internship can have a certain number of students, ensure that the total number of students assigned to each internship does not exceed the number of students (no_of_students) specified in the internship table.
+            6. If a student is already allocated a internship, he/she cannot be allocated to another internship.
 
             Return only the matched results in this exact format:
             StudentId -> InternshipId
@@ -110,20 +110,22 @@ class StaffController extends Controller
             $unallocated = Student::whereNotIn('id', StudentPrism::pluck('student_id'))->get();
             $type = Prism::all();
             $interest = StudentInterestPrism::whereIn('student_id', $unallocated->pluck('id'))->get();
-            $prompt = "Match each student to the most fitting Project based on these factors:
+            $prompt = "Match students that is provided as 'Student's Interest' to the most suitable project based on the following criteria:
 
-            1.  Primary consideration: Alignment between the student's stated interests and the Project's description and type.
-            2.  Secondary consideration: Compatibility of the student's preferred frameworks and programming languages with the Project's technical requirements.
-            3.  Tertiary consideration: The student's GPA must satisfy the Project's GPA requirements, and the number of students assigned to a project must equal the number of specified GPA constraints for that project.
+            1.  Ranking-Based Allocation: Use 'web_dev_ranking', 'mad_ranking', 'rpa_ranking', and 'uiux_ranking' from the 'prism' table to determine project fit for each student.
+            2.  Project Type Inference: Infer the project type (e.g., Web Development, Mobile App Development, RPA, UI/UX Design) from the provided frameworks and languages.
+            3.  GPA Constraints: Each project has specific GPA constraints. Allocate students whose GPA falls within the given range for that project. The number of GPA values provided for a project matches the total number of students to be assigned to it.
+            4.  GPA Constraint Adherence: Assign students to projects only if their GPA satisfies the project's GPA constraints. For example, a Web Development project with GPA constraints of 3.5 and 2.0 should only receive students with GPAs between 3.5 and 2.0 (inclusive).
+            5.  Group Capacity Limit: Do not assign more students to a project than its specified total student capacity.
+            6.  If a student is already allocated a project, he/she cannot be allocated to another project.
 
-            Present the results in this precise format, with one student per line:
+            Present the allocation results in the following format, with one student-project mapping per line:
 
             StudentId -> ProjectId
 
-            Only return one line per student. Do not include any headings, titles, or explanations.\n";           
+            Ensure each student is listed on a single line with their assigned ProjectId. Do not include any headings, titles, or additional explanations in the output.\n";           
         }
 
-        
 
         $prompt .= ($activeTab == "intern" ? "Internship: Listing" : "Prism: Listing") . json_encode($type, JSON_PRETTY_PRINT) . "\n";
         $prompt .= "Student's Interest: " . json_encode($interest, JSON_PRETTY_PRINT) . "\n";
@@ -144,14 +146,14 @@ class StaffController extends Controller
                 ]);
             }
         } 
-        // elseif ($activeTab == "prism"){
-        //     foreach($matches as $studentId => $interestId){
-        //         StudentPrism::create([
-        //             'student_id' => $studentId,
-        //             'prism_id' => $interestId,
-        //         ]);
-        //     }
-        // }
+        elseif ($activeTab == "prism"){
+            foreach($matches as $studentId => $interestId){
+                StudentPrism::create([
+                    'student_id' => $studentId,
+                    'prism_id' => $interestId,
+                ]);
+            }
+        }
         return redirect()->route('staff.assignedAllo');
     }
     public function getStudent($id){
@@ -201,16 +203,19 @@ class StaffController extends Controller
 
             while(($data = fgetcsv($csvfile, 2000, ',')) !== false){
                 if(! $firstLine){
-                    Student::create([
-                        'name' => $data[0],
-                        'admin_no' => $data[1],
-                        'location' => $data[2],
-                        'gpa' => $data[3],
-                        'resume_status' => false,
-                        'resume_name' => null,
-                        'internship_start' => null,
-                        'internship_end' => null
-                    ]);
+                    $exists = Student::where('admin_no', $data[1])->exists();
+                    if(!$exists){
+                        Student::create([
+                            'name' => $data[0],
+                            'admin_no' => $data[1],
+                            'location' => $data[2],
+                            'gpa' => $data[3],
+                            'resume_status' => false,
+                            'resume_name' => null,
+                            'internship_start' => null,
+                            'internship_end' => null
+                        ]);
+                    }
                 }
                 $firstLine = false;
             }
@@ -222,7 +227,7 @@ class StaffController extends Controller
         catch(Exception $e){
             // if there is any error in inserting the data, the csv entries inserted will be removed 
             DB::rollBack();
-            return redirect()->back()->withErrors(['error' => 'Fail to Import Students']);
+            return redirect()->back()->withErrors(['error' => 'Fail to Import Students: '. $e->getMessage()]);
         }
     }
 }   
