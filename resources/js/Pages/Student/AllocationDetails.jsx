@@ -79,6 +79,7 @@ function AllocationDetails({ studentDetails, details, otherRecords }) {
           <th>Student Name</th>
           <th>Admin No</th>
           <th>Resume Upload Status</th>
+          <th>Download Resume</th>
         </tr>
       </thead>
       <tbody>
@@ -89,6 +90,14 @@ function AllocationDetails({ studentDetails, details, otherRecords }) {
               <td>{record.student.name}</td>
               <td>{record.student.admin_no}</td>
               <td>{record.student.resume_status == 0 ? <>Not Uploaded</> : <>Uploaded</>}</td>
+              <td> {record.student.resume_status == 0 ? <>No resume</> : <button className="download-btn"
+                onClick={() => {
+                  const downloadUrl = `api/download/${record.student.resume_name}.pdf`;
+                  window.open(downloadUrl, '_blank');
+                }}
+              >
+                Download
+              </button>} </td>
             </tr>
           )
 

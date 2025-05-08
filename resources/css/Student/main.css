@@ -80,7 +80,7 @@
 }
 
 .dropdown div {
-    padding: 2px 0;
+    padding:  0;
     cursor: pointer;
 }
 
@@ -89,6 +89,20 @@
     color: white;
 }
 
+.download-btn {
+    background-color: #6393f2;
+    padding: 0.2rem 0.5rem;
+    color: white;
+    border-radius: 10px;
+}
+
+.dropdown-menu.show:hover {
+    background-color: white;
+}
+.dropdown-item:hover {
+    background-color: #6393f2;
+    color: white;
+}
 .view-btn a,
 .detail-btn a {
     text-decoration: none;

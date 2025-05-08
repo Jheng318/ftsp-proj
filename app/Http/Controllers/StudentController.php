@@ -9,16 +9,18 @@ use App\Models\StudentInterestInternship;
 use App\Models\StudentInterestPrism;
 use App\Models\StudentInternship;
 use App\Models\StudentPrism;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class StudentController extends Controller
 {
     //
     public function index()
     {
-        $internships = Internship::with('user')->orderBy('created_at', 'DESC')->take(3)->get()->map(
+        $internships = Internship::with('user')->orderBy('created_at', 'DESC')->take(5)->get()->map(
             function ($internship) {
                 // Ensure the date field is a Carbon instance
                 $createdAt = Carbon::parse($internship->created_at);
@@ -37,7 +39,7 @@ class StudentController extends Controller
             }
         );
 
-        $prism_projects = Prism::with('user')->orderBy('start_date', 'DESC')->take(3)->get()->map(
+        $prism_projects = Prism::with('user')->orderBy('created_at', 'DESC')->take(5)->get()->map(
             function ($prism) {
                 // Ensure the date field is a Carbon instance
                 $createdAt = Carbon::parse($prism->created_at);
@@ -140,7 +142,7 @@ class StudentController extends Controller
             )->first();
 
             $otherRecords = StudentInternship::where('internship_id', $internship_id)->whereNot('student_id', $student_id)->with('student')->get();
-        } else {
+        } else if (StudentPrism::where("student_id", $student_id)->exists()){
             $prism_id = StudentPrism::where("student_id", $student_id)->pluck("prism_id");
             $details = Prism::find($prism_id)->map(
                 function ($prism) {
@@ -154,6 +156,8 @@ class StudentController extends Controller
                 }
             )->first();
             $otherRecords = StudentPrism::where('prism_id', $prism_id)->whereNot('student_id', $student_id)->with('student')->get();
+        } else {
+            return inertia('Student/AccessDenied');
         }
 
         return inertia('Student/AllocationDetails', compact('studentDetails', 'details', 'otherRecords'));
@@ -161,9 +165,13 @@ class StudentController extends Controller
 
     public function getInterestForm($id)
     {
+        $student_id = Auth::user()->student->id;
+
         if (StudentInterestPrism::where("student_id", $id)->exists()) {
             $status = ["denied" => "internship"];
             return inertia('Student/AccessDenied', compact('status'));
+        } else if (StudentInternship::where("student_id", $student_id)->exists() || StudentPrism::where("student_id", $student_id)->exists()) {
+            return inertia('Student/AccessDenied');
         } else {
             $studentInterest = StudentInterestInternship::where("student_id", $id)->get();
             return inertia('Student/InternshipInterest', compact('studentInterest'));
@@ -172,9 +180,13 @@ class StudentController extends Controller
 
     public function getPrismForm($id)
     {
+        $student_id = Auth::user()->student->id;
+
         if (StudentInterestInternship::where("student_id", $id)->exists()) {
             $status = ["denied" => "PRISM"];
             return inertia('Student/AccessDenied', compact('status'));
+        } else if (StudentInternship::where("student_id", $student_id)->exists() || StudentPrism::where("student_id", $student_id)->exists()) {
+            return inertia('Student/AccessDenied');
         } else {
             $studentInterest = StudentInterestPrism::where("student_id", $id)->get();
             return inertia('Student/PrismInterest', compact('studentInterest'));
@@ -189,16 +201,24 @@ class StudentController extends Controller
     public function addInternshipInterest(Request $request)
     {
 
+        $user = Auth::user();
+
         $validated = $request->validate([
-            'interests' => 'required',
+            'interests' => 'required|string',
             'languages' => 'required',
             'framework' => 'required'
         ]);
 
         if ($request->hasFile('resume')) {
             $file = $request->file('resume');
-            $filename = time() . '_' . $file->getClientOriginalName();
+            $filename = $user->name . '_' . $user->id . '_' . $file->getClientOriginalName();
             $path = $file->storeAs('resume', $filename, 'public'); // Store in the 'public' disk under 'uploads' folder
+
+            $student = Student::where('user_id', $user->id)->first();
+            $student->update([
+                "resume_status" => 1,
+                "resume_name" => $filename
+            ]);
         }
 
         $languages_array = $request->languages;
@@ -232,6 +252,8 @@ class StudentController extends Controller
 
     public function editInternshipInterest(Request $request)
     {
+        $user = Auth::user();
+
         $validated = $request->validate([
             'interests' => 'required',
             'languages' => 'required',

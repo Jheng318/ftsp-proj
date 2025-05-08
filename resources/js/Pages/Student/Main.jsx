@@ -20,9 +20,14 @@ function Main({ internships, prism_projects, allocation }) {
             <div onClick={() => setSortDir('oldest')}>Oldest</div>
         </div>
     );
+    const DropDown2 = ({ setSortDir }) => (
+        <div style={{ border: '1px solid #ccc', padding: '10px', marginTop: '5px', backgroundColor: 'white', width: '150px' }} className="dropdown">
+            <div onClick={() => setSortDir('newest')}>Newest</div>
+            <div onClick={() => setSortDir('oldest')}>Oldest</div>
+        </div>
+    );
 
-    const SortControl = ({ setSortDir }) => {
-
+    const SortControl = ({ setSortDir, prism }) => {
         // 1. State to manage dropdown visibility
         const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -46,20 +51,27 @@ function Main({ internships, prism_projects, allocation }) {
                 </CardButton>
 
                 {/* 5. Conditionally render the DropDown based on state */}
-                {isDropdownOpen && (
+                {isDropdownOpen && prism == false && (
                     // 6. Absolute positioning for the dropdown itself
                     <div style={{ position: 'absolute', top: '100%', left: 0, zIndex: 10, marginTop: '4px' }}>
                         {/* 7. Pass the wrapper function to handle selection and closing */}
                         <DropDown setSortDir={handleSortSelection} />
                     </div>
                 )}
+                {isDropdownOpen && prism == true && (
+                    // 6. Absolute positioning for the dropdown itself
+                    <div style={{ position: 'absolute', top: '100%', left: 0, zIndex: 10, marginTop: '4px' }}>
+                        {/* 7. Pass the wrapper function to handle selection and closing */}
+                        <DropDown2 setSortDir={handleSortSelection} />
+                    </div>
+                )}
             </div>
         );
     };
 
-    const DisplayDataInternship = ({ internships, sortDir }) => {
+    const DisplayDataInternship = ({ internships = null, sortDir }) => {
         const sortedRecords = useMemo(
-            () => internships.sort((a, b) => {
+            () => internships?.sort((a, b) => {
                 switch (sortDir) {
                     case "lowtohigh_price":
                         return a.salary - b.salary;
@@ -306,7 +318,7 @@ function Main({ internships, prism_projects, allocation }) {
 
             <div className="d-flex justify-content-between align-items-center title">
                 <h2>Posted Internships</h2>
-                <SortControl setSortDir={setSortDir}></SortControl>
+                <SortControl setSortDir={setSortDir} prism={false}></SortControl>
             </div>
 
             <section id="all-internships">
@@ -319,7 +331,7 @@ function Main({ internships, prism_projects, allocation }) {
 
             <div className="d-flex justify-content-between align-items-center title">
                 <h2>Posted PRISM Projects</h2>
-                <SortControl setSortDir={setSortDir}></SortControl>
+                <SortControl setSortDir={setSortDir} prism={true}></SortControl>
             </div>
 
             <section id="all-prism">
