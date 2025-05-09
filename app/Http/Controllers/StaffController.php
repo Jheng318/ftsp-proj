@@ -266,11 +266,17 @@ class StaffController extends Controller
     }
     public function showEditAllo(Request $request, $id){
         $activeTab = $request->input('activeTab');
-        if($activeTab == 'intern')
+        if($activeTab == 'intern'){
             $data = StudentInternship::with(['student', 'internship:id,name'])->whereInternshipId($id)->get();
-        elseif($activeTab == 'prism')
+            $listing = Internship::all(); 
+        }
+        elseif($activeTab == 'prism'){
             $data = StudentPrism::with(['student', 'prism:id,name'])->wherePrismId($id)->get();
-        return inertia('Staff/EditAllo', compact('data'));
+            $listing = Prism::all(); 
+        }
+        $students = Student::all();
+
+        return inertia('Staff/EditAllo', compact(['data', 'listing', 'students', 'activeTab']));
     } 
     public function editAllo(Request $request,$id){
         try{
