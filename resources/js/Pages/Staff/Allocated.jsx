@@ -211,7 +211,14 @@ function Allocated({ allocatedIntern, allocatedPrism }) {
                                 <CardButton
                                     btnColor="#6393F2"
                                     id={id}
-                                    onClick={(e) => e.stopPropagation()}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        const id = e.currentTarget.dataset.id;
+                                        router.get(
+                                            `/ftsp-proj/show-editAllo/${id}`,
+                                            { activeTab }
+                                        );
+                                    }}
                                 >
                                     <img src={edit} alt="edit icon" />
                                 </CardButton>
@@ -222,7 +229,7 @@ function Allocated({ allocatedIntern, allocatedPrism }) {
                                         e.stopPropagation();
                                         const id = e.currentTarget.dataset.id;
                                         router.get(
-                                            `/ftsp-proj/delete-allo/${id}`,
+                                            `/ftsp-proj/show-deleteAllo/${id}`,
                                             { activeTab }
                                         );
                                     }}

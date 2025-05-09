@@ -249,4 +249,34 @@ class StaffController extends Controller
         
         return inertia('Staff/DeleteAllo', compact(['data', 'activeTab']));
     }
+    public function deleteAllo(Request $request, $id){
+        // unable to retrieve the student_id if a delete request is used instead of a get request
+        try{
+            $student_id = $request->input('student_id') ;
+            $activeTab = $request->input('activeTab');
+            if($activeTab == 'intern')
+                $listing = StudentInternship::whereInternshipId($id)->whereStudentId($student_id)->first(); 
+            elseif($activeTab == 'prism')
+                $listing = StudentPrism::wherePrismId($id)->whereStudentId($student_id)->first();
+            $listing->delete();
+            return redirect()->back()->with('message', 'Successfully removed student from that allocation');
+        }
+        catch(Exception $e){}
+
+    }
+    public function showEditAllo(Request $request, $id){
+        $activeTab = $request->input('activeTab');
+        if($activeTab == 'intern')
+            $data = StudentInternship::with(['student', 'internship:id,name'])->whereInternshipId($id)->get();
+        elseif($activeTab == 'prism')
+            $data = StudentPrism::with(['student', 'prism:id,name'])->wherePrismId($id)->get();
+        return inertia('Staff/EditAllo', compact('data'));
+    } 
+    public function editAllo(Request $request,$id){
+        try{
+            $student_id = $request->input('student_id') ;
+            $activeTab = $request->input('activeTab');
+        }
+        catch(Exception $e){}
+    } 
 }   

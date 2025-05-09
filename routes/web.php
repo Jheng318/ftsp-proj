@@ -6,8 +6,6 @@ use App\Http\Controllers\InternController;
 use App\Http\Controllers\PrismController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\StudentController;
-use App\Models\Prism;
-use App\Models\Student;
 use Illuminate\Support\Facades\Route;
 //use Illuminate\Support\Facades\Storage;
 
@@ -58,7 +56,10 @@ Route::middleware(['auth', 'staff'])->group(function(){
     Route::post('/bulk-addStudents', [StaffController::class, 'bulkAdd'])->name('staff.bulkAdd');
 
     Route::get("/matchStudents", [StaffController::class, 'matchStudents'])->name('staff.matchStudents');
-    Route::get('/delete-allo/{id}', [StaffController::class, 'showDeleteAllo'])->name('staff.show.deleteAllo');
+    Route::get('/show-deleteAllo/{id}', [StaffController::class, 'showDeleteAllo'])->name('staff.show.deleteAllo');
+    Route::get('/delete-allo/{id}', [StaffController::class, 'deleteAllo'])->name('staff.deleteAllo');
+    Route::get('/show-editAllo/{id}', [StaffController::class, 'showEditAllo'])->name('staff.show.editAllo');
+    Route::get('/edit-allo/{id}', [StaffController::class, 'editAllo'])->name('staff.editAllo');
 });
 
 //Student routes
