@@ -6,8 +6,8 @@ function InternshipInterest({ studentInterest }) {
   const { auth } = usePage().props;
   let otherLanguages = "";
   let otherFrameworks = "";
-  let languages = (studentInterest.length !== 0) ? studentInterest[0].languages.toLowerCase().split(", ") : [];
-  let frameworks = (studentInterest.length !== 0) ? studentInterest[0].framework.toLowerCase().split(", ") : [];
+  let languages = (studentInterest.length !== 0) ? studentInterest.languages.toLowerCase().split(", ") : [];
+  let frameworks = (studentInterest.length !== 0) ? studentInterest.framework.toLowerCase().split(", ") : [];
 
   if (studentInterest.length !== 0) {
 
@@ -43,18 +43,13 @@ function InternshipInterest({ studentInterest }) {
     processing,
     errors: formErrors,
   } = useForm({
-    interests: studentInterest[0]?.interest || "",
+    interests: studentInterest?.interest || "",
     languages: languages || [],
     otherLanguages: otherLanguages || "",
     framework: frameworks || [],
     otherFrameworks: otherFrameworks || "",
-    user_id: "",
     resume: ""
   });
-
-  useEffect(() => {
-    setData("user_id", auth.user.id);
-  }, []);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -326,7 +321,7 @@ function InternshipInterest({ studentInterest }) {
           <br />
           <input type="file" id="resume" name="resume" className="mt-1" onChange={(e) => setData("resume", e.target.files[0])}></input>
           <br />
-          <input hidden value={data.user_id} readOnly />
+          
           <p className="text-danger mt-2">*If you are submitting this form for the first time, do note that you will not be able to access the PRISM form & allocations after submission.</p>
           <Button
             disabled={processing}

@@ -6,8 +6,8 @@ function PrismInterest({ studentInterest }) {
   const { auth } = usePage().props;
   let otherLanguages = "";
   let otherFrameworks = "";
-  let languages = (studentInterest.length !== 0) ? studentInterest[0].languages.toLowerCase().split(", ") : [];
-  let frameworks = (studentInterest.length !== 0) ? studentInterest[0].framework.toLowerCase().split(", ") : [];
+  let languages = (studentInterest.length !== 0) ? studentInterest.languages.toLowerCase().split(", ") : [];
+  let frameworks = (studentInterest.length !== 0) ? studentInterest.framework.toLowerCase().split(", ") : [];
 
   if (studentInterest.length !== 0) {
 
@@ -15,7 +15,7 @@ function PrismInterest({ studentInterest }) {
       return array1.filter(item => array2.includes(item));
     }
     const allowedLanguages = ["html", "css", "javascript", "php", "c#"];
-    
+
     languages.forEach(language => {
       if (!allowedLanguages.includes(language)) {
         otherLanguages += language + ", ";
@@ -43,25 +43,22 @@ function PrismInterest({ studentInterest }) {
     processing,
     errors: formErrors,
   } = useForm({
-    interests: studentInterest[0]?.interest || "",
     languages: languages || [],
     otherLanguages: otherLanguages || "",
     framework: frameworks || [],
     otherFrameworks: otherFrameworks || "",
-    user_id: "",
-    resume: ""
+    web_dev: studentInterest?.web_dev_ranking || "",
+    mad: studentInterest?.mad_ranking || "",
+    rpa: studentInterest?.rpa_ranking || "",
+    uiux: studentInterest?.uiux_ranking || ""
   });
-
-  useEffect(() => {
-    setData("user_id", auth.user.id);
-  }, []);
 
   function handleSubmit(e) {
     e.preventDefault();
     if (studentInterest.length !== 0) {
-      put("/ftsp-proj/intern-interest");
+      put("/ftsp-proj/prism-interest");
     } else {
-      post("/ftsp-proj/intern-interest");
+      post("/ftsp-proj/prism-interest");
     }
   };
 
@@ -89,14 +86,14 @@ function PrismInterest({ studentInterest }) {
 
 
   return <section id="add-internship-interest">
-    <h3 className="ps-4 mt-4">Internship Student Form</h3>
+    <h3 className="ps-4 mt-4">PRISM Student Form</h3>
     <h5 className="ps-4 mb-4">Please answer the questions below:</h5>
     <form className="container m-0" onSubmit={handleSubmit}>
       <div className="row container">
         <div className="col">
-          <label htmlFor="coding">
-            What coding languages do you prefer for your internship?
-          </label>
+          <p className="m-0">
+            What coding languages do you prefer for your project?
+          </p>
           <div className="row gap-4 mb-3">
             <div className="col ">
               <div className="row my-3">
@@ -200,9 +197,9 @@ function PrismInterest({ studentInterest }) {
             )}
           </div>
 
-          <label htmlFor="framework">
-            What frameworks do you prefer for your internship?
-          </label>
+          <p className="m-0">
+            What frameworks do you prefer for your project?
+          </p>
 
           <div className="row gap-4 mb-3">
             <div className="col ">
@@ -307,26 +304,90 @@ function PrismInterest({ studentInterest }) {
               <p className="errors text-danger">{formErrors.framework}</p>
             )}
           </div>
-          <label htmlFor="interests" className="mt-4 mb-2">State other interests you would like to pursue:</label>
+          
+          <p className="m-0">Please rank your interests based on skill area:</p>
+          <div className="row mb-3 mt-3">
+            <div className="col">
+              <label htmlFor="web_dev">Web Development</label>
+              <br />
+              <select
+                id="web_dev"
+                className="col w-50"
+                value={data.web_dev}
+                name="web_dev"
+                onChange={(e) =>
+                  setData("web_dev", e.target.value)
+                }
+              >
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+              </select>
+            </div>
+            <div className="col">
+              <label htmlFor="mad">Mobile Development</label>
+              <br />
+              <select
+                id="mad"
+                className="col w-50"
+                value={data.mad}
+                name="mad"
+                onChange={(e) =>
+                  setData("mad", e.target.value)
+                }
+              >
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+              </select>
+            </div>
+          </div>
+          <div className="row mb-3">
+            <div className="col">
+              <label htmlFor="rpa">Robotic Process Automation</label>
+              <br />
+              <select
+                id="rpa"
+                className="col w-50"
+                value={data.rpa}
+                name="rpa"
+                onChange={(e) =>
+                  setData("rpa", e.target.value)
+                }
+              >
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+              </select>
+            </div>
+            <div className="col">
+              <label htmlFor="uiux">UIUX Design</label>
+              <br />
+              <select
+                id="uiux"
+                className="col w-50"
+                value={data.uiux}
+                name="uiux"
+                onChange={(e) =>
+                  setData("uiux", e.target.value)
+                }
+              >
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+              </select>
+            </div>
+          </div>
           <br />
-          <textarea
-            type="text"
-            value={data.interests}
-            className="w-90 mt-1"
-            name="interests"
-            rows={3}
-            onChange={(e) =>
-              setData("interests", e.target.value)
-            }
-          />
-          {formErrors.interests && (
-            <p className="errors text-danger">{formErrors.interests}</p>
-          )}
-          <label htmlFor="resume" className="mb-2">Upload your resume:</label>
-          <br />
-          <input type="file" id="resume" name="resume" className="mt-1" onChange={(e) => setData("resume", e.target.files[0])}></input>
-          <br />
-          <input hidden value={data.user_id} readOnly />
+
           <Button
             disabled={processing}
             type="submit"

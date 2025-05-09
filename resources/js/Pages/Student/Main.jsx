@@ -292,7 +292,7 @@ function Main({ internships, prism_projects, allocation }) {
                             <button
                                 onClick={() => {
                                     router.get(
-                                        `intern-interest/${auth.user.id}`
+                                        `intern-interest`
                                     );
                                 }}
                             >
@@ -303,7 +303,7 @@ function Main({ internships, prism_projects, allocation }) {
                             <button
                                 onClick={() => {
                                     router.get(
-                                        `prism-interest/${auth.user.id}`
+                                        `prism-interest`
                                     );
                                 }}
                             >

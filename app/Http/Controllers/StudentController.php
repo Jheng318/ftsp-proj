@@ -142,7 +142,7 @@ class StudentController extends Controller
             )->first();
 
             $otherRecords = StudentInternship::where('internship_id', $internship_id)->whereNot('student_id', $student_id)->with('student')->get();
-        } else if (StudentPrism::where("student_id", $student_id)->exists()){
+        } else if (StudentPrism::where("student_id", $student_id)->exists()) {
             $prism_id = StudentPrism::where("student_id", $student_id)->pluck("prism_id");
             $details = Prism::find($prism_id)->map(
                 function ($prism) {
@@ -163,32 +163,32 @@ class StudentController extends Controller
         return inertia('Student/AllocationDetails', compact('studentDetails', 'details', 'otherRecords'));
     }
 
-    public function getInterestForm($id)
+    public function getInterestForm()
     {
         $student_id = Auth::user()->student->id;
 
-        if (StudentInterestPrism::where("student_id", $id)->exists()) {
+        if (StudentInterestPrism::where("student_id", $student_id)->exists()) {
             $status = ["denied" => "internship"];
             return inertia('Student/AccessDenied', compact('status'));
         } else if (StudentInternship::where("student_id", $student_id)->exists() || StudentPrism::where("student_id", $student_id)->exists()) {
             return inertia('Student/AccessDenied');
         } else {
-            $studentInterest = StudentInterestInternship::where("student_id", $id)->get();
+            $studentInterest = StudentInterestInternship::where("student_id", $student_id)->first();
             return inertia('Student/InternshipInterest', compact('studentInterest'));
         }
     }
 
-    public function getPrismForm($id)
+    public function getPrismForm()
     {
         $student_id = Auth::user()->student->id;
 
-        if (StudentInterestInternship::where("student_id", $id)->exists()) {
+        if (StudentInterestInternship::where("student_id", $student_id)->exists()) {
             $status = ["denied" => "PRISM"];
             return inertia('Student/AccessDenied', compact('status'));
         } else if (StudentInternship::where("student_id", $student_id)->exists() || StudentPrism::where("student_id", $student_id)->exists()) {
             return inertia('Student/AccessDenied');
         } else {
-            $studentInterest = StudentInterestPrism::where("student_id", $id)->get();
+            $studentInterest = StudentInterestPrism::where("student_id", $student_id)->first();
             return inertia('Student/PrismInterest', compact('studentInterest'));
         }
     }
@@ -200,8 +200,8 @@ class StudentController extends Controller
 
     public function addInternshipInterest(Request $request)
     {
-
         $user = Auth::user();
+        $student_id = Auth::user()->student->id;
 
         $validated = $request->validate([
             'interests' => 'required|string',
@@ -212,7 +212,7 @@ class StudentController extends Controller
         if ($request->hasFile('resume')) {
             $file = $request->file('resume');
             $filename = $user->name . '_' . $user->id . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('resume', $filename, 'public'); // Store in the 'public' disk under 'uploads' folder
+            $path = $file->storeAs('resume', $filename, 'private'); // Store in the 'private' disk under 'uploads' folder
 
             $student = Student::where('user_id', $user->id)->first();
             $student->update([
@@ -237,12 +237,11 @@ class StudentController extends Controller
             }
         }
 
-
         $interest = StudentInterestInternship::create([
             'framework' => implode(", ", $frameworks_array),
             'languages' => implode(", ", $languages_array),
             'interest' => $request->interests,
-            'student_id' => $request->user_id
+            'student_id' => $student_id
         ]);
 
         if ($interest) {
@@ -252,7 +251,7 @@ class StudentController extends Controller
 
     public function editInternshipInterest(Request $request)
     {
-        $user = Auth::user();
+        $student_id = Auth::user()->student->id;
 
         $validated = $request->validate([
             'interests' => 'required',
@@ -262,8 +261,6 @@ class StudentController extends Controller
 
         $languages_array = $request->languages;
         $frameworks_array = $request->framework;
-
-        //dd($request);
 
         if ($request->otherLanguages !== null) {
             $trim_array = explode(", ", str_replace(' ', '', trim($request->otherLanguages, ', ')));
@@ -285,14 +282,111 @@ class StudentController extends Controller
             }
         }
 
-        $originalForm = StudentInterestInternship::where("student_id", $request->user_id)->first();
+        $originalForm = StudentInterestInternship::where("student_id", $student_id)->first();
 
         if ($originalForm) {
             $originalForm->update([
                 'framework' => implode(", ", $frameworks_array),
                 'languages' => implode(", ", $languages_array),
                 'interest' => $request->interests,
-                'student_id' => $request->user_id
+                'student_id' => $student_id
+            ]);
+        }
+        return redirect()->route('student.main');
+    }
+
+    public function addPrismInterest(Request $request)
+    {
+        $student_id = Auth::user()->student->id;
+
+        $validated = $request->validate([
+            'web_dev' => 'required',
+            'mad' => 'required',
+            'rpa' => 'required',
+            'uiux' => 'required',
+            'languages' => 'required',
+            'framework' => 'required'
+        ]);
+
+        $languages_array = $request->languages;
+        $frameworks_array = $request->framework;
+
+        if ($request->otherLanguages !== null) {
+            $new_array = explode(", ", $request->otherLanguages);
+            foreach ($new_array as $item) {
+                array_push($languages_array, $item);
+            }
+        }
+        if ($request->otherFrameworks !== null) {
+            $new_array = explode(", ", $request->otherFrameworks);
+            foreach ($new_array as $item) {
+                array_push($frameworks_array, $item);
+            }
+        }
+
+
+        $interest = StudentInterestPrism::create([
+            'framework' => implode(", ", $frameworks_array),
+            'languages' => implode(", ", $languages_array),
+            'web_dev_ranking' => $request->web_dev,
+            'mad_ranking' => $request->mad,
+            'rpa_ranking' => $request->rpa,
+            'uiux_ranking' => $request->uiux,
+            'student_id' => $student_id
+        ]);
+
+        if ($interest) {
+            return redirect()->route('student.main');
+        }
+    }
+
+    public function editPrismInterest(Request $request)
+    {
+        $student_id = Auth::user()->student->id;
+
+        $validated = $request->validate([
+            'web_dev' => 'required',
+            'mad' => 'required',
+            'rpa' => 'required',
+            'uiux' => 'required',
+            'languages' => 'required',
+            'framework' => 'required'
+        ]);
+
+        $languages_array = $request->languages;
+        $frameworks_array = $request->framework;
+
+        if ($request->otherLanguages !== null) {
+            $trim_array = explode(", ", str_replace(' ', '', trim($request->otherLanguages, ', ')));
+
+            foreach ($trim_array as $word) {
+                if (!in_array($word, $languages_array)) {
+                    array_push($languages_array, strtolower($word));
+                }
+            }
+        }
+
+        if ($request->otherFrameworks !== null) {
+            $trim_array = explode(", ", str_replace(' ', '', trim($request->otherFrameworks, ', ')));
+
+            foreach ($trim_array as $word) {
+                if (!in_array($word, $frameworks_array)) {
+                    array_push($frameworks_array, strtolower($word));
+                }
+            }
+        }
+
+        $originalForm = StudentInterestPrism::where("student_id", $student_id)->first();
+
+        if ($originalForm) {
+            $originalForm->update([
+                'framework' => implode(", ", $frameworks_array),
+                'languages' => implode(", ", $languages_array),
+                'web_dev_ranking' => $request->web_dev,
+                'mad_ranking' => $request->mad,
+                'rpa_ranking' => $request->rpa,
+                'uiux_ranking' => $request->uiux,
+                'student_id' => $student_id
             ]);
         }
         return redirect()->route('student.main');
