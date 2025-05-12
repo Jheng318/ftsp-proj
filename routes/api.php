@@ -15,12 +15,12 @@ Route::get('/intern', function(){
 Route::get('/download/{filename}', function ($filename) {
     $path = '/resume/' . $filename;
 
-    if (Storage::disk('public')->exists($path)) { 
-        $file = Storage::disk('public')->path($path);
+    if (Storage::disk('private')->exists($path)) { 
+        $file = Storage::disk('private')->path($path);
 
         return response()->streamDownload(function () use ($file) {
             echo file_get_contents($file);
-        }, $filename, ['Content-Type' => Storage::disk('public')->mimetype($path)]);
+        }, $filename, ['Content-Type' => Storage::disk('private')->mimetype($path)]);
 
     } else {
         return response()->json(['error' => 'File not found.'], 404);

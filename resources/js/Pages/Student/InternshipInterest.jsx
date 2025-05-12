@@ -6,16 +6,18 @@ function InternshipInterest({ studentInterest }) {
   const { auth } = usePage().props;
   let otherLanguages = "";
   let otherFrameworks = "";
-  let languages = (studentInterest.length !== 0) ? studentInterest.languages.toLowerCase().split(", ") : [];
-  let frameworks = (studentInterest.length !== 0) ? studentInterest.framework.toLowerCase().split(", ") : [];
+  let languages = (studentInterest) ? studentInterest.languages.toLowerCase().split(", ") : [];
+  let frameworks = (studentInterest) ? studentInterest.framework.toLowerCase().split(", ") : [];
+  let isEdit = false;
 
-  if (studentInterest.length !== 0) {
+  if (studentInterest) {
+    isEdit = true;
 
     function removeMatchingItems(array1, array2) {
       return array1.filter(item => array2.includes(item));
     }
     const allowedLanguages = ["html", "css", "javascript", "php", "c#"];
-    
+
     languages.forEach(language => {
       if (!allowedLanguages.includes(language)) {
         otherLanguages += language + ", ";
@@ -39,7 +41,6 @@ function InternshipInterest({ studentInterest }) {
     setData,
     post,
     put,
-    reset,
     processing,
     errors: formErrors,
   } = useForm({
@@ -48,13 +49,26 @@ function InternshipInterest({ studentInterest }) {
     otherLanguages: otherLanguages || "",
     framework: frameworks || [],
     otherFrameworks: otherFrameworks || "",
-    resume: ""
+    resume: null,
+    _method: isEdit ? "PUT" : "POST"
   });
+  console.log(data);
+
 
   function handleSubmit(e) {
     e.preventDefault();
-    if (studentInterest.length !== 0) {
-      put("/ftsp-proj/intern-interest");
+    setData({
+      interests: studentInterest?.interest || "",
+      languages: languages || [],
+      otherLanguages: otherLanguages || "",
+      framework: frameworks || [],
+      otherFrameworks: otherFrameworks || "",
+      resume: null
+    })
+    if (studentInterest && isEdit) {
+      post("/ftsp-proj/intern-interest", {
+        forceFormData: true
+      });
     } else {
       post("/ftsp-proj/intern-interest");
     }
@@ -62,7 +76,6 @@ function InternshipInterest({ studentInterest }) {
 
   function handleLanguageChange(e) {
     const { value, checked } = e.target;
-    // it adds the new lang that was checked into the data.codingLang and removes it if it is unchecked
     setData((prevData) => ({
       ...prevData,
       languages: checked
@@ -321,7 +334,7 @@ function InternshipInterest({ studentInterest }) {
           <br />
           <input type="file" id="resume" name="resume" className="mt-1" onChange={(e) => setData("resume", e.target.files[0])}></input>
           <br />
-          
+
           <p className="text-danger mt-2">*If you are submitting this form for the first time, do note that you will not be able to access the PRISM form & allocations after submission.</p>
           <Button
             disabled={processing}

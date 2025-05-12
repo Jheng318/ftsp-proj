@@ -86,13 +86,13 @@ function AllocationDetails({ studentDetails, details, otherRecords }) {
         {otherRecords ? otherRecords.map((record) => {
           return (
             <tr key={record.id}>
-              <td>{record.id}</td>
+              <td>{record.student.id}</td>
               <td>{record.student.name}</td>
               <td>{record.student.admin_no}</td>
               <td>{record.student.resume_status == 0 ? <>Not Uploaded</> : <>Uploaded</>}</td>
               <td> {record.student.resume_status == 0 ? <>No resume</> : <button className="download-btn"
                 onClick={() => {
-                  const downloadUrl = `api/download/${record.student.resume_name}.pdf`;
+                  const downloadUrl = `api/download/${record.student.resume_name}`;
                   window.open(downloadUrl, '_blank');
                 }}
               >

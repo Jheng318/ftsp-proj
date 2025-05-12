@@ -97,29 +97,37 @@ class StudentController extends Controller
 
         return inertia('Student/Main', compact('internships', 'prism_projects', 'allocation'));
     }
-    public function intern()
-    {
-        return response()->json("intern page");
-    }
-    public function internDetail($id)
-    {
-        $displayInternship = Internship::find($id);
-        $internships = Internship::with('user')->get();
 
-        return inertia('Student/InternshipDetails', compact('internships', 'displayInternship'));
-    }
-    public function prism()
+    public function displayInfo(Request $request)
     {
-        return response()->json("prism page");
+        $activeTab = $request->query('tab');
+
+        $allInternships = Internship::with('user')->get();
+        $allPrisms = Prism::with('user')->get();
+
+        return inertia('Student/DisplayInfo', compact('allInternships', 'allPrisms', 'activeTab'));
     }
 
-    public function prismDetail($id)
+    public function displaySpecificInfo(Request $request, $id) 
     {
-        $displayPrism = Prism::find($id);
-        $prism_projects = Internship::with('user')->get();
+        $activeTab = $request->query('tab');
+        $specificPrism = null;
+        $specificInternship = null;
 
-        return inertia('Student/PrismDetails', compact('prism_projects', 'displayPrism'));
+        $allInternships = Internship::with('user')->get();
+        $allPrisms = Prism::with('user')->get();
+
+        if ($activeTab == 'intern') {
+            $specificInternship = Internship::find($id);
+        }
+
+        if ($activeTab == 'prism') {
+            $specificPrism = Prism::find($id);
+        }
+
+        return inertia('Student/DisplayInfo', compact('allInternships', 'allPrisms', 'specificInternship', 'specificPrism', 'activeTab'));
     }
+
     public function allocation()
     {
         $student_id = Auth::user()->student->id;
@@ -212,6 +220,7 @@ class StudentController extends Controller
         if ($request->hasFile('resume')) {
             $file = $request->file('resume');
             $filename = $user->name . '_' . $user->id . '_' . $file->getClientOriginalName();
+
             $path = $file->storeAs('resume', $filename, 'private'); // Store in the 'private' disk under 'uploads' folder
 
             $student = Student::where('user_id', $user->id)->first();
@@ -236,63 +245,27 @@ class StudentController extends Controller
                 array_push($frameworks_array, $item);
             }
         }
+        if ($request->_method == "PUT") {
+            $originalForm = StudentInterestInternship::where("student_id", $student_id)->first();
 
-        $interest = StudentInterestInternship::create([
-            'framework' => implode(", ", $frameworks_array),
-            'languages' => implode(", ", $languages_array),
-            'interest' => $request->interests,
-            'student_id' => $student_id
-        ]);
-
-        if ($interest) {
-            return redirect()->route('student.main');
-        }
-    }
-
-    public function editInternshipInterest(Request $request)
-    {
-        $student_id = Auth::user()->student->id;
-
-        $validated = $request->validate([
-            'interests' => 'required',
-            'languages' => 'required',
-            'framework' => 'required'
-        ]);
-
-        $languages_array = $request->languages;
-        $frameworks_array = $request->framework;
-
-        if ($request->otherLanguages !== null) {
-            $trim_array = explode(", ", str_replace(' ', '', trim($request->otherLanguages, ', ')));
-
-            foreach ($trim_array as $word) {
-                if (!in_array($word, $languages_array)) {
-                    array_push($languages_array, strtolower($word));
-                }
-            }
-        }
-
-        if ($request->otherFrameworks !== null) {
-            $trim_array = explode(", ", str_replace(' ', '', trim($request->otherFrameworks, ', ')));
-
-            foreach ($trim_array as $word) {
-                if (!in_array($word, $frameworks_array)) {
-                    array_push($frameworks_array, strtolower($word));
-                }
-            }
-        }
-
-        $originalForm = StudentInterestInternship::where("student_id", $student_id)->first();
-
-        if ($originalForm) {
             $originalForm->update([
                 'framework' => implode(", ", $frameworks_array),
                 'languages' => implode(", ", $languages_array),
                 'interest' => $request->interests,
                 'student_id' => $student_id
             ]);
+
+            return redirect()->route('student.main');
+        } else {
+            $interest = StudentInterestInternship::create([
+                'framework' => implode(", ", $frameworks_array),
+                'languages' => implode(", ", $languages_array),
+                'interest' => $request->interests,
+                'student_id' => $student_id
+            ]);
+
+            return redirect()->route('student.main');
         }
-        return redirect()->route('student.main');
     }
 
     public function addPrismInterest(Request $request)
@@ -342,6 +315,7 @@ class StudentController extends Controller
 
     public function editPrismInterest(Request $request)
     {
+
         $student_id = Auth::user()->student->id;
 
         $validated = $request->validate([

@@ -100,7 +100,7 @@ function Main({ internships, prism_projects, allocation }) {
 
                 return (
                     <a
-                        href={`/ftsp-proj/intern-student/${id}`}
+                        href={`/ftsp-proj/detailed-info/${id}?tab=intern`}
                         key={id}
                         style={{ textDecoration: "none" }}
                     >
@@ -166,7 +166,7 @@ function Main({ internships, prism_projects, allocation }) {
 
                 return (
                     <a
-                        href={`/ftsp-proj/prism-student/${id}`}
+                        href={`/ftsp-proj/detailed-info/${id}?tab=prism`}
                         key={id}
                         style={{ textDecoration: "none" }}
                     >
@@ -326,7 +326,7 @@ function Main({ internships, prism_projects, allocation }) {
             </section>
 
             <div className="view-btn">
-                <a href="/ftsp-proj/intern-student">View More</a>
+                <a href="/ftsp-proj/detailed-info?tab=intern">View More</a>
             </div>
 
             <div className="d-flex justify-content-between align-items-center title">
@@ -339,7 +339,7 @@ function Main({ internships, prism_projects, allocation }) {
             </section>
 
             <div className="view-btn">
-                <a href="/prism-proj/intern-student">View More</a>
+                <a href="/prism-proj/detailed-info?tab=prism">View More</a>
             </div>
 
             <div className=""></div>

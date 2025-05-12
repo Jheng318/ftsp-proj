@@ -65,17 +65,15 @@ Route::middleware(['auth', 'staff'])->group(function(){
 //Student routes
 Route::middleware(['auth', 'student'])->group(function(){
     Route::get('/main',[StudentController::class , 'index'] )->name('student.main');
-    Route::get('/intern-student', [StudentController::class, 'intern'])->name('student.intern.index');
-    Route::get('/intern-student/{id}', [StudentController::class, 'internDetail'])->name('student.intern.internDetail');
-    Route::get('/prism-student', [StudentController::class, 'prism'])->name('student.prism.index');
-    Route::get('/prism-student/{id}', [StudentController::class, 'prismDetail'])->name('student.prism.prismDetail');
+    Route::get('/detailed-info', [StudentController::class, 'displayInfo'])->name('student.info.index');
+    Route::get('/detailed-info/{id}', [StudentController::class, 'displaySpecificInfo'])->name('student.info.infoDetail');
+
     Route::get('/allocation-student', [StudentController::class, 'allocation'])->name('student.allocation');
 
     Route::get('/intern-interest', [StudentController::class, 'getInterestForm'])->name('student.internship.interest');
     Route::get('/prism-interest', [StudentController::class, 'getPrismForm'])->name('student.prism.interest');
     
-    Route::post('/intern-interest', [StudentController::class, 'addInternshipInterest'])->name('student.add.internship.interest');
-    Route::put('/intern-interest', [StudentController::class, 'editInternshipInterest'])->name('student.edit.internship.interest');
+    Route::match(['POST', 'PUT'], '/intern-interest', [StudentController::class, 'addInternshipInterest'])->name('student.add.internship.interest');
 
     Route::post('/prism-interest', [StudentController::class, 'addPrismInterest'])->name('student.add.prism.interest');
     Route::put('/prism-interest', [StudentController::class, 'editPrismInterest'])->name('student.edit.prism.interest');

@@ -16,9 +16,20 @@ export default function Layout({ children }) {
         <>
             <Navbar expand="lg" className="bg-blue-primary">
                 <Container className="text-gray">
-                    <Navbar.Brand href="/ftsp-proj/">
-                        <img src={logo} alt="skill map logo" className="logo" />
-                    </Navbar.Brand>
+                    {auth.isStaff ? (
+                        <>
+                            <Navbar.Brand href="/ftsp-proj/allocated">
+                                <img src={logo} alt="skill map logo" className="logo" />
+                            </Navbar.Brand>
+                        </>
+                    ) :
+                        <>
+                            <Navbar.Brand href="/ftsp-proj/main">
+                                <img src={logo} alt="skill map logo" className="logo" />
+                            </Navbar.Brand>
+                        </>
+                    }
+
 
                     <div className="d-flex w-50 justify-content-evenly">
                         {auth.isStaff ? (
@@ -44,13 +55,13 @@ export default function Layout({ children }) {
                             </>
                         ) : (
                             <>
-                                <Nav.Link href="/ftsp-proj/intern-student">
+                                <Nav.Link href="/ftsp-proj/detailed-info?tab=intern">
                                     Internship
                                 </Nav.Link>
                                 <Nav.Link href="/ftsp-proj/prism-student">
                                     prism
                                 </Nav.Link>
-                                <Nav.Link href="/ftsp-proj/allocation-student">
+                                <Nav.Link href="/ftsp-proj/detailed-info?tab=prism">
                                     Allocation
                                 </Nav.Link>
                             </>
