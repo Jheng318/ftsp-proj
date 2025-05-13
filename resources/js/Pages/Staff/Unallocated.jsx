@@ -37,7 +37,7 @@ function Unallocated({ unallocatedDataI, unallocatedDataP }) {
         <section className="w-90" id="unallo">
             <div className="mt-5 d-flex justify-content-between align-items-center">
                 <div className="flex">
-                    <h3 className="text-primary">Allocation Details</h3>
+                    <h3 className="text-primary">Unallocated Details</h3>
                     <div className="toggle">
                         <div
                             className={`intern ${

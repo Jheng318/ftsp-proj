@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { router, usePage } from "@inertiajs/react";
 import { toast, ToastContainer } from "react-toastify";
 import CardButton from "../../components/CardButton";
@@ -7,6 +7,25 @@ import "react-toastify/dist/ReactToastify.css";
 
 function DeleteAllo({ data, activeTab }) {
     const { errors, flash } = usePage().props;
+    const [search, setSearch] = useState("");
+    const [filterData, setFilterData] = useState(data ?? []);
+
+    function handleSearch() {
+        const filtered = data.filter((d) => {
+            const { name: studName, admin_no } = d.student;
+            return (
+                studName.toLowerCase().includes(search.toLowerCase()) ||
+                admin_no.toLowerCase().includes(search.toLowerCase())
+            );
+        });
+        setFilterData(filtered);
+    }
+
+    useEffect(() => {
+        if (search !== "") handleSearch();
+        else setFilterData(data);
+    }, [search]);
+
     useEffect(() => {
         if (flash?.message) {
             toast.success(flash?.message);
@@ -17,7 +36,6 @@ function DeleteAllo({ data, activeTab }) {
             errors.error = "";
         }
     }, [errors, flash]);
-    console.log(flash?.message);
 
     return (
         <section className="w-90" id="unallo">
@@ -34,11 +52,13 @@ function DeleteAllo({ data, activeTab }) {
                     <input
                         type="text"
                         placeholder="Search"
-                        className="form-control me-3"
+                        className="form-control"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
                     />
                 </div>
             </div>
-            {data.length > 0 ? (
+            {filterData.length > 0 ? (
                 <table className="w-100 my-5">
                     <thead>
                         <tr>
@@ -52,7 +72,7 @@ function DeleteAllo({ data, activeTab }) {
                         </tr>
                     </thead>
                     <tbody>
-                        {data.map((d) => {
+                        {filterData.map((d) => {
                             const { name: studName, admin_no } = d.student;
                             const {
                                 student_id,
@@ -67,7 +87,7 @@ function DeleteAllo({ data, activeTab }) {
                                     <td>{studName}</td>
                                     <td>{admin_no}</td>
                                     <td>{name}</td>
-                                    <td className="text-center">
+                                    <td>
                                         <CardButton
                                             onClick={() => {
                                                 router.get(

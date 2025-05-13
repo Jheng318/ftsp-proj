@@ -19,17 +19,24 @@ export default function Layout({ children }) {
                     {auth.isStaff ? (
                         <>
                             <Navbar.Brand href="/ftsp-proj/allocated">
-                                <img src={logo} alt="skill map logo" className="logo" />
+                                <img
+                                    src={logo}
+                                    alt="skill map logo"
+                                    className="logo"
+                                />
                             </Navbar.Brand>
                         </>
-                    ) :
+                    ) : (
                         <>
                             <Navbar.Brand href="/ftsp-proj/main">
-                                <img src={logo} alt="skill map logo" className="logo" />
+                                <img
+                                    src={logo}
+                                    alt="skill map logo"
+                                    className="logo"
+                                />
                             </Navbar.Brand>
                         </>
-                    }
-
+                    )}
 
                     <div className="d-flex w-50 justify-content-evenly">
                         {auth.isStaff ? (
@@ -40,14 +47,18 @@ export default function Layout({ children }) {
                                 <Nav.Link href="/ftsp-proj/prism-staff">
                                     PRISM
                                 </Nav.Link>
-                                {<NavDropdown title="Allocation">
-                                    <NavDropdown.Item href="/ftsp-proj/unallocated">
-                                        Unassigned Allocation
-                                    </NavDropdown.Item>
-                                    {<NavDropdown.Item href="/ftsp-proj/allocated">
-                                        Assigned Allocation
-                                    </NavDropdown.Item>}
-                                </NavDropdown>}
+                                {
+                                    <NavDropdown title="Allocation">
+                                        <NavDropdown.Item href="/ftsp-proj/unallocated">
+                                            Unassigned Allocation
+                                        </NavDropdown.Item>
+                                        {
+                                            <NavDropdown.Item href="/ftsp-proj/allocated">
+                                                Assigned Allocation
+                                            </NavDropdown.Item>
+                                        }
+                                    </NavDropdown>
+                                }
 
                                 <Nav.Link href="/ftsp-proj/student-info">
                                     Student Info
