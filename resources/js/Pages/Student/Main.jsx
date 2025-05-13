@@ -1,205 +1,49 @@
 import "@/css/Student/main.css";
 import background from "@/images/background.jpg";
 import image from "@/images/studentimage-1.jpg";
-import Card from "react-bootstrap/Card";
-import CardButton from "../../components/CardButton";
-import sortIcon from "@/images/sort.png";
-import personIcon from "@/images/person.png";
-import salaryIcon from "@/images/salary.png";
+
+import SortControl from "@/js/components/SortControl";
+import InternPrismCard from "@/js/components/InternPrismCard";
 import { router, usePage } from "@inertiajs/react";
 import { useMemo, useState } from "react";
 
 function Main({ internships, prism_projects, allocation }) {
     const { auth } = usePage().props;
     const [sortDir, setSortDir] = useState("lowtohigh_price");
-    const DropDown = ({ setSortDir }) => (
-        <div style={{ border: '1px solid #ccc', padding: '10px', marginTop: '5px', backgroundColor: 'white', width: '150px' }} className="dropdown">
-            <div onClick={() => setSortDir('lowtohigh_price')}>Price: Low to High</div>
-            <div onClick={() => setSortDir('hightolow_price')}>Price: High to Low</div>
-            <div onClick={() => setSortDir('newest')}>Newest</div>
-            <div onClick={() => setSortDir('oldest')}>Oldest</div>
-        </div>
-    );
-    const DropDown2 = ({ setSortDir }) => (
-        <div style={{ border: '1px solid #ccc', padding: '10px', marginTop: '5px', backgroundColor: 'white', width: '150px' }} className="dropdown">
-            <div onClick={() => setSortDir('newest')}>Newest</div>
-            <div onClick={() => setSortDir('oldest')}>Oldest</div>
-        </div>
-    );
 
-    const SortControl = ({ setSortDir, prism }) => {
-        // 1. State to manage dropdown visibility
-        const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
-        // 2. Function to toggle the state
-        const toggleDropdown = () => {
-            setIsDropdownOpen(prevIsOpen => !prevIsOpen);
-        };
-
-        // Function to handle selection and close dropdown
-        const handleSortSelection = (value) => {
-            setSortDir(value);       // Update the sort direction state
-            setIsDropdownOpen(false); // Close the dropdown
-        };
-
-        return (
-            <div style={{ position: 'relative' }}> {/* 3. Relative positioning for the container */}
-                {/* 4. Add onClick handler to the button */}
-                <CardButton btnColor="#6393F2" onClick={toggleDropdown}>
-                    <img src={sortIcon} alt="sortIcon" id="sortIcon" style={{ marginRight: '5px' }} />
-                    <span className="text-gray">Sort By</span>
-                </CardButton>
-
-                {/* 5. Conditionally render the DropDown based on state */}
-                {isDropdownOpen && prism == false && (
-                    // 6. Absolute positioning for the dropdown itself
-                    <div style={{ position: 'absolute', top: '100%', left: 0, zIndex: 10, marginTop: '4px' }}>
-                        {/* 7. Pass the wrapper function to handle selection and closing */}
-                        <DropDown setSortDir={handleSortSelection} />
-                    </div>
-                )}
-                {isDropdownOpen && prism == true && (
-                    // 6. Absolute positioning for the dropdown itself
-                    <div style={{ position: 'absolute', top: '100%', left: 0, zIndex: 10, marginTop: '4px' }}>
-                        {/* 7. Pass the wrapper function to handle selection and closing */}
-                        <DropDown2 setSortDir={handleSortSelection} />
-                    </div>
-                )}
-            </div>
-        );
-    };
-
-    const DisplayDataInternship = ({ internships = null, sortDir }) => {
-        const sortedRecords = useMemo(
-            () => internships?.sort((a, b) => {
-                switch (sortDir) {
-                    case "lowtohigh_price":
-                        return a.salary - b.salary;
-                    case "hightolow_price":
-                        return b.salary - a.salary;
-                    case "newest":
-                        return new Date(b.date_created_at) - new Date(a.date_created_at);
-                    case "oldest":
-                        return new Date(a.date_created_at) - new Date(b.date_created_at);
-                }
-            }),
-            [sortDir]
-        );
-        return (
-            sortedRecords.map((internship) => {
-                const {
-                    id,
-                    title,
-                    created_at,
-                    description,
-                    company_name,
-                    salary,
-                    user_name,
-                } = internship;
-                const editedDesc = description.split(".");
-
-                return (
-                    <a
-                        href={`/ftsp-proj/detailed-info/${id}?tab=intern`}
-                        key={id}
-                        style={{ textDecoration: "none" }}
-                    >
-                        <Card style={{ width: "100%", cursor: "pointer" }}>
-                            <Card.Body>
-                                <Card.Title>{title}</Card.Title>
-                                <Card.Subtitle className="mb-2 text-muted d-flex align-items-center">
-                                    <span>Posted {created_at}</span>
-                                    <span className="dot">&#x2022;</span>
-                                    {company_name}
-                                </Card.Subtitle>
-                                <Card.Text>{editedDesc[0]}.</Card.Text>
-                                <section
-                                    className="d-flex align-items-center"
-                                    id="contact_salary"
-                                >
-                                    <div>
-                                        <img
-                                            src={personIcon}
-                                            alt="personIcon"
-                                        />
-                                        {user_name}
-                                    </div>
-                                    <div>
-                                        <img
-                                            src={salaryIcon}
-                                            alt="salaryIcon"
-                                        />
-                                        ${salary}
-                                    </div>
-                                </section>
-                            </Card.Body>
-                        </Card>
-                    </a>
-                );
-            })
-        )
+    const DisplayData = ({ data, sortDir, prism }) => {
+        if (prism) {
+            const sortedRecords = useMemo(
+                () => data.sort((a, b) => {
+                    switch (sortDir) {
+                        case "newest":
+                            return new Date(b.date_created_at) - new Date(a.date_created_at);
+                        case "oldest":
+                            return new Date(a.date_created_at) - new Date(b.date_created_at);
+                    }
+                }),
+                [sortDir]
+            );
+            return <InternPrismCard sortedRecords={sortedRecords} prism={true}></InternPrismCard>
+        } else {
+            const sortedRecords = useMemo(
+                () => data.sort((a, b) => {
+                    switch (sortDir) {
+                        case "lowtohigh_price":
+                            return a.salary - b.salary;
+                        case "hightolow_price":
+                            return b.salary - a.salary;
+                        case "newest":
+                            return new Date(b.date_created_at) - new Date(a.date_created_at);
+                        case "oldest":
+                            return new Date(a.date_created_at) - new Date(b.date_created_at);
+                    }
+                }),
+                [sortDir]
+            );
+            return <InternPrismCard sortedRecords={sortedRecords} prism={false}></InternPrismCard>
+        }
     }
-    
-    const DisplayDataPrism = ({ prism_projects, sortDir }) => {
-        const sortedRecords = useMemo(
-            () => prism_projects.sort((a, b) => {
-                switch (sortDir) {
-                    case "newest":
-                        return new Date(b.date_created_at) - new Date(a.date_created_at);
-                    case "oldest":
-                        return new Date(a.date_created_at) - new Date(b.date_created_at);
-                }
-            }),
-            [sortDir]
-        );
-        return (
-            sortedRecords.map((project) => {
-                const {
-                    id,
-                    title,
-                    created_at,
-                    description,
-                    type,
-                    user_name,
-                } = project;
-                const editedDesc = description.split(".");
-
-                return (
-                    <a
-                        href={`/ftsp-proj/detailed-info/${id}?tab=prism`}
-                        key={id}
-                        style={{ textDecoration: "none" }}
-                    >
-                        <Card style={{ width: "100%", cursor: "pointer" }}>
-                            <Card.Body>
-                                <Card.Title>{title}</Card.Title>
-                                <Card.Subtitle className="mb-2 text-muted d-flex align-items-center">
-                                    <span>Posted {created_at}</span>
-                                    <span className="dot">&#x2022;</span>
-                                    {type}
-                                </Card.Subtitle>
-                                <Card.Text>{editedDesc[0]}.</Card.Text>
-                                <section
-                                    className="d-flex align-items-center"
-                                    id="contact_salary"
-                                >
-                                    <div>
-                                        <img
-                                            src={personIcon}
-                                            alt="personIcon"
-                                        />
-                                        {user_name}
-                                    </div>
-                                </section>
-                            </Card.Body>
-                        </Card>
-                    </a>
-                );
-            })
-        )
-    }
-    
-
 
     return (
         <>
@@ -322,7 +166,7 @@ function Main({ internships, prism_projects, allocation }) {
             </div>
 
             <section id="all-internships">
-                <DisplayDataInternship sortDir={sortDir} internships={internships}></DisplayDataInternship>
+                <DisplayData sortDir={sortDir} data={internships} prism={false}></DisplayData>
             </section>
 
             <div className="view-btn">
@@ -335,7 +179,7 @@ function Main({ internships, prism_projects, allocation }) {
             </div>
 
             <section id="all-prism">
-               <DisplayDataPrism sortDir={sortDir} prism_projects={prism_projects}></DisplayDataPrism>
+                <DisplayData sortDir={sortDir} data={prism_projects} prism={true}></DisplayData>
             </section>
 
             <div className="view-btn">
