@@ -47,6 +47,11 @@ Route::middleware(['auth', 'staff'])->group(function(){
     // allocation
     Route::get('/unallocated', [StaffController::class, 'unassignedAllo'])->name('staff.unassignedAllo');
     Route::get('/allocated', [StaffController::class, 'assignedAllo'])->name('staff.assignedAllo');
+    Route::get('/manageAllo', [StaffController::class, 'showManageAllo'])->name('staff.show.manageAllo');
+    // Route::get('/show-deleteAllo/{id}', [StaffController::class, 'showDeleteAllo'])->name('staff.show.deleteAllo');
+    // Route::get('/delete-allo/{id}', [StaffController::class, 'deleteAllo'])->name('staff.deleteAllo');
+    // Route::get('/show-editAllo/{id}', [StaffController::class, 'showEditAllo'])->name('staff.show.editAllo');
+    // Route::get('/edit-allo/{id}', [StaffController::class, 'editAllo'])->name('staff.editAllo');
 
     // student information
     Route::get('/add-student', [StaffController::class, 'showAddStudent'])->name('staff.show.addStudents');
@@ -56,10 +61,7 @@ Route::middleware(['auth', 'staff'])->group(function(){
     Route::post('/bulk-addStudents', [StaffController::class, 'bulkAdd'])->name('staff.bulkAdd');
 
     Route::get("/matchStudents", [StaffController::class, 'matchStudents'])->name('staff.matchStudents');
-    Route::get('/show-deleteAllo/{id}', [StaffController::class, 'showDeleteAllo'])->name('staff.show.deleteAllo');
-    Route::get('/delete-allo/{id}', [StaffController::class, 'deleteAllo'])->name('staff.deleteAllo');
-    Route::get('/show-editAllo/{id}', [StaffController::class, 'showEditAllo'])->name('staff.show.editAllo');
-    Route::get('/edit-allo/{id}', [StaffController::class, 'editAllo'])->name('staff.editAllo');
+
 });
 
 //Student routes

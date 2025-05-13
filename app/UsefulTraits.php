@@ -37,7 +37,7 @@ trait UsefulTraits
         ];
     }
 
-        public function getDistance($origin, $destination) {
+    public function getDistance($origin, $destination) {
         //Retrieve Distance example from Google Maps API
         //Based on locations from database
         $origin = urlencode('Hillion Mall'); 

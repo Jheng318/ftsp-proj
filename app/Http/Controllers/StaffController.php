@@ -292,4 +292,9 @@ class StaffController extends Controller
         }
         catch(Exception $e){}
     } 
+    public function showManageAllo(){
+        $allocatedI = StudentInternship::all();
+        $allocatedP = StudentPrism::all();
+        return inertia('Staff/ManageAllo', compact(['allocatedI']));
+    }
 }   

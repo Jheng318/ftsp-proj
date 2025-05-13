@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import "@/css/Staff/unallocated.css";
 
 function Unallocated({ unallocatedDataI, unallocatedDataP }) {
-    const {errors} = usePage().props;
+    const { errors } = usePage().props;
     console.log(errors.error);
-    const [search, setSearch] = useState(null);
+    const [search, setSearch] = useState("");
     const [activeTab, setActiveTab] = useState("intern");
     const [filterData, setFilterData] = useState(unallocatedDataI?.data);
 

@@ -1,4 +1,4 @@
-#unallo div #right {
+:is(#unallo, #manageAllo) div #right {
     position: relative;
     & > #filterBtn:checked ~ .filterOption {
         display: block;
@@ -31,7 +31,7 @@
     }
 }
 
-#unallo .toggle {
+:is(#unallo, #manageAllo) .toggle {
     border: 2px solid black;
     display: flex;
     align-items: center;
