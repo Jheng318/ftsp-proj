@@ -88,26 +88,28 @@ class StaffController extends Controller
         $unallocated = null;
         $type = null;
         $interest = null;
-
-        // the list of unallocated students for wither prism or itp
-        if($activeTab == "intern"){
+        try {
+            // the list of unallocated students for wither prism or itp
+             if($activeTab == "intern"){
             $unallocated = Student::whereNotIn('id', StudentInternship::pluck('student_id'))->get();
             $type = Internship::all();
-            $interest = StudentInterestInternship::whereIn('student_id', $unallocated->pluck('id'))->get();
+            $interest = StudentInterestInternship::whereIn('student_id', $unallocated->pluck('id'))->with('student')->get();
             $prompt = "For each student that is provided as 'Student's Interest', match them to the most suitable internship using the following criteria:
 
             1. Prioritize the internship role that best aligns with the student's interest.
-            2. If multiple internships match the interest, consider the student's preferred frameworks and programming languages.
-            3. Ensure the student's GPA meets the internship's GPA requirement, and consider location compatibility.
+            2. If multiple internships interests are similar, consider the student's preferred frameworks and programming languages.
+            3. If the student fulfills both citerias in statements 1 & 2, ensure the student's GPA meets the internship's GPA requirement. For example, an internship with GPA requirement of 3.5 should only receive students with GPAs between 3.2 and 3.8 (inclusive)
             4. Ensure the student's internship period (internship_start and internship_end) aligns with the start and end of the internship in the internship listing.
+            5. Match the student based on the shortest distance between the internship location and the student address.
             5. Each internship can have a certain number of students, ensure that the total number of students assigned to each internship does not exceed the number of students (no_of_students) specified in the internship table.
             6. If a student is already allocated a internship, he/she cannot be allocated to another internship.
 
             Return only the matched results in this exact format:
             StudentId -> InternshipId
 
-            Only return one line per student. Do not include any headings, titles, or explanations.";
+            Only return one line per student. Write explanation for the location constraint";
         }
+       
         else{
             $unallocated = Student::whereNotIn('id', StudentPrism::pluck('student_id'))->get();
             $type = Prism::all();
@@ -131,11 +133,12 @@ class StaffController extends Controller
 
         $prompt .= ($activeTab == "intern" ? "Internship: Listing" : "Prism: Listing") . json_encode($type, JSON_PRETTY_PRINT) . "\n";
         $prompt .= "Student's Interest: " . json_encode($interest, JSON_PRETTY_PRINT) . "\n";
-
+        
         $response = GeminiAi::generateText($prompt, ["model" => "gemini-2.0-flash-lite"]);
         $matches = []; 
-
+        
         $lines = array_filter(explode("\n", $response));
+        dd($response);
         foreach ($lines as $line) {
             $split = explode('->', $line);
             $matches[intval($split[0])] =  intval($split[1]);
@@ -147,6 +150,7 @@ class StaffController extends Controller
                     'internship_id' => $interestId,
                 ]);
             }
+            
         } 
         elseif ($activeTab == "prism"){
             foreach($matches as $studentId => $interestId){
@@ -157,6 +161,9 @@ class StaffController extends Controller
             }
         }
         return redirect()->route('staff.assignedAllo');
+        } catch (Exception $e) {
+            return redirect()->back()->withErrors(['error' => $e]);
+        }
     }
     public function getStudent($id){
         $student = Student::select('name', 'gpa', 'location', 'admin_no')->find($id);
