@@ -24,38 +24,43 @@ class StaffController extends Controller
 {
     //
     use UsefulTraits;
-    public function index(){
+    public function index()
+    {
         return inertia('Staff/Dashboard');
     }
 
-    public function unassignedAllo(){
+    public function unassignedAllo()
+    {
         // it get the information about the unallocated students. The I and P stands for Internship or prism respectfully
-        
+
         $unallocatedDataI = Student::whereNotIn('id', StudentInternship::pluck('student_id'))->paginate(10);
         $unallocatedDataP = Student::whereNotIn('id', StudentPrism::pluck('student_id'))->paginate(10);
 
-        return inertia('Staff/Unallocated', compact(['unallocatedDataI','unallocatedDataP' ]));
+        return inertia('Staff/Unallocated', compact(['unallocatedDataI', 'unallocatedDataP']));
     }
-    public function assignedAllo(){
+    public function assignedAllo()
+    {
         $allocatedIntern = Internship::with(['student_internship.student', 'user'])
             ->whereHas('student_internship')
             ->get();
         $allocatedPrism = Prism::with(['student_prism.student', 'user'])
             ->whereHas('student_prism')
             ->get();
-        
+
         return inertia('Staff/Allocated', compact(['allocatedIntern', 'allocatedPrism']));
     }
 
 
-    public function studentInfo(){
+    public function studentInfo()
+    {
         $students = Student::paginate(10);
 
         return inertia('Staff/StudentInfo', compact('students'));
     }
-    
-    public function editStudent(Request $request){
-        try{
+
+    public function editStudent(Request $request)
+    {
+        try {
             $validated = $request->validate([
                 'name' => 'required|string',
                 'adminNo' => 'required|size:7|string',
@@ -75,14 +80,13 @@ class StaffController extends Controller
                 'name' => $validated['name']
             ]);
             return redirect()->back()->with('message', 'Successfully updated the students details');
-        }
-        catch(ValidationException $e){
+        } catch (ValidationException $e) {
             return redirect()->back()->withErrors(['error' => json_encode($e->errors())]);
         }
-
     }
-    
-    public function matchStudents(Request $request){
+
+    public function matchStudents(Request $request)
+    {
         // type is varibale to fetch the itp or ftsp based on whether the activeTab variable
         $activeTab = $request->query('tab');
         $unallocated = null;
@@ -90,11 +94,12 @@ class StaffController extends Controller
         $interest = null;
         try {
             // the list of unallocated students for wither prism or itp
-             if($activeTab == "intern"){
-            $unallocated = Student::whereNotIn('id', StudentInternship::pluck('student_id'))->get();
-            $type = Internship::all();
-            $interest = StudentInterestInternship::whereIn('student_id', $unallocated->pluck('id'))->with('student')->get();
-            $prompt = "For each student that is provided as 'Student's Interest', match them to the most suitable internship using the following criteria:
+            if ($activeTab == "intern") {
+                $unallocated = Student::whereNotIn('id', StudentInternship::pluck('student_id'))->get();
+                $type = Internship::all();
+                $interest = StudentInterestInternship::whereIn('student_id', $unallocated->pluck('id'))->with('student')->get();
+                $allocated = StudentInternship::with(['internship', 'student'])->get();
+                $prompt = "For each student that is provided as 'Student's Interest', match them to the most suitable internship using the following criteria:
 
             1. Prioritize the internship role that best aligns with the student's interest.
             2. If multiple internships interests are similar, consider the student's preferred frameworks and programming languages.
@@ -103,18 +108,20 @@ class StaffController extends Controller
             5. Match the student based on the shortest distance between the internship location and the student address.
             5. Each internship can have a certain number of students, ensure that the total number of students assigned to each internship does not exceed the number of students (no_of_students) specified in the internship table.
             6. If a student is already allocated a internship, he/she cannot be allocated to another internship.
+            7. The student cannot be matched if there are students already allocated to their respective internships referencing from the given allocated internships data.
 
             Return only the matched results in this exact format:
             StudentId -> InternshipId
+            If the student is unmatchable, return in this exact format:
+            StudentId -> 0
 
-            Only return one line per student. Write explanation for the location constraint";
-        }
-       
-        else{
-            $unallocated = Student::whereNotIn('id', StudentPrism::pluck('student_id'))->get();
-            $type = Prism::all();
-            $interest = StudentInterestPrism::whereIn('student_id', $unallocated->pluck('id'))->get();
-            $prompt = "Match students that is provided as 'Student's Interest' to the most suitable project based on the following criteria:
+            Only return one line per student. Do not include any headings, titles, or additional explanations in the output.";
+            } else {
+                $unallocated = Student::whereNotIn('id', StudentPrism::pluck('student_id'))->get();
+                $type = Prism::all();
+                $interest = StudentInterestPrism::whereIn('student_id', $unallocated->pluck('id'))->get();
+                $allocated = StudentPrism::with(['prism', 'student'])->get();
+                $prompt = "Match students that is provided as 'Student's Interest' to the most suitable project based on the following criteria:
 
             1.  Ranking-Based Allocation: Use 'web_dev_ranking', 'mad_ranking', 'rpa_ranking', and 'uiux_ranking' from the 'prism' table to determine project fit for each student.
             2.  Project Type Inference: Infer the project type (e.g., Web Development, Mobile App Development, RPA, UI/UX Design) from the provided frameworks and languages.
@@ -122,57 +129,92 @@ class StaffController extends Controller
             4.  GPA Constraint Adherence: Assign students to projects only if their GPA satisfies the project's GPA constraints. For example, a Web Development project with GPA constraints of 3.5 and 2.0 should only receive students with GPAs between 3.5 and 2.0 (inclusive).
             5.  Group Capacity Limit: Do not assign more students to a project than its specified total student capacity.
             6.  If a student is already allocated a project, he/she cannot be allocated to another project.
+            7.  The student cannot be matched if there are students already allocated to their respective prisms referencing from the given allocated prisms data.
 
             Present the allocation results in the following format, with one student-project mapping per line:
 
             StudentId -> ProjectId
 
-            Ensure each student is listed on a single line with their assigned ProjectId. Do not include any headings, titles, or additional explanations in the output.\n";           
-        }
+            Ensure each student is listed on a single line with their assigned ProjectId. Do not include any headings, titles, or additional explanations in the output.\n";
+            }
 
 
-        $prompt .= ($activeTab == "intern" ? "Internship: Listing" : "Prism: Listing") . json_encode($type, JSON_PRETTY_PRINT) . "\n";
-        $prompt .= "Student's Interest: " . json_encode($interest, JSON_PRETTY_PRINT) . "\n";
-        
-        $response = GeminiAi::generateText($prompt, ["model" => "gemini-2.0-flash-lite"]);
-        $matches = []; 
-        
-        $lines = array_filter(explode("\n", $response));
-        dd($response);
-        foreach ($lines as $line) {
-            $split = explode('->', $line);
-            $matches[intval($split[0])] =  intval($split[1]);
-        }
-        if($activeTab == "intern"){
-            foreach($matches as $studentId => $interestId){
-                StudentInternship::create([
-                    'student_id' => $studentId,
-                    'internship_id' => $interestId,
-                ]);
+            $prompt .= ($activeTab == "intern" ? "Internship: Listing" : "Prism: Listing") . json_encode($type, JSON_PRETTY_PRINT) . "\n";
+            $prompt .= ($activeTab == "intern" ? "Allocated Internships" : "Allocation Prisms") . json_encode($allocated, JSON_PRETTY_PRINT) . "\n";
+            $prompt .= "Student's Interest: " . json_encode($interest, JSON_PRETTY_PRINT) . "\n";
+
+            $response = GeminiAi::generateText($prompt, ["model" => "gemini-2.0-flash-lite"]);
+            $matches = [];
+
+            $lines = array_filter(explode("\n", $response));
+            foreach ($lines as $line) {
+                $split = explode('->', $line);
+                $matches[intval($split[0])] =  intval($split[1]);
             }
-            
-        } 
-        elseif ($activeTab == "prism"){
-            foreach($matches as $studentId => $interestId){
-                StudentPrism::create([
-                    'student_id' => $studentId,
-                    'prism_id' => $interestId,
-                ]);
+
+            if ($activeTab == "intern") {
+                $interestIdCounts = array_count_values(array_values($matches));
+                $retrievedStudentIds = [];
+                $distances = [];
+
+                foreach ($matches as $studentId => $internshipId) {
+                    //if there is a duplicate of internshipId
+                    if (isset($interestIdCounts[$internshipId]) && $interestIdCounts[$internshipId] > 1) {
+                        $retrievedStudentIds[] = $studentId; // If so, add the studentId to our list.
+                        $duplicatedInternshipId = $internshipId;
+                    }
+                    //for no duplicates 
+                    else {
+                        StudentInternship::create([
+                            'student_id' => $studentId,
+                            'internship_id' => $internshipId,
+                        ]);
+                    }
+                }
+
+                //Last resort: Assigned the student closest to the internship
+                if (!empty($retrievedStudentIds)) {
+                    $destination = Internship::where('id', $duplicatedInternshipId)->value('location');
+                    foreach ($retrievedStudentIds as $studentId) {
+                        $origin = Student::where('id', $studentId)->value('location');
+                        $distance = $this->getDistance($origin, $destination);
+                        $distances[$studentId] = $distance;
+                    }
+                }
+
+                if (!empty($distances) && !empty($duplicatedInternshipId)) {
+                    $lowestValue = min($distances);
+                    $chosenStudentId = array_search($lowestValue, $distances);
+                    StudentInternship::create([
+                        'student_id' => $chosenStudentId,
+                        'internship_id' => $duplicatedInternshipId,
+                    ]);
+                }
+
+            } elseif ($activeTab == "prism") {
+                foreach ($matches as $studentId => $interestId) {
+                    StudentPrism::create([
+                        'student_id' => $studentId,
+                        'prism_id' => $interestId,
+                    ]);
+                }
             }
-        }
-        return redirect()->route('staff.assignedAllo');
+            return redirect()->route('staff.assignedAllo');
         } catch (Exception $e) {
             return redirect()->back()->withErrors(['error' => $e]);
         }
     }
-    public function getStudent($id){
+    public function getStudent($id)
+    {
         $student = Student::select('name', 'gpa', 'location', 'admin_no')->find($id);
         return response()->json($student);
     }
-    public function showAddStudent(){
+    public function showAddStudent()
+    {
         return inertia('Staff/AddStudents');
     }
-    public function addStudent(Request $request){
+    public function addStudent(Request $request)
+    {
         try {
             $validated = $request->validate([
                 'name' => 'required|string',
@@ -194,13 +236,12 @@ class StaffController extends Controller
                 'resume_status' => false
             ]);
             return redirect()->route('staff.studentInfo')->with('message', 'Student Information Added Succesfully');
-        }
-        catch(ValidationException $e){
-
+        } catch (ValidationException $e) {
         }
     }
-    public function bulkAdd(Request $request){
-        try{
+    public function bulkAdd(Request $request)
+    {
+        try {
             $request->validate([
                 'csvfile' => 'required|mimes:csv',
             ]);
@@ -210,10 +251,10 @@ class StaffController extends Controller
             $csvfile = fopen($request->file('csvfile'), 'r');
             $firstLine = true;
 
-            while(($data = fgetcsv($csvfile, 2000, ',')) !== false){
-                if(! $firstLine){
+            while (($data = fgetcsv($csvfile, 2000, ',')) !== false) {
+                if (! $firstLine) {
                     $exists = Student::where('admin_no', $data[1])->exists();
-                    if(!$exists){
+                    if (!$exists) {
                         $user = User::create([
                             'name' => $data[0],
                             'email' => $data[4],
@@ -240,61 +281,63 @@ class StaffController extends Controller
             DB::commit();
             // this line is necessary ^
             return redirect()->back()->with('message', 'Successfully inserted students');
-        }
-        catch(Exception $e){
+        } catch (Exception $e) {
             // if there is any error in inserting the data, the csv entries inserted will be removed 
             DB::rollBack();
-            return redirect()->back()->withErrors(['error' => 'Fail to Import Students: '. $e->getMessage()]);
+            return redirect()->back()->withErrors(['error' => 'Fail to Import Students: ' . $e->getMessage()]);
         }
     }
-    public function showDeleteAllo(Request $request,$id ){
+    public function showDeleteAllo(Request $request, $id)
+    {
         $activeTab = $request->input('activeTab');
-        if($activeTab == 'intern')
+        if ($activeTab == 'intern')
             $data = StudentInternship::with(['student', 'internship:id,name'])->whereInternshipId($id)->get();
-        elseif($activeTab == 'prism')
+        elseif ($activeTab == 'prism')
             $data = StudentPrism::with(['student', 'prism:id,name'])->wherePrismId($id)->get();
-        
+
         return inertia('Staff/DeleteAllo', compact(['data', 'activeTab']));
     }
-    public function deleteAllo(Request $request, $id){
+    public function deleteAllo(Request $request, $id)
+    {
         // unable to retrieve the student_id if a delete request is used instead of a get request
-        try{
-            $student_id = $request->input('student_id') ;
+        try {
+            $student_id = $request->input('student_id');
             $activeTab = $request->input('activeTab');
-            if($activeTab == 'intern')
-                $listing = StudentInternship::whereInternshipId($id)->whereStudentId($student_id)->first(); 
-            elseif($activeTab == 'prism')
+            if ($activeTab == 'intern')
+                $listing = StudentInternship::whereInternshipId($id)->whereStudentId($student_id)->first();
+            elseif ($activeTab == 'prism')
                 $listing = StudentPrism::wherePrismId($id)->whereStudentId($student_id)->first();
             $listing->delete();
             return redirect()->back()->with('message', 'Successfully removed student from that allocation');
+        } catch (Exception $e) {
         }
-        catch(Exception $e){}
-
     }
-    public function showEditAllo(Request $request, $id){
+    public function showEditAllo(Request $request, $id)
+    {
         $activeTab = $request->input('activeTab');
-        if($activeTab == 'intern'){
+        if ($activeTab == 'intern') {
             $data = StudentInternship::with(['student', 'internship:id,name'])->whereInternshipId($id)->get();
-            $listing = Internship::all(); 
-        }
-        elseif($activeTab == 'prism'){
+            $listing = Internship::all();
+        } elseif ($activeTab == 'prism') {
             $data = StudentPrism::with(['student', 'prism:id,name'])->wherePrismId($id)->get();
-            $listing = Prism::all(); 
+            $listing = Prism::all();
         }
         $students = Student::all();
 
         return inertia('Staff/EditAllo', compact(['data', 'listing', 'students', 'activeTab']));
-    } 
-    public function editAllo(Request $request,$id){
-        try{
-            $student_id = $request->input('student_id') ;
+    }
+    public function editAllo(Request $request, $id)
+    {
+        try {
+            $student_id = $request->input('student_id');
             $activeTab = $request->input('activeTab');
+        } catch (Exception $e) {
         }
-        catch(Exception $e){}
-    } 
-    public function showManageAllo(){
+    }
+    public function showManageAllo()
+    {
         $allocatedI = StudentInternship::all();
         $allocatedP = StudentPrism::all();
         return inertia('Staff/ManageAllo', compact(['allocatedI']));
     }
-}   
+}
