@@ -40,17 +40,17 @@ trait UsefulTraits
     public function getDistance($origin, $destination) {
         //Retrieve Distance example from Google Maps API
         //Based on locations from database
-        $origin = urlencode('Hillion Mall'); 
-        $destination = urlencode('Singapore Changi Airport');
+        $origin = urlencode($origin); 
+        $destination = urlencode($destination);
         
         //Put in your Google Maps API key here
-        $apikey = "";
-        //$apikey = "AIzaSyCFTeAbtxhudpQOyWCVxViK50_tbNJ4nr4";
+        //$apikey = "";
+        $apikey = "AIzaSyCFTeAbtxhudpQOyWCVxViK50_tbNJ4nr4";
 
         $api = file_get_contents("https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=".$origin."&destinations=".$destination."&key=".$apikey);
         $data = json_decode($api);
 
-        $distance = (int)$data->rows[0]->elements[0]->distance->value / 1000 . 'km';
-        dd($distance);
+        $distance = (int)$data->rows[0]->elements[0]->distance->value;
+        return $distance;
     }
 }
