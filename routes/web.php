@@ -48,6 +48,8 @@ Route::middleware(['auth', 'staff'])->group(function(){
     Route::get('/unallocated', [StaffController::class, 'unassignedAllo'])->name('staff.unassignedAllo');
     Route::get('/allocated', [StaffController::class, 'assignedAllo'])->name('staff.assignedAllo');
     Route::get('/manageAllo', [StaffController::class, 'showManageAllo'])->name('staff.show.manageAllo');
+    Route::get('/deleteAllo/{id}', [StaffController::class, 'deleteAllo'])->name('staff.deleteAllo');
+    Route::post('/editAllocation', [StaffController::class, 'editAllo'])->name('staff.editAllo');
     // Route::get('/show-deleteAllo/{id}', [StaffController::class, 'showDeleteAllo'])->name('staff.show.deleteAllo');
     // Route::get('/delete-allo/{id}', [StaffController::class, 'deleteAllo'])->name('staff.deleteAllo');
     // Route::get('/show-editAllo/{id}', [StaffController::class, 'showEditAllo'])->name('staff.show.editAllo');

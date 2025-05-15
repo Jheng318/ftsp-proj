@@ -2,8 +2,11 @@
 
 use App\Http\Controllers\StaffController;
 use App\Models\Internship;
+use App\Models\StudentInternship;
+use App\Models\StudentPrism;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Request;
 
 Route::get('/intern', function(){
     $all = Internship::with(['user' => function($query){
@@ -28,3 +31,12 @@ Route::get('/download/{filename}', function ($filename) {
 })->name('download.file');
 
 Route::get('/students/{id}', [StaffController::class, 'getStudent']);
+Route::get('/studentAllocation/{id}', function($id, Request $request){
+    $activeTab = $request->query('activeTab');
+    if($activeTab == 'intern'){
+        $data = StudentInternship::with(['student:id,name', 'internship:id,name,company_name'])->find($id);
+    }else{
+        $data = StudentPrism::with(['student:id,name', 'prism:id,name'])->find($id);
+    }
+    return response()->json($data);
+});

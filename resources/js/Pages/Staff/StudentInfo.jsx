@@ -91,6 +91,7 @@ function StudentInfo({ students }) {
     useEffect(() => {
         if (flash?.message) {
             toast.success(flash?.message);
+            flash.message = "";
         }
         if (errors?.error) {
             if (typeof errors.error === "object") {
@@ -100,13 +101,13 @@ function StudentInfo({ students }) {
             } else {
                 toast.error(errors.error);
             }
+            errors.error = "";
         }
     }, [flash, errors]);
 
     function handleSubmit(e) {
         e.preventDefault();
         setIsOpen(false);
-        setHoveredStudent(null);
         put("/ftsp-proj/editStudent");
         reset();
     }

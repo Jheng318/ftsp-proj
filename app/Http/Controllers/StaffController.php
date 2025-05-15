@@ -247,54 +247,101 @@ class StaffController extends Controller
             return redirect()->back()->withErrors(['error' => 'Fail to Import Students: '. $e->getMessage()]);
         }
     }
-    public function showDeleteAllo(Request $request,$id ){
-        $activeTab = $request->input('activeTab');
-        if($activeTab == 'intern')
-            $data = StudentInternship::with(['student', 'internship:id,name'])->whereInternshipId($id)->get();
-        elseif($activeTab == 'prism')
-            $data = StudentPrism::with(['student', 'prism:id,name'])->wherePrismId($id)->get();
+    // public function showDeleteAllo(Request $request,$id ){
+    //     $activeTab = $request->input('activeTab');
+    //     if($activeTab == 'intern')
+    //         $data = StudentInternship::with(['student', 'internship:id,name'])->whereInternshipId($id)->get();
+    //     elseif($activeTab == 'prism')
+    //         $data = StudentPrism::with(['student', 'prism:id,name'])->wherePrismId($id)->get();
         
-        return inertia('Staff/DeleteAllo', compact(['data', 'activeTab']));
-    }
-    public function deleteAllo(Request $request, $id){
-        // unable to retrieve the student_id if a delete request is used instead of a get request
-        try{
-            $student_id = $request->input('student_id') ;
-            $activeTab = $request->input('activeTab');
-            if($activeTab == 'intern')
-                $listing = StudentInternship::whereInternshipId($id)->whereStudentId($student_id)->first(); 
-            elseif($activeTab == 'prism')
-                $listing = StudentPrism::wherePrismId($id)->whereStudentId($student_id)->first();
-            $listing->delete();
-            return redirect()->back()->with('message', 'Successfully removed student from that allocation');
-        }
-        catch(Exception $e){}
+    //     return inertia('Staff/DeleteAllo', compact(['data', 'activeTab']));
+    // }
+    // public function deleteAllo(Request $request, $id){
+    //     // unable to retrieve the student_id if a delete request is used instead of a get request
+    //     try{
+    //         $student_id = $request->input('student_id') ;
+    //         $activeTab = $request->input('activeTab');
+    //         if($activeTab == 'intern')
+    //             $listing = StudentInternship::whereInternshipId($id)->whereStudentId($student_id)->first(); 
+    //         elseif($activeTab == 'prism')
+    //             $listing = StudentPrism::wherePrismId($id)->whereStudentId($student_id)->first();
+    //         $listing->delete();
+    //         return redirect()->back()->with('message', 'Successfully removed student from that allocation');
+    //     }
+    //     catch(Exception $e){}
 
-    }
-    public function showEditAllo(Request $request, $id){
-        $activeTab = $request->input('activeTab');
-        if($activeTab == 'intern'){
-            $data = StudentInternship::with(['student', 'internship:id,name'])->whereInternshipId($id)->get();
-            $listing = Internship::all(); 
-        }
-        elseif($activeTab == 'prism'){
-            $data = StudentPrism::with(['student', 'prism:id,name'])->wherePrismId($id)->get();
-            $listing = Prism::all(); 
-        }
-        $students = Student::all();
+    // }
+    // public function showEditAllo(Request $request, $id){
+    //     $activeTab = $request->input('activeTab');
+    //     if($activeTab == 'intern'){
+    //         $data = StudentInternship::with(['student', 'internship:id,name'])->whereInternshipId($id)->get();
+    //         $listing = Internship::all(); 
+    //     }
+    //     elseif($activeTab == 'prism'){
+    //         $data = StudentPrism::with(['student', 'prism:id,name'])->wherePrismId($id)->get();
+    //         $listing = Prism::all(); 
+    //     }
+    //     $students = Student::all();
 
-        return inertia('Staff/EditAllo', compact(['data', 'listing', 'students', 'activeTab']));
-    } 
-    public function editAllo(Request $request,$id){
-        try{
-            $student_id = $request->input('student_id') ;
-            $activeTab = $request->input('activeTab');
-        }
-        catch(Exception $e){}
-    } 
+    //     return inertia('Staff/EditAllo', compact(['data', 'listing', 'students', 'activeTab']));
+    // } 
+    // public function editAllo(Request $request,$id){
+    //     try{
+    //         $student_id = $request->input('student_id') ;
+    //         $activeTab = $request->input('activeTab');
+    //     }
+    //     catch(Exception $e){}
+    // } 
     public function showManageAllo(){
-        $allocatedI = StudentInternship::all();
-        $allocatedP = StudentPrism::all();
-        return inertia('Staff/ManageAllo', compact(['allocatedI']));
+        $allocatedI = StudentInternship::with(['student:id,name,admin_no', 'internship:id,name,company_name'])->get();
+        $allocatedP = StudentPrism::with(['student:id,name,admin_no', 'prism:id,name'])->get();
+        $internships = Internship::select('id', 'name', 'company_name')->get();
+        $prisms = Prism::select('id', 'name')->get();
+        return inertia('Staff/ManageAllo', compact(['allocatedI', 'allocatedP', 'internships', 'prisms']));
+    }
+    public function deleteAllo($id, Request $request){
+        try{
+            $activeTab = $request->input('activeTab');
+
+            if($activeTab == 'intern'){
+                $listing = StudentInternship::find($id);
+            } else{
+                $listing = StudentPrism::find($id);
+            }
+            $listing->delete();
+
+            return redirect()->back()->with('message', 'Removed student\'s allocation successfully.');
+        }
+        catch(Exception $e){
+            return redirect()->back()->withErrors(['error', 'Unsuccessful in removing student\'s allocation.']);
+        }
+    }
+    public function editAllo(Request $request){
+        try{
+            $validated = $request->validate([
+                'id' => 'required|numeric',
+                'internAllo' => 'nullable|numeric',
+                'prismAllo' => 'nullable|numeric',
+                'activeTab' => 'required|string',
+            ]);
+            if($validated['activeTab'] == 'intern'){
+                $allocation = StudentInternship::find($validated['id']);
+                $allocation->update([
+                    'internship_id' => $validated['internAllo'],
+                ]);
+            } else{
+                $allocation = StudentPrism::find($validated['id']);
+                $allocation->update([
+                    'prism_id' => $validated['prismAllo'],
+                ]);
+            }
+            return redirect()->back()->with('message', 'student\'s allocation has been successful.');
+        }
+        catch(Exception $err){
+            return redirect()->back()->withErrors(['error' => 'student\'s allocation has been unsuccessful.']);
+        }
+        catch(ValidationException $e){
+            return redirect()->back()->withErrors(['error' => json_encode($e->errors())]);
+        }
     }
 }   
