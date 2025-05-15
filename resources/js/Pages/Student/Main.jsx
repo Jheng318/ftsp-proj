@@ -9,7 +9,7 @@ import { useMemo, useState } from "react";
 
 function Main({ internships, prism_projects, allocation }) {
     const { auth } = usePage().props;
-    const [sortDir, setSortDir] = useState("lowtohigh_price");
+    const [sortDir, setSortDir] = useState("");
 
     const DisplayData = ({ data, sortDir, prism }) => {
         if (prism) {

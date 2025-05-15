@@ -112,8 +112,6 @@ class StaffController extends Controller
 
             Return only the matched results in this exact format:
             StudentId -> InternshipId
-            If the student is unmatchable, return in this exact format:
-            StudentId -> 0
 
             Only return one line per student. Do not include any headings, titles, or additional explanations in the output.";
             } else {

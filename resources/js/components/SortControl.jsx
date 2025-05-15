@@ -21,7 +21,7 @@ function SortControl({ setSortDir, prism }) {
     <div style={{ position: 'relative' }}> {/* 3. Relative positioning for the container */}
       {/* 4. Add onClick handler to the button */}
       <CardButton btnColor="#6393F2" onClick={toggleDropdown}>
-        <img src={sortIcon} alt="sortIcon" id="sortIcon" style={{ marginRight: '5px' }} />
+        <img src={sortIcon} alt="sortIcon" id="sortIcon" style={{ marginRight: '5px', width: '40px' }} />
         <span className="text-gray">Sort By</span>
       </CardButton>
 

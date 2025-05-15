@@ -102,27 +102,151 @@ class StudentController extends Controller
     {
         $activeTab = $request->query('tab');
 
-        $allInternships = Internship::with('user')->get();
-        $allPrisms = Prism::with('user')->get();
+        $allInternships = Internship::with('user')->orderBy('end_date', 'DESC')->get()->map(
+            function ($internship) {
+                // Ensure the date field is a Carbon instance
+                $createdAt = Carbon::parse($internship->created_at);
+                $formattedstartDate = Carbon::parse($internship->start_date)->format('F Y');
+                $formattedendDate = Carbon::parse($internship->end_date)->format('F Y');
+
+                return [
+                    'id' => $internship->id,
+                    'title' => $internship->name,
+                    'description' => $internship->description,
+                    'company_name' => $internship->company_name,
+                    'salary' => $internship->salary,
+                    'created_at' => $createdAt->diffForHumans(),
+                    'date_created_at' => $internship->created_at,
+                    'location' => $internship->location,
+                    'start' => $formattedstartDate,
+                    'end' => $formattedendDate,
+                    'start_date' => $internship->start_date,
+                    'end_date' => $internship->end_date,
+                    'frameworks' => $internship->frameworks,
+                    'languages' => $internship->languages,
+                    'user_name' => $internship->user->name,
+                    // ... other fields
+                ];
+            }
+        );
+        $allPrisms = Prism::with('user')->orderBy('end_date', 'DESC')->get()->map(
+            function ($prism) {
+                // Ensure the date field is a Carbon instance
+                $createdAt = Carbon::parse($prism->created_at);
+                $formattedstartDate = Carbon::parse($prism->start_date)->format('F Y');
+                $formattedendDate = Carbon::parse($prism->end_date)->format('F Y');
+
+                return [
+                    'id' => $prism->id,
+                    'title' => $prism->name,
+                    'description' => $prism->description,
+                    'type' => $prism->type,
+                    'created_at' => $createdAt->diffForHumans(),
+                    'date_created_at' => $prism->created_at,
+                    'start' => $formattedstartDate,
+                    'end' => $formattedendDate,
+                    'start_date' => $prism->start_date,
+                    'end_date' => $prism->end_date,
+                    'no_of_students' => $prism->no_of_students,
+                    'user_name' => $prism->user->name,
+                ];
+            }
+        );
 
         return inertia('Student/DisplayInfo', compact('allInternships', 'allPrisms', 'activeTab'));
     }
 
-    public function displaySpecificInfo(Request $request, $id) 
+    public function displaySpecificInfo(Request $request, $id)
     {
         $activeTab = $request->query('tab');
         $specificPrism = null;
         $specificInternship = null;
 
-        $allInternships = Internship::with('user')->get();
-        $allPrisms = Prism::with('user')->get();
+        $allInternships = Internship::with('user')->orderBy('end_date', 'DESC')->get()->map(
+            function ($internship) {
+                // Ensure the date field is a Carbon instance
+                $createdAt = Carbon::parse($internship->created_at);
+                $formattedstartDate = Carbon::parse($internship->start_date)->format('F Y');
+                $formattedendDate = Carbon::parse($internship->end_date)->format('F Y');
+
+                return [
+                    'id' => $internship->id,
+                    'title' => $internship->name,
+                    'description' => $internship->description,
+                    'company_name' => $internship->company_name,
+                    'salary' => $internship->salary,
+                    'created_at' => $createdAt->diffForHumans(),
+                    'date_created_at' => $internship->created_at,
+                    'location' => $internship->location,
+                    'start' => $formattedstartDate,
+                    'end' => $formattedendDate,
+                    'start_date' => $internship->start_date,
+                    'end_date' => $internship->end_date,
+                    'frameworks' => $internship->frameworks,
+                    'languages' => $internship->languages,
+                    'user_name' => $internship->user->name,
+                    // ... other fields
+                ];
+            }
+        );
+
+        $allPrisms = Prism::with('user')->orderBy('end_date', 'DESC')->get()->map(
+            function ($prism) {
+                // Ensure the date field is a Carbon instance
+                $createdAt = Carbon::parse($prism->created_at);
+                $formattedstartDate = Carbon::parse($prism->start_date)->format('F Y');
+                $formattedendDate = Carbon::parse($prism->end_date)->format('F Y');
+
+                return [
+                    'id' => $prism->id,
+                    'title' => $prism->name,
+                    'description' => $prism->description,
+                    'type' => $prism->type,
+                    'created_at' => $createdAt->diffForHumans(),
+                    'date_created_at' => $prism->created_at,
+                    'start' => $formattedstartDate,
+                    'end' => $formattedendDate,
+                    'start_date' => $prism->start_date,
+                    'end_date' => $prism->end_date,
+                    'no_of_students' => $prism->no_of_students,
+                    'user_name' => $prism->user->name,
+                ];
+            }
+        );
 
         if ($activeTab == 'intern') {
-            $specificInternship = Internship::find($id);
+            $internship = Internship::find($id);
+            if ($internship) {
+                $specificInternship = [
+                    'id' => $internship->id,
+                    'title' => $internship->name,
+                    'description' => $internship->description,
+                    'company_name' => $internship->company_name,
+                    'salary' => $internship->salary,
+                    'date_created_at' => $internship->created_at,
+                    'location' => $internship->location,
+                    'start_date' => $internship->start_date,
+                    'end_date' => $internship->end_date,
+                    'frameworks' => $internship->frameworks,
+                    'languages' => $internship->languages,
+                    'user_name' => $internship->user->name,
+                ];
+            }
         }
 
         if ($activeTab == 'prism') {
-            $specificPrism = Prism::find($id);
+            $prism = Prism::find($id);
+            if ($prism) {
+                $specificPrism = [
+                    'id' => $prism->id,
+                    'title' => $prism->name,
+                    'description' => $prism->description,
+                    'type' => $prism->type,
+                    'no_of_students' => $prism->no_of_students,
+                    'date_created_at' => $prism->created_at,
+                    'user_name' => $prism->user->name,
+                ];
+            }
         }
 
         return inertia('Student/DisplayInfo', compact('allInternships', 'allPrisms', 'specificInternship', 'specificPrism', 'activeTab'));
