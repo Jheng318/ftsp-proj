@@ -1,4 +1,5 @@
 import pencil from "@/images/edit-icon.svg";
+import deleteIcon from "@/images/red-delete-icon.svg";
 import { Link, useForm, usePage, router } from "@inertiajs/react";
 import { useEffect, useState, useCallback } from "react";
 import Modal from "../../components/Modal";
@@ -6,6 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Form from "react-bootstrap/Form";
 import Button from "@/js/components/Button.jsx";
+import CardButton from "../../components/CardButton";
 
 function StudentInfo({ students }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -61,11 +63,15 @@ function StudentInfo({ students }) {
     );
 
     // Modified handleEdit to use the combined fetch function
-    const handleEdit = async (e) => {
+    async function handleEdit(e) {
         const { id } = e.currentTarget.dataset;
         const data = await fetchStudentData(id);
         if (data) setIsOpen(true);
-    };
+    }
+    function handleDelete(e) {
+        const { id } = e.currentTarget.dataset;
+        router.delete(`/ftsp-proj/deleteStudent/${id}`);
+    }
 
     // Cleanup effect
     useEffect(() => {
@@ -173,7 +179,8 @@ function StudentInfo({ students }) {
                         <th>Resume Upload Status</th>
                         <th>GPA</th>
                         <th>Location</th>
-                        <th>Action</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -190,23 +197,30 @@ function StudentInfo({ students }) {
                             <td>{student.gpa}</td>
                             <td>{student.location}</td>
                             <td>
-                                <button
+                                <CardButton
+                                    id={student.id}
                                     onClick={handleEdit}
-                                    data-id={student.id}
-                                    style={{ position: "relative" }}
                                 >
                                     <img
                                         src={pencil}
                                         alt="edit icon"
                                         className="fill-blue"
                                     />
-                                </button>
+                                </CardButton>
+                            </td>
+                            <td>
+                                <CardButton
+                                    id={student.id}
+                                    onClick={handleDelete}
+                                >
+                                    <img src={deleteIcon} alt="delete icon" />
+                                </CardButton>
                             </td>
                         </tr>
                     ))}
 
                     <tr>
-                        <td colSpan="7">
+                        <td colSpan="8">
                             <div className="d-flex justify-content-end me-5 align-items-center">
                                 <p className="mb-0">
                                     {students.current_page}-{students.last_page}{" "}

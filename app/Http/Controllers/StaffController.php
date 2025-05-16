@@ -79,11 +79,21 @@ class StaffController extends Controller
             $student->user->update([
                 'name' => $validated['name']
             ]);
-            return redirect()->back()->with('message', 'Successfully updated the students details');
+            return redirect()->back()->with('message', 'Successfully updated the students details.');
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors(['error' => json_encode($e->errors())]);
         }
     }
+    public function deleteStudent($id){
+        try{
+            $student = Student::find($id);
+            $student->delete();
+            return redirect()->back()->with('message', 'Successfully deleted the student details.');
+        }
+        catch(Exception $e){
+            return redirect()->back()->withErrors(['error' => $e]);
+        }
+    } 
 
     public function matchStudents(Request $request)
     {

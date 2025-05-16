@@ -61,6 +61,7 @@ Route::middleware(['auth', 'staff'])->group(function(){
     Route::get('/student-info' ,[StaffController::class , 'studentInfo'])->name('staff.studentInfo');
     Route::put('/editStudent', [StaffController::class, 'editStudent'])->name('staff.editStudent');
     Route::post('/bulk-addStudents', [StaffController::class, 'bulkAdd'])->name('staff.bulkAdd');
+    Route::delete('/deleteStudent/{id}', [StaffController::class, 'deleteStudent'])->name('staff.deleteStud');
 
     Route::get("/matchStudents", [StaffController::class, 'matchStudents'])->name('staff.matchStudents');
 

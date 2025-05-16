@@ -38,8 +38,9 @@ function EditPrism({ prismPost }) {
     }
     // show the toast depending on whether there is a error message
     useEffect(() => {
-        if (errors.error) {
+        if (errors?.error) {
             toast.error(errors.error);
+            errors.error = ""
         }
     }, [errors]);
     return (

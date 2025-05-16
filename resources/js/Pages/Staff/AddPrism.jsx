@@ -33,6 +33,7 @@ function AddPrism() {
     useEffect(() => {
         if (errors?.error) {
             toast.error(errors?.error);
+            errors.error = "";
         }
     }, [errors]);
 

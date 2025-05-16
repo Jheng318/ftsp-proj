@@ -83,11 +83,13 @@ function Prism({ prism }) {
     }, [prism]);
     // to check whether there is an error and if there is, show it in the form of a toast
     useEffect(() => {
-        if (errors.error) {
+        if (errors?.error) {
             toast.error(errors.error);
+            errors.error = "";
         }
         if (flash?.message) {
             toast.success(flash?.message);
+            flash.message = "";
         }
     }, [errors, flash]);
 
