@@ -63,7 +63,8 @@ function InternshipInterest({ studentInterest }) {
       otherLanguages: otherLanguages || "",
       framework: frameworks || [],
       otherFrameworks: otherFrameworks || "",
-      resume: null
+      resume: null,
+      _method: isEdit ? "PUT" : "POST"
     })
     if (studentInterest && isEdit) {
       post("/ftsp-proj/intern-interest", {

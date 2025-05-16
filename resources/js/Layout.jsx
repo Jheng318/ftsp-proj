@@ -68,10 +68,10 @@ export default function Layout({ children }) {
                                 <Nav.Link href="/ftsp-proj/detailed-info?tab=intern">
                                     Internship
                                 </Nav.Link>
-                                <Nav.Link href="/ftsp-proj/prism-student">
+                                <Nav.Link href="/ftsp-proj/detailed-info?tab=prism">
                                     prism
                                 </Nav.Link>
-                                <Nav.Link href="/ftsp-proj/detailed-info?tab=prism">
+                                <Nav.Link href="/ftsp-proj/allocation-student">
                                     Allocation
                                 </Nav.Link>
                             </>

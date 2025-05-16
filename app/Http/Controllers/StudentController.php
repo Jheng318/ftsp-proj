@@ -243,6 +243,8 @@ class StudentController extends Controller
                     'description' => $prism->description,
                     'type' => $prism->type,
                     'no_of_students' => $prism->no_of_students,
+                    'start_date' => $prism->start_date,
+                    'end_date' => $prism->end_date,
                     'date_created_at' => $prism->created_at,
                     'user_name' => $prism->user->name,
                 ];
@@ -325,11 +327,6 @@ class StudentController extends Controller
         }
     }
 
-    /*     public function getStudent($id) {
-        $student = Student::where('user_id', $id)->first();
-        return response()->json($student);
-    } */
-
     public function addInternshipInterest(Request $request)
     {
         $user = Auth::user();
@@ -369,6 +366,7 @@ class StudentController extends Controller
                 array_push($frameworks_array, $item);
             }
         }
+
         if ($request->_method == "PUT") {
             $originalForm = StudentInterestInternship::where("student_id", $student_id)->first();
 
@@ -379,7 +377,7 @@ class StudentController extends Controller
                 'student_id' => $student_id
             ]);
 
-            return redirect()->route('student.main');
+            return redirect()->route('student.main')->with('message', 'Successfully edited interest form');
         } else {
             $interest = StudentInterestInternship::create([
                 'framework' => implode(", ", $frameworks_array),
@@ -388,7 +386,7 @@ class StudentController extends Controller
                 'student_id' => $student_id
             ]);
 
-            return redirect()->route('student.main');
+            return redirect()->route('student.main')->with('message', 'Successfully recorded interest form');
         }
     }
 
@@ -433,7 +431,7 @@ class StudentController extends Controller
         ]);
 
         if ($interest) {
-            return redirect()->route('student.main');
+            return redirect()->route('student.main')->with('message', 'Successfully recorded interest form');
         }
     }
 
@@ -487,6 +485,6 @@ class StudentController extends Controller
                 'student_id' => $student_id
             ]);
         }
-        return redirect()->route('student.main');
+        return redirect()->route('student.main')->with('message', 'Successfully edited interest form');
     }
 }

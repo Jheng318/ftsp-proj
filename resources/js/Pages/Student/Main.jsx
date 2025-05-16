@@ -1,15 +1,33 @@
 import "@/css/Student/main.css";
 import background from "@/images/background.jpg";
 import image from "@/images/studentimage-1.jpg";
-
 import SortControl from "@/js/components/SortControl";
 import InternPrismCard from "@/js/components/InternPrismCard";
+
 import { router, usePage } from "@inertiajs/react";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
 
 function Main({ internships, prism_projects, allocation }) {
-    const { auth } = usePage().props;
+    const { flash, errors } = usePage().props;
     const [sortDir, setSortDir] = useState("");
+
+    // to check whether there is an error and if there is, show it in the form of a toast
+    useEffect(() => {
+        if (errors?.error) {
+            toast.error(errors?.error);
+            errors.error = "";
+        }
+        if (flash?.message) {
+            window.addEventListener('popstate', function (e) {
+                toast.dismiss();
+            })
+            toast?.success(flash?.message);
+            flash.message = "";
+        }
+    }, [errors, flash]);
+
+
 
     const DisplayData = ({ data, sortDir, prism }) => {
         if (prism) {
@@ -47,6 +65,11 @@ function Main({ internships, prism_projects, allocation }) {
 
     return (
         <>
+            <ToastContainer
+                closeOnClick
+                autoClose={3000}
+                position="top-center"
+            />
             <section
                 id="hero"
                 style={{
