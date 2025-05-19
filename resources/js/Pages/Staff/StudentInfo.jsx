@@ -11,7 +11,6 @@ import CardButton from "../../components/CardButton";
 
 function StudentInfo({ students }) {
     const [isOpen, setIsOpen] = useState(false);
-    const [hoveredStudent, setHoveredStudent] = useState(null);
     const { flash, errors } = usePage().props;
 
     const {
@@ -80,19 +79,6 @@ function StudentInfo({ students }) {
             reset();
         };
     }, []);
-
-    useEffect(() => {
-        if (hoveredStudent === null) {
-            setData({
-                name: "",
-                adminNo: "",
-                gpa: 0.0,
-                location: "",
-                user_id: 0,
-            });
-            return; // Add early return to prevent unnecessary setData call
-        }
-    }, [hoveredStudent]);
 
     useEffect(() => {
         if (flash?.message) {
