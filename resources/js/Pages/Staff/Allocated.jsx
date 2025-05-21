@@ -207,36 +207,6 @@ function Allocated({ allocatedIntern, allocatedPrism }) {
                                 ))}
                             </p>
                             <p>Teacher in Charge: {staffName}</p>
-                            <div className="d-flex justify-content-between px-16px container-fluid buttonsDiv">
-                                <CardButton
-                                    btnColor="#6393F2"
-                                    id={id}
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        const id = e.currentTarget.dataset.id;
-                                        router.get(
-                                            `/ftsp-proj/show-editAllo/${id}`,
-                                            { activeTab }
-                                        );
-                                    }}
-                                >
-                                    <img src={edit} alt="edit icon" />
-                                </CardButton>
-                                <CardButton
-                                    btnColor="#F26363"
-                                    id={id}
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        const id = e.currentTarget.dataset.id;
-                                        router.get(
-                                            `/ftsp-proj/show-deleteAllo/${id}`,
-                                            { activeTab }
-                                        );
-                                    }}
-                                >
-                                    <img src={deleteIcon} alt="delete icon" />
-                                </CardButton>
-                            </div>
                         </div>
                     );
                 })}
@@ -262,6 +232,7 @@ function Allocated({ allocatedIntern, allocatedPrism }) {
 }
 
 export default Allocated;
+
 function InternFilterOp({ filterOp, setFilterOp, currentData }) {
     const companies = [
         ...new Set(currentData?.map((data) => data.company_name)),
