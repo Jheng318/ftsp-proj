@@ -17,9 +17,8 @@ function Prism({ prism }) {
     const [selectedPrism, setSelectedPrism] = useState(null);
     const [filteredPrism, setFilteredPrism] = useState(prism ?? []);
     const [filterOp, setFilterOp] = useState({
-        role: "",
-        lang: "",
-        frame: "",
+        projType: "",
+        lecturer: "",
     });
     function handleEdit(e) {
         const id = e.currentTarget.dataset.id;
@@ -42,27 +41,14 @@ function Prism({ prism }) {
     }
     function handleFilter() {
         const filtered = prism.filter((p) => {
-            const matchesRole = !filterOp.role || p.name === filterOp.role;
+            const matchType =
+                !filterOp.projType || p.type === filterOp.projType;
+            const matchLecturer =
+                !filterOp.lecturer || p.user.name === filterOp.lecturer;
 
-            const matchesLang =
-                !filterOp.lang ||
-                p.languages
-                    .toLowerCase()
-                    .split(",")
-                    .map((l) => l.trim())
-                    .includes(filterOp.lang.toLowerCase());
-
-            const matchesFrame =
-                !filterOp.frame ||
-                p.frameworks
-                    .toLowerCase()
-                    .split(",")
-                    .map((f) => f.trim())
-                    .includes(filterOp.frame.toLowerCase());
-
-            return matchesRole && matchesLang && matchesFrame;
+            return matchType && matchLecturer;
         });
-        setFilteredIntern(filtered);
+        setFilteredPrism(filtered);
     }
     const openModalFn = useCallback(
         (id) => {
@@ -77,6 +63,10 @@ function Prism({ prism }) {
         setOpenModal(false);
         setSelectedPrism(null);
     }, []);
+
+    const getUniqueLecturers = () => {
+        return [...new Set(prism.map((p) => p.user.name))].filter(Boolean);
+    };
 
     useEffect(() => {
         setFilteredPrism(prism);
@@ -99,18 +89,14 @@ function Prism({ prism }) {
         else setFilteredPrism(prism);
     }, [search]);
 
-    // filter by the selected role, framework or language
+    // filter by the project type or lecturer
     useEffect(() => {
-        if (
-            filterOp.role !== "" ||
-            filterOp.frame !== "" ||
-            filterOp.lang !== ""
-        )
+        if (filterOp.lecturer !== "" || filterOp.projType !== "")
             handleFilter();
         else setFilteredPrism(prism);
     }, [filterOp]);
     return (
-        <section id="prism">
+        <section id="prism" className="my-5">
             <ToastContainer
                 closeOnClick
                 autoClose={3000}
@@ -118,7 +104,7 @@ function Prism({ prism }) {
             />
 
             <div className="d-flex justify-content-between w-90">
-                <div className="d-flex align-items-center justify-content-around mt-5">
+                <div className="d-flex align-items-center justify-content-around">
                     <h3 className="pe-5">Prism Listing</h3>
                     <div>
                         <input
@@ -145,28 +131,42 @@ function Prism({ prism }) {
                     <input type="checkbox" id="filterBtn" className="d-none" />
                     <span className="filterOption w-100">
                         <select
-                            name="jobRole"
-                            id="jobRole"
+                            name="projType"
+                            id="projType"
                             className="w-100"
-                            value={filterOp.role}
+                            value={filterOp.projType}
+                            onChange={(e) =>
+                                setFilterOp({
+                                    ...filterOp,
+                                    projType: e.target.value,
+                                })
+                            }
                         >
-                            <option value="">Select Role</option>
+                            <option value="">Select Project Type</option>
+                            {prism.map((p) => (
+                                <option key={p.id} value={p.type}>
+                                    {p.type}
+                                </option>
+                            ))}
                         </select>
                         <select
-                            name="languages"
-                            id="languages"
+                            name="lecturer"
+                            id="lecturer"
                             className="w-100"
-                            value={filterOp.lang}
+                            value={filterOp.lecturer}
+                            onChange={(e) =>
+                                setFilterOp({
+                                    ...filterOp,
+                                    lecturer: e.target.value,
+                                })
+                            }
                         >
-                            <option value="">Select Language</option>
-                        </select>
-                        <select
-                            name="frameworks"
-                            id="frameworks"
-                            className="w-100"
-                            value={filterOp.frame}
-                        >
-                            <option value="">Select Framework</option>
+                            <option value="">Select Lecturer</option>
+                            {getUniqueLecturers().map((name) => (
+                                <option key={name} value={name}>
+                                    {name}
+                                </option>
+                            ))}
                         </select>
                     </span>
                 </div>

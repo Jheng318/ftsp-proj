@@ -51,7 +51,8 @@
         height: auto;
         background-color: var(--blue-primary);
         top: 4rem;
-        left: 2rem;
+        left: -1.3rem;
+        min-width: 200px;
     }
     .filterOption::before {
         content: "";
