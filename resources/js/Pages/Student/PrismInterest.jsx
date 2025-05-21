@@ -6,10 +6,10 @@ function PrismInterest({ studentInterest }) {
   const { auth } = usePage().props;
   let otherLanguages = "";
   let otherFrameworks = "";
-  let languages = (studentInterest.length !== 0) ? studentInterest.languages.toLowerCase().split(", ") : [];
-  let frameworks = (studentInterest.length !== 0) ? studentInterest.framework.toLowerCase().split(", ") : [];
+  let languages = (studentInterest) ? studentInterest.languages.toLowerCase().split(", ") : [];
+  let frameworks = (studentInterest) ? studentInterest.framework.toLowerCase().split(", ") : [];
 
-  if (studentInterest.length !== 0) {
+  if (studentInterest) {
 
     function removeMatchingItems(array1, array2) {
       return array1.filter(item => array2.includes(item));
@@ -55,7 +55,7 @@ function PrismInterest({ studentInterest }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    if (studentInterest.length !== 0) {
+    if (studentInterest) {
       put("/ftsp-proj/prism-interest");
     } else {
       post("/ftsp-proj/prism-interest");
@@ -304,7 +304,7 @@ function PrismInterest({ studentInterest }) {
               <p className="errors text-danger">{formErrors.framework}</p>
             )}
           </div>
-          
+
           <p className="m-0">Please rank your interests based on skill area:</p>
           <div className="row mb-3 mt-3">
             <div className="col">
@@ -387,6 +387,8 @@ function PrismInterest({ studentInterest }) {
             </div>
           </div>
           <br />
+
+          <p className="text-danger mt-2">*If you are submitting this form for the first time, do note that you will not be able to access the Internship form after submission.</p>
 
           <Button
             disabled={processing}

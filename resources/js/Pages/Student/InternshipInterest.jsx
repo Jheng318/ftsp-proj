@@ -336,7 +336,8 @@ function InternshipInterest({ studentInterest }) {
           <input type="file" id="resume" name="resume" className="mt-1" onChange={(e) => setData("resume", e.target.files[0])}></input>
           <br />
 
-          <p className="text-danger mt-2">*If you are submitting this form for the first time, do note that you will not be able to access the PRISM form & allocations after submission.</p>
+          <p className="text-danger mt-2">*If you are submitting this form for the first time, do note that you will not be able to access the PRISM form after submission.</p>
+          
           <Button
             disabled={processing}
             type="submit"
