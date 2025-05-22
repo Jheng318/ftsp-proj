@@ -111,19 +111,23 @@ class StaffController extends Controller
                 $allocated = StudentInternship::with(['internship', 'student'])->get();
                 $prompt = "For each student that is provided as 'Student's Interest', match them to the most suitable internship using the following criteria:
 
-            1. Prioritize the internship role that best aligns with the student's interest.
-            2. If multiple internships interests are similar, consider the student's preferred frameworks and programming languages.
-            3. If the student fulfills both citerias in statements 1 & 2, ensure the student's GPA meets the internship's GPA requirement. For example, an internship with GPA requirement of 3.5 should only receive students with GPAs between 3.2 and 3.8 (inclusive)
-            4. Ensure the student's internship period (internship_start and internship_end) aligns with the start and end of the internship in the internship listing.
-            5. Match the student based on the shortest distance between the internship location and the student address.
-            5. Each internship can have a certain number of students, ensure that the total number of students assigned to each internship does not exceed the number of students (no_of_students) specified in the internship table.
-            6. If a student is already allocated a internship, he/she cannot be allocated to another internship.
-            7. The student cannot be matched if there are students already allocated to their respective internships referencing from the given allocated internships data.
+                1. Prioritize the internship role that best aligns with the student's interest.
+                2. If multiple internships interests are similar, consider the student's preferred frameworks and programming languages.
+                3. If the student fulfills both citerias in statements 1 & 2, ensure the student's GPA meets the internship's GPA requirement. 
+                For example, an internship with GPA requirement of 3.5 should only receive students with GPAs between 3.2 and 3.8 (inclusive)
+                4. Ensure the student's internship period (internship_start and internship_end) aligns with the start and end of the internship 
+                in the internship listing.
+                5. Match the student based on the shortest distance between the internship location and the student address.
+                5. Each internship can have a certain number of students, ensure that the total number of students assigned to each internship
+                does not exceed the number of students (no_of_students) specified in the internship table.
+                6. If a student is already allocated a internship, he/she cannot be allocated to another internship.
+                7. The student cannot be matched if there are students already allocated to their respective internships referencing from the
+                
 
-            Return only the matched results in this exact format:
-            StudentId -> InternshipId
+                Return only the matched results in this exact format:
+                StudentId -> InternshipId
 
-            Only return one line per student. Do not include any headings, titles, or additional explanations in the output.";
+                Only return one line per student. Do not include any headings, titles, or additional explanations in the output.";
             } else {
                 $unallocated = Student::whereNotIn('id', StudentPrism::pluck('student_id'))->get();
                 $type = Prism::all();
@@ -131,19 +135,19 @@ class StaffController extends Controller
                 $allocated = StudentPrism::with(['prism', 'student'])->get();
                 $prompt = "Match students that is provided as 'Student's Interest' to the most suitable project based on the following criteria:
 
-            1.  Ranking-Based Allocation: Use 'web_dev_ranking', 'mad_ranking', 'rpa_ranking', and 'uiux_ranking' from the 'prism' table to determine project fit for each student.
-            2.  Project Type Inference: Infer the project type (e.g., Web Development, Mobile App Development, RPA, UI/UX Design) from the provided frameworks and languages.
-            3.  GPA Constraints: Each project has specific GPA constraints. Allocate students whose GPA falls within the given range for that project. The number of GPA values provided for a project matches the total number of students to be assigned to it.
-            4.  GPA Constraint Adherence: Assign students to projects only if their GPA satisfies the project's GPA constraints. For example, a Web Development project with GPA constraints of 3.5 and 2.0 should only receive students with GPAs between 3.5 and 2.0 (inclusive).
-            5.  Group Capacity Limit: Do not assign more students to a project than its specified total student capacity.
-            6.  If a student is already allocated a project, he/she cannot be allocated to another project.
-            7.  The student cannot be matched if there are students already allocated to their respective prisms referencing from the given allocated prisms data.
+                1.  Ranking-Based Allocation: Use 'web_dev_ranking', 'mad_ranking', 'rpa_ranking', and 'uiux_ranking' from the 'prism' table to determine project fit for each student.
+                2.  Project Type Inference: Infer the project type (e.g., Web Development, Mobile App Development, RPA, UI/UX Design) from the provided frameworks and languages.
+                3.  GPA Constraints: Each project has specific GPA constraints. Allocate students whose GPA falls within the given range for that project. The number of GPA values provided for a project matches the total number of students to be assigned to it.
+                4.  GPA Constraint Adherence: Assign students to projects only if their GPA satisfies the project's GPA constraints. For example, a Web Development project with GPA constraints of 3.5 and 2.0 should only receive students with GPAs between 3.5 and 2.0 (inclusive).
+                5.  Group Capacity Limit: Do not assign more students to a project than its specified total student capacity.
+                6.  If a student is already allocated a project, he/she cannot be allocated to another project.
+                7.  The student cannot be matched if there are students already allocated to their respective prisms referencing from the given allocated prisms data.
 
-            Present the allocation results in the following format, with one student-project mapping per line:
+                Present the allocation results in the following format, with one student-project mapping per line:
 
-            StudentId -> ProjectId
+                StudentId -> ProjectId
 
-            Ensure each student is listed on a single line with their assigned ProjectId. Do not include any headings, titles, or additional explanations in the output.\n";
+                Ensure each student is listed on a single line with their assigned ProjectId. Do not include any headings, titles, or additional explanations in the output.\n";
             }
 
 
