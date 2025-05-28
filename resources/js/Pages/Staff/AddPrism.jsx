@@ -46,7 +46,7 @@ function AddPrism() {
                     position="top-center"
                 />
             )}
-            <h3 className="ps-4 my-5 text-primary">Add Internship</h3>
+            <h3 className="ps-4 my-5 text-primary">Add PRISM</h3>
             <form className="container-fluid gap-6" onSubmit={handleSubmit}>
                 <div className="row container-fluid">
                     <div className="col">

@@ -52,7 +52,7 @@ function EditPrism({ prismPost }) {
                     position="top-center"
                 />
             )}
-            <h3 className="ps-4 my-5 text-primary">Edit Internship</h3>
+            <h3 className="ps-4 my-5 text-primary">Edit PRISM</h3>
             <form className="container-fluid gap-6" onSubmit={handleSubmit}>
                 <div className="row container-fluid">
                     <div className="col">
